@@ -40,6 +40,10 @@ h1 { margin: 0 0 4px 0; }
 .compare-controls select { min-width: 220px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
 .compare-table { width: min(860px, 100%); }
 .compare-table th:nth-child(1), .compare-table td:nth-child(1) { width: 220px; }
+.week-picker { margin: 0 0 10px 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.week-picker label { color: #475569; font-size: 13px; font-weight: 600; }
+.week-picker select { min-width: 220px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
+.week-source { display: none !important; }
 .tab-btn { border: 1px solid #cbd5e1; background: #fff; color: #334155; border-radius: 8px; padding: 7px 11px; cursor: pointer; }
 .tab-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
 .tab-panel { display: none; }
@@ -122,6 +126,7 @@ body { margin: 10px; }
 .summary-table th:nth-child(4), .summary-table td:nth-child(4) { width: 180px; }
 .player-search input { width: 100%; min-width: 0; }
 .compare-controls select { width: 100%; min-width: 0; }
+.week-picker select { width: 100%; min-width: 0; }
 }</style>
 </head>
 <body>
@@ -136,13 +141,7 @@ body { margin: 10px; }
 <span class="pill podium">Podium hebdo colore</span>
 </div>
 <div class="tabs">
-<button class="tab-btn" data-tab="week-1">Semaine 1</button>
-<button class="tab-btn" data-tab="week-2">Semaine 2</button>
-<button class="tab-btn" data-tab="week-3">Semaine 3</button>
-<button class="tab-btn" data-tab="week-4">Semaine 4</button>
-<button class="tab-btn" data-tab="week-5">Semaine 5</button>
-<button class="tab-btn" data-tab="week-6">Semaine 6</button>
-<button class="tab-btn active" data-tab="week-7">Semaine 7</button>
+<button class="tab-btn active" data-tab="weeks">Classements par semaines</button>
 
 <button class="tab-btn" data-tab="total-compact">Classement global compact</button>
 <button class="tab-btn" data-tab="total-complete">Classement global complet</button>
@@ -161,7 +160,15 @@ body { margin: 10px; }
 <span id="export-status" class="export-status" aria-live="polite"></span>
 </div>
 <div class="tab-panels">
-<section id="week-1" class="tab-panel">
+<section id="weeks" class="tab-panel active">
+<h2>Classements par semaines</h2>
+<div class="week-picker">
+<label for="week-select">Semaine:</label>
+<select id="week-select"></select>
+</div>
+<div id="week-selected-host"></div>
+</section>
+<section id="week-1" class="week-source">
 <h2>Semaine 1 <span class="week-date">19-janv-26</span></h2>
 <table class="week-table">
 <thead><tr><th>Position</th><th>Points</th><th>Joueurs</th><th>Kills</th></tr></thead><tbody>
@@ -189,7 +196,7 @@ body { margin: 10px; }
 <tr><td class="num">ABS</td><td class="num">0</td><td class="player absent">Martin Gagnon</td><td class="num">0</td></tr>
 </tbody></table>
 </section>
-<section id="week-2" class="tab-panel">
+<section id="week-2" class="week-source">
 <h2>Semaine 2 <span class="week-date">26-janv-26</span></h2>
 <table class="week-table">
 <thead><tr><th>Position</th><th>Points</th><th>Joueurs</th><th>Kills</th></tr></thead><tbody>
@@ -217,7 +224,7 @@ body { margin: 10px; }
 <tr><td class="num">22</td><td class="num">20</td><td class="player">Benoit C&#244;t&#233;</td><td class="num">0</td></tr>
 </tbody></table>
 </section>
-<section id="week-3" class="tab-panel">
+<section id="week-3" class="week-source">
 <h2>Semaine 3 <span class="week-date">02-f&#233;vr-26</span></h2>
 <table class="week-table">
 <thead><tr><th>Position</th><th>Points</th><th>Joueurs</th><th>Kills</th></tr></thead><tbody>
@@ -245,7 +252,7 @@ body { margin: 10px; }
 <tr><td class="num">ABS</td><td class="num">0</td><td class="player absent">Martin Gagnon</td><td class="num">0</td></tr>
 </tbody></table>
 </section>
-<section id="week-4" class="tab-panel">
+<section id="week-4" class="week-source">
 <h2>Semaine 4 <span class="week-date">09-f&#233;vr-26</span></h2>
 <table class="week-table">
 <thead><tr><th>Position</th><th>Points</th><th>Joueurs</th><th>Kills</th></tr></thead><tbody>
@@ -273,7 +280,7 @@ body { margin: 10px; }
 <tr><td class="num">ABS</td><td class="num">0</td><td class="player absent">Evans Marcoux</td><td class="num">0</td></tr>
 </tbody></table>
 </section>
-<section id="week-5" class="tab-panel">
+<section id="week-5" class="week-source">
 <h2>Semaine 5 <span class="week-date">16-f&#233;vr-26</span></h2>
 <table class="week-table">
 <thead><tr><th>Position</th><th>Points</th><th>Joueurs</th><th>Kills</th></tr></thead><tbody>
@@ -301,7 +308,7 @@ body { margin: 10px; }
 <tr><td class="num">22</td><td class="num">20</td><td class="player">Mark-Antoine Trudel</td><td class="num">0</td></tr>
 </tbody></table>
 </section>
-<section id="week-6" class="tab-panel">
+<section id="week-6" class="week-source">
 <h2>Semaine 6 <span class="week-date">23-f&#233;vr-26</span></h2>
 <table class="week-table">
 <thead><tr><th>Position</th><th>Points</th><th>Joueurs</th><th>Kills</th></tr></thead><tbody>
@@ -329,7 +336,7 @@ body { margin: 10px; }
 <tr><td class="num">22</td><td class="num">20</td><td class="player">Pierre Talbot</td><td class="num">0</td></tr>
 </tbody></table>
 </section>
-<section id="week-7" class="tab-panel active">
+<section id="week-7" class="week-source">
 <h2>Semaine 7 <span class="week-date">02-mars-26</span></h2>
 <table class="week-table">
 <thead><tr><th>Position</th><th>Points</th><th>Joueurs</th><th>Kills</th></tr></thead><tbody>
@@ -892,13 +899,20 @@ body { margin: 10px; }
   var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
   var progression = {"weeks":[{"label":"Semaine 1","shortLabel":"S1","date":"19-janv-26"},{"label":"Semaine 2","shortLabel":"S2","date":"26-janv-26"},{"label":"Semaine 3","shortLabel":"S3","date":"02-févr-26"},{"label":"Semaine 4","shortLabel":"S4","date":"09-févr-26"},{"label":"Semaine 5","shortLabel":"S5","date":"16-févr-26"},{"label":"Semaine 6","shortLabel":"S6","date":"23-févr-26"},{"label":"Semaine 7","shortLabel":"S7","date":"02-mars-26"}],"players":[{"name":"Gilles Lemieux","positions":[3,3,1,1,3,3,1]},{"name":"Stéphane Caron","positions":[1,1,2,2,2,1,2]},{"name":"Pierre Talbot","positions":[2,5,4,3,1,2,3]},{"name":"Pierre-Marc Pelletier","positions":[8,2,3,4,5,6,4]},{"name":"Mario Caron","positions":[5,7,5,5,4,4,5]},{"name":"Mathieu Létourneau","positions":[17,20,16,8,6,8,6]},{"name":"Sylvain Rousseau","positions":[10,4,6,6,8,5,7]},{"name":"Tommy Caron","positions":[18,14,7,11,15,7,8]},{"name":"Julie Paquet","positions":[15,11,12,16,9,9,9]},{"name":"Anik Chaloux","positions":[13,19,13,14,10,13,10]},{"name":"Patrick Lefebvre","positions":[11,6,10,9,14,11,11]},{"name":"Serge Blackburn","positions":[7,12,9,10,7,10,12]},{"name":"Annick Proulx","positions":[6,9,11,7,11,14,13]},{"name":"Simon Munger","positions":[4,10,14,18,19,19,14]},{"name":"Nancy Cloutier","positions":[14,8,8,13,13,12,15]},{"name":"Marjorie Stewart","positions":[21,15,17,12,12,17,16]},{"name":"Pierre Cuerrier","positions":[9,13,15,15,16,20,17]},{"name":"Martin Gagnon","positions":[22,18,21,17,18,16,18]},{"name":"Daniel Lévesque","positions":[16,21,20,21,17,15,19]},{"name":"Benoit Côté","positions":[20,22,22,22,20,18,20]},{"name":"Mark-Antoine Trudel","positions":[12,16,19,19,21,22,21]},{"name":"Evans Marcoux","positions":[19,17,18,20,22,21,22]}],"maxPosition":22};
   var ACTIVE_TAB_KEY = 'poker_preview_active_tab';
+  var ACTIVE_WEEK_KEY = 'poker_preview_active_week';
   var PLAYER_FILTER_KEY = 'poker_preview_player_filter';
   var totalSummaryCache = null;
   var recordsCache = null;
+  var pendingWeekFromHash = '';
 
   function isValidTabId(id) {
     if (!id) { return false; }
     return panels.some(function(p) { return p.id === id; });
+  }
+
+  function isValidWeekId(id) {
+    if (!id || !/^week-\d+$/.test(id)) { return false; }
+    return !!document.getElementById(id);
   }
 
   function tabIdFromHash() {
@@ -906,11 +920,27 @@ body { margin: 10px; }
     if (!raw) { return ''; }
     var decoded = raw;
     try { decoded = decodeURIComponent(raw); } catch (e) {}
-    return isValidTabId(decoded) ? decoded : '';
+    if (isValidTabId(decoded)) { return decoded; }
+    if (isValidWeekId(decoded)) {
+      pendingWeekFromHash = decoded;
+      return 'weeks';
+    }
+    return '';
   }
 
   function saveActiveTab(id) {
     try { localStorage.setItem(ACTIVE_TAB_KEY, id); } catch (e) {}
+  }
+
+  function saveActiveWeek(id) {
+    if (!isValidWeekId(id)) { return; }
+    try { localStorage.setItem(ACTIVE_WEEK_KEY, id); } catch (e) {}
+  }
+
+  function loadSavedWeek() {
+    var saved = '';
+    try { saved = localStorage.getItem(ACTIVE_WEEK_KEY) || ''; } catch (e) {}
+    return isValidWeekId(saved) ? saved : '';
   }
 
   function updateHashForTab(id) {
@@ -932,6 +962,9 @@ body { margin: 10px; }
 
     buttons.forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-tab') === id); });
     panels.forEach(function(p) { p.classList.toggle('active', p.id === id); });
+    if (id === 'weeks') {
+      renderWeeksPanel();
+    }
     if (id === 'total-compact') {
       renderTotalCompact();
     }
@@ -1396,6 +1429,90 @@ body { margin: 10px; }
     return { label: label, date: date };
   }
 
+  function defaultWeekId() {
+    var sections = weekSectionsSorted();
+    if (!sections.length) { return ''; }
+    return sections[sections.length - 1].id;
+  }
+
+  function renderWeeksPanel() {
+    var select = document.getElementById('week-select');
+    var host = document.getElementById('week-selected-host');
+    if (!select || !host) { return; }
+
+    var sections = weekSectionsSorted();
+    if (!sections.length) {
+      host.textContent = 'Aucune semaine disponible.';
+      return;
+    }
+
+    if (select.getAttribute('data-ready') !== '1') {
+      select.innerHTML = '';
+      sections.forEach(function(section, idx) {
+        var title = extractWeekTitle(section, idx);
+        var opt = document.createElement('option');
+        opt.value = section.id;
+        opt.textContent = title.date ? (title.label + ' - ' + title.date) : title.label;
+        select.appendChild(opt);
+      });
+
+      select.addEventListener('change', function() {
+        renderWeeksPanel();
+      });
+
+      select.setAttribute('data-ready', '1');
+    }
+
+    var selectedWeekId = '';
+    if (pendingWeekFromHash && isValidWeekId(pendingWeekFromHash)) {
+      selectedWeekId = pendingWeekFromHash;
+      pendingWeekFromHash = '';
+    }
+
+    if (!selectedWeekId && isValidWeekId(select.value)) {
+      selectedWeekId = select.value;
+    }
+
+    if (!selectedWeekId) {
+      selectedWeekId = loadSavedWeek();
+    }
+
+    if (!selectedWeekId) {
+      selectedWeekId = defaultWeekId();
+    }
+
+    if (!isValidWeekId(selectedWeekId)) {
+      host.textContent = 'Semaine introuvable.';
+      return;
+    }
+
+    if (select.value !== selectedWeekId) {
+      select.value = selectedWeekId;
+    }
+
+    var source = document.getElementById(selectedWeekId);
+    if (!source) {
+      host.textContent = 'Semaine introuvable.';
+      return;
+    }
+
+    host.innerHTML = '';
+
+    var titleEl = source.querySelector('h2');
+    if (titleEl) {
+      host.appendChild(titleEl.cloneNode(true));
+    }
+
+    var tableEl = source.querySelector('table.week-table');
+    if (tableEl) {
+      host.appendChild(tableEl.cloneNode(true));
+    }
+
+    applyWeeklyPodiumStyles();
+    saveActiveWeek(selectedWeekId);
+    applyPlayerFilter(false);
+  }
+
   function extractWeekStats(section) {
     var rows = Array.prototype.slice.call(section.querySelectorAll('table.week-table tbody tr'));
     var winner = '-';
@@ -1591,6 +1708,38 @@ body { margin: 10px; }
     };
   }
 
+  function buildWeeklyPositionsMap() {
+    var map = {};
+    var sections = weekSectionsSorted();
+
+    sections.forEach(function(section, idx) {
+      var rows = Array.prototype.slice.call(section.querySelectorAll('table.week-table tbody tr'));
+      rows.forEach(function(row) {
+        var cells = row.querySelectorAll('td');
+        if (!cells || cells.length < 3) { return; }
+
+        var name = normalizePlayerName(cells[2].textContent || '');
+        if (!name) { return; }
+
+        if (!map[name]) {
+          map[name] = new Array(sections.length);
+        }
+
+        map[name][idx] = toIntOrNull((cells[0].textContent || '').trim());
+      });
+    });
+
+    return map;
+  }
+
+  function lastKnownPosition(positions) {
+    if (!positions || !positions.length) { return null; }
+    for (var i = positions.length - 1; i >= 0; i--) {
+      var n = toIntOrNull(positions[i]);
+      if (n !== null) { return n; }
+    }
+    return null;
+  }
   function buildWeeklyWinsMap() {
     var wins = {};
     var sections = weekSectionsSorted();
@@ -1646,8 +1795,11 @@ body { margin: 10px; }
         wins: 0,
         currentPos: null,
         previousPos: null,
+        weeklyCurrentPos: null,
         delta: null,
-        positionsText: '-'
+        positionsText: '-',
+        globalPositionsText: '-',
+        weeklyPositionsText: '-'
       };
 
       if (!isFinite(map[name].total) || isNaN(map[name].total)) { map[name].total = 0; }
@@ -1667,8 +1819,11 @@ body { margin: 10px; }
           wins: 0,
           currentPos: null,
           previousPos: null,
+          weeklyCurrentPos: null,
           delta: null,
-          positionsText: '-'
+          positionsText: '-',
+          globalPositionsText: '-',
+          weeklyPositionsText: '-'
         };
       }
       map[name].wins = winsMap[name];
@@ -1687,8 +1842,11 @@ body { margin: 10px; }
           wins: 0,
           currentPos: null,
           previousPos: null,
+          weeklyCurrentPos: null,
           delta: null,
-          positionsText: '-'
+          positionsText: '-',
+          globalPositionsText: '-',
+          weeklyPositionsText: '-'
         };
       }
 
@@ -1697,6 +1855,35 @@ body { margin: 10px; }
       map[name].previousPos = info.previous;
       map[name].delta = info.delta;
       map[name].positionsText = (info.positions || []).map(function(v) {
+        var n = toIntOrNull(v);
+        return (n === null) ? '-' : String(n);
+      }).join(' / ');
+      map[name].globalPositionsText = map[name].positionsText;
+    });
+
+    var weeklyPosMap = buildWeeklyPositionsMap();
+    Object.keys(weeklyPosMap).forEach(function(name) {
+      if (!map[name]) {
+        map[name] = {
+          name: name,
+          rank: null,
+          total: 0,
+          kills: 0,
+          replacements: 0,
+          wins: 0,
+          currentPos: null,
+          previousPos: null,
+          weeklyCurrentPos: null,
+          delta: null,
+          positionsText: '-',
+          globalPositionsText: '-',
+          weeklyPositionsText: '-'
+        };
+      }
+
+      var series = weeklyPosMap[name] || [];
+      map[name].weeklyCurrentPos = lastKnownPosition(series);
+      map[name].weeklyPositionsText = series.map(function(v) {
         var n = toIntOrNull(v);
         return (n === null) ? '-' : String(n);
       }).join(' / ');
@@ -1964,13 +2151,17 @@ body { margin: 10px; }
     table.appendChild(thead);
 
     var tbody = document.createElement('tbody');
-    addCompareRow(tbody, 'Position actuelle', aData.currentPos === null ? '-' : String(aData.currentPos), bData.currentPos === null ? '-' : String(bData.currentPos));
+    var rangeLabel = 'S1->S' + String((progression.weeks || []).length || '?');
+
+    addCompareRow(tbody, 'Position globale actuelle', aData.currentPos === null ? '-' : String(aData.currentPos), bData.currentPos === null ? '-' : String(bData.currentPos));
+    addCompareRow(tbody, 'Position hebdo actuelle', aData.weeklyCurrentPos === null ? '-' : String(aData.weeklyCurrentPos), bData.weeklyCurrentPos === null ? '-' : String(bData.weeklyCurrentPos));
     addCompareRow(tbody, 'Evolution derniere semaine', deltaLabel(aData.delta), deltaLabel(bData.delta));
     addCompareRow(tbody, 'TOTAL points', String(aData.total || 0), String(bData.total || 0), 'num');
     addCompareRow(tbody, 'TOTAL kills', String(aData.kills || 0), String(bData.kills || 0), 'num');
     addCompareRow(tbody, 'Remplacements', String(aData.replacements || 0), String(bData.replacements || 0), 'num');
     addCompareRow(tbody, 'Semaines gagnees', String(aData.wins || 0), String(bData.wins || 0), 'num');
-    addCompareRow(tbody, 'Positions (S1->S7)', aData.positionsText || '-', bData.positionsText || '-');
+    addCompareRow(tbody, 'Position globale (' + rangeLabel + ')', aData.globalPositionsText || aData.positionsText || '-', bData.globalPositionsText || bData.positionsText || '-');
+    addCompareRow(tbody, 'Position hebdo (' + rangeLabel + ')', aData.weeklyPositionsText || '-', bData.weeklyPositionsText || '-');
 
     table.appendChild(tbody);
     host.appendChild(table);
@@ -2160,6 +2351,11 @@ body { margin: 10px; }
 </script>
 </body>
 </html>
+
+
+
+
+
 
 
 
