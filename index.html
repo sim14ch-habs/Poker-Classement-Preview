@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Poker-Stanley - Classement Semaine 7</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2710%27 fill=%27%230f172a%27/%3E%3Ctext x=%2732%27 y=%2724%27 font-size=%2720%27 text-anchor=%27middle%27 fill=%27white%27 font-family=%27Segoe UI,Arial,sans-serif%27%3EA%3C/text%3E%3Ctext x=%2732%27 y=%2750%27 font-size=%2728%27 text-anchor=%27middle%27 fill=%27white%27%3E%E2%99%A0%3C/text%3E%3C/svg%3E" />
 <style>
 body { font-family: Segoe UI, Arial, sans-serif; margin: 20px; background: #f4f6fb; color: #1f2937; }
 h1 { margin: 0 0 4px 0; }
@@ -16,6 +17,12 @@ h1 { margin: 0 0 4px 0; }
 .pill.best-kills { background: #fde047; }
 .pill.podium { background: #fef3c7; }
 .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.preview-banner { margin-bottom: 10px; padding: 8px 12px; border-radius: 10px; background: #0f172a; color: #f8fafc; font-size: 13px; font-weight: 600; }
+.player-search { margin: 0 0 12px 0; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.player-search label { color: #475569; font-size: 13px; font-weight: 600; }
+.player-search input { min-width: 220px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
+.player-search button { border: 1px solid #cbd5e1; background: #fff; color: #334155; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+.player-search button:hover { background: #f8fafc; }
 .tab-btn { border: 1px solid #cbd5e1; background: #fff; color: #334155; border-radius: 8px; padding: 7px 11px; cursor: pointer; }
 .tab-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
 .tab-panel { display: none; }
@@ -92,9 +99,11 @@ body { margin: 10px; }
 .summary-table th:nth-child(1), .summary-table td:nth-child(1) { width: 74px; }
 .summary-table th:nth-child(2), .summary-table td:nth-child(2) { width: 140px; }
 .summary-table th:nth-child(3), .summary-table td:nth-child(3) { width: 140px; }
+.player-search input { width: 100%; min-width: 0; }
 }</style>
 </head>
 <body>
+<div class="preview-banner">Mode PREVIEW - modifications en test (non publiees sur le site final).</div>
 <h1>Poker-Stanley - Classements Semaine 7</h1>
 <div class="meta">Mise a jour: 2026-03-06 19:29:00</div>
 <div class="legend">
@@ -118,7 +127,11 @@ body { margin: 10px; }
 <button class="tab-btn" data-tab="progression">Progression</button>
 <button class="tab-btn" data-tab="weekly-summary">Resume semaine</button>
 </div>
-<div class="tab-panels">
+<div class="player-search">
+<label for="player-search-input">Recherche joueur:</label>
+<input id="player-search-input" type="search" placeholder="Ex: Pierre" autocomplete="off" />
+<button id="player-search-clear" type="button">Effacer</button>
+</div><div class="tab-panels">
 <section id="week-1" class="tab-panel">
 <h2>Semaine 1 <span class="week-date">19-janv-26</span></h2>
 <table class="week-table">
@@ -834,8 +847,43 @@ body { margin: 10px; }
   var buttons = Array.prototype.slice.call(document.querySelectorAll('.tab-btn'));
   var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
   var progression = {"weeks":[{"label":"Semaine 1","shortLabel":"S1","date":"19-janv-26"},{"label":"Semaine 2","shortLabel":"S2","date":"26-janv-26"},{"label":"Semaine 3","shortLabel":"S3","date":"02-févr-26"},{"label":"Semaine 4","shortLabel":"S4","date":"09-févr-26"},{"label":"Semaine 5","shortLabel":"S5","date":"16-févr-26"},{"label":"Semaine 6","shortLabel":"S6","date":"23-févr-26"},{"label":"Semaine 7","shortLabel":"S7","date":"02-mars-26"}],"players":[{"name":"Gilles Lemieux","positions":[3,3,1,1,3,3,1]},{"name":"Stéphane Caron","positions":[1,1,2,2,2,1,2]},{"name":"Pierre Talbot","positions":[2,5,4,3,1,2,3]},{"name":"Pierre-Marc Pelletier","positions":[8,2,3,4,5,6,4]},{"name":"Mario Caron","positions":[5,7,5,5,4,4,5]},{"name":"Mathieu Létourneau","positions":[17,20,16,8,6,8,6]},{"name":"Sylvain Rousseau","positions":[10,4,6,6,8,5,7]},{"name":"Tommy Caron","positions":[18,14,7,11,15,7,8]},{"name":"Julie Paquet","positions":[15,11,12,16,9,9,9]},{"name":"Anik Chaloux","positions":[13,19,13,14,10,13,10]},{"name":"Patrick Lefebvre","positions":[11,6,10,9,14,11,11]},{"name":"Serge Blackburn","positions":[7,12,9,10,7,10,12]},{"name":"Annick Proulx","positions":[6,9,11,7,11,14,13]},{"name":"Simon Munger","positions":[4,10,14,18,19,19,14]},{"name":"Nancy Cloutier","positions":[14,8,8,13,13,12,15]},{"name":"Marjorie Stewart","positions":[21,15,17,12,12,17,16]},{"name":"Pierre Cuerrier","positions":[9,13,15,15,16,20,17]},{"name":"Martin Gagnon","positions":[22,18,21,17,18,16,18]},{"name":"Daniel Lévesque","positions":[16,21,20,21,17,15,19]},{"name":"Benoit Côté","positions":[20,22,22,22,20,18,20]},{"name":"Mark-Antoine Trudel","positions":[12,16,19,19,21,22,21]},{"name":"Evans Marcoux","positions":[19,17,18,20,22,21,22]}],"maxPosition":22};
+  var ACTIVE_TAB_KEY = 'poker_preview_active_tab';
+  var PLAYER_FILTER_KEY = 'poker_preview_player_filter';
 
-  function activate(id) {
+  function isValidTabId(id) {
+    if (!id) { return false; }
+    return panels.some(function(p) { return p.id === id; });
+  }
+
+  function tabIdFromHash() {
+    var raw = ((window.location.hash || '') + '').replace(/^#/, '').trim();
+    if (!raw) { return ''; }
+    var decoded = raw;
+    try { decoded = decodeURIComponent(raw); } catch (e) {}
+    return isValidTabId(decoded) ? decoded : '';
+  }
+
+  function saveActiveTab(id) {
+    try { localStorage.setItem(ACTIVE_TAB_KEY, id); } catch (e) {}
+  }
+
+  function updateHashForTab(id) {
+    if (!id) { return; }
+    var nextHash = '#' + encodeURIComponent(id);
+    if (window.location.hash === nextHash) { return; }
+
+    if (window.history && window.history.replaceState) {
+      window.history.replaceState(null, '', nextHash);
+    }
+    else {
+      window.location.hash = id;
+    }
+  }
+
+  function activate(id, options) {
+    options = options || {};
+    if (!isValidTabId(id)) { return; }
+
     buttons.forEach(function(b) { b.classList.toggle('active', b.getAttribute('data-tab') === id); });
     panels.forEach(function(p) { p.classList.toggle('active', p.id === id); });
     if (id === 'total-compact') {
@@ -847,10 +895,26 @@ body { margin: 10px; }
     if (id === 'weekly-summary') {
       renderWeeklySummary();
     }
+
+    if (!options.skipHash) {
+      updateHashForTab(id);
+    }
+    if (!options.skipStorage) {
+      saveActiveTab(id);
+    }
+
+    applyPlayerFilter(false);
   }
 
   buttons.forEach(function(btn) {
     btn.addEventListener('click', function() { activate(btn.getAttribute('data-tab')); });
+  });
+
+  window.addEventListener('hashchange', function() {
+    var hashTab = tabIdFromHash();
+    if (hashTab) {
+      activate(hashTab, { skipHash: true, skipStorage: false });
+    }
   });
 
   function svgEl(tag, attrs, textContent) {
@@ -878,6 +942,67 @@ body { margin: 10px; }
     if (!txt || txt === '+' || txt === '-') { return NaN; }
     var n = parseFloat(txt);
     return isNaN(n) ? NaN : n;
+  }
+
+  function foldText(value) {
+    return normalizePlayerName(value)
+      .toLocaleLowerCase('fr')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function findPlayerCell(row) {
+    if (!row) { return null; }
+    return row.querySelector('td.player, td.total-player');
+  }
+
+  function applyPlayerFilter(save) {
+    var input = document.getElementById('player-search-input');
+    if (!input) { return; }
+
+    var query = foldText(input.value || '');
+    var tables = Array.prototype.slice.call(document.querySelectorAll('table.week-table, table.total-table'));
+    tables.forEach(function(table) {
+      var rows = Array.prototype.slice.call(table.querySelectorAll('tbody tr'));
+      rows.forEach(function(row) {
+        var cell = findPlayerCell(row);
+        if (!cell) {
+          row.style.display = '';
+          return;
+        }
+
+        var playerName = foldText(cell.textContent || '');
+        var show = !query || playerName.indexOf(query) !== -1;
+        row.style.display = show ? '' : 'none';
+      });
+    });
+
+    if (save !== false) {
+      try { localStorage.setItem(PLAYER_FILTER_KEY, input.value || ''); } catch (e) {}
+    }
+  }
+
+  function setupPlayerSearch() {
+    var input = document.getElementById('player-search-input');
+    var clearBtn = document.getElementById('player-search-clear');
+    if (!input) { return; }
+
+    try {
+      var saved = localStorage.getItem(PLAYER_FILTER_KEY) || '';
+      if (saved) { input.value = saved; }
+    }
+    catch (e) {}
+
+    input.addEventListener('input', function() { applyPlayerFilter(true); });
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function() {
+        input.value = '';
+        applyPlayerFilter(true);
+        input.focus();
+      });
+    }
+
+    applyPlayerFilter(false);
   }
 
   function ensurePlayerOptions() {
@@ -1482,15 +1607,40 @@ body { margin: 10px; }
 
   applyReplacementColorsAll();
   applyWeeklyPodiumStyles();
+  setupPlayerSearch();
 
-  var activeBtn = buttons.find(function(b) { return b.classList.contains('active'); });
-  if (activeBtn) {
-    activate(activeBtn.getAttribute('data-tab'));
+  var initialFromHash = tabIdFromHash();
+  var initialTab = initialFromHash;
+
+  if (!initialTab) {
+    try {
+      var savedTab = localStorage.getItem(ACTIVE_TAB_KEY) || '';
+      if (isValidTabId(savedTab)) { initialTab = savedTab; }
+    }
+    catch (e) {}
+  }
+
+  if (!initialTab) {
+    var activeBtn = buttons.find(function(b) { return b.classList.contains('active'); });
+    if (activeBtn) { initialTab = activeBtn.getAttribute('data-tab'); }
+  }
+
+  if (!initialTab && panels.length > 0) {
+    initialTab = panels[0].id;
+  }
+
+  if (initialTab) {
+    activate(initialTab, { skipHash: !!initialFromHash, skipStorage: false });
   }
 })();
 </script>
 </body>
 </html>
+
+
+
+
+
 
 
 
