@@ -94,12 +94,14 @@ h1 { margin: 0 0 4px 0; }
 .progression-toolbar { margin: 8px 0 10px 0; display: flex; gap: 8px; align-items: center; }
 .progression-toolbar select { padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 6px; }
 #progress-chart { width: 100%; height: auto; background: #fff; border: 1px solid #d1d5db; border-radius: 8px; }
-.weekly-summary-wrap { width: min(940px, 100%); }
+.weekly-summary-wrap { width: min(940px, 100%); overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .weekly-summary-wrap .summary-note { margin: 0 0 10px 0; color: #64748b; font-size: 13px; }
 .summary-table { width: min(940px, 100%); table-layout: fixed; }
 .summary-table th:nth-child(1), .summary-table td:nth-child(1) { width: 120px; }
 .summary-table th:nth-child(2), .summary-table td:nth-child(2) { width: 220px; }
 .summary-table th:nth-child(3), .summary-table td:nth-child(3) { width: 220px; }
+.summary-table th:nth-child(4), .summary-table td:nth-child(4) { width: 260px; }
+.summary-table td { white-space: normal; overflow-wrap: anywhere; }
 @media (max-width: 700px) {
 body { margin: 10px; }
 .week-table th, .week-table td { padding: 6px 4px; font-size: 12px; }
@@ -112,10 +114,12 @@ body { margin: 10px; }
 .total-compact-table th:nth-child(4), .total-compact-table td:nth-child(4) { width: 46px; }
 .total-compact-table th:nth-child(5), .total-compact-table td:nth-child(5) { width: 46px; }
 .total-compact-table th:nth-child(6), .total-compact-table td:nth-child(6) { width: 54px; }
+.summary-table { min-width: 560px; }
 .summary-table th, .summary-table td { padding: 6px 5px; font-size: 12px; }
-.summary-table th:nth-child(1), .summary-table td:nth-child(1) { width: 74px; }
-.summary-table th:nth-child(2), .summary-table td:nth-child(2) { width: 140px; }
-.summary-table th:nth-child(3), .summary-table td:nth-child(3) { width: 140px; }
+.summary-table th:nth-child(1), .summary-table td:nth-child(1) { width: 70px; }
+.summary-table th:nth-child(2), .summary-table td:nth-child(2) { width: 125px; }
+.summary-table th:nth-child(3), .summary-table td:nth-child(3) { width: 125px; }
+.summary-table th:nth-child(4), .summary-table td:nth-child(4) { width: 180px; }
 .player-search input { width: 100%; min-width: 0; }
 .compare-controls select { width: 100%; min-width: 0; }
 }</style>
@@ -2156,6 +2160,9 @@ body { margin: 10px; }
 </script>
 </body>
 </html>
+
+
+
 
 
 
