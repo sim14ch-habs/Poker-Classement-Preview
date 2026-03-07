@@ -14,6 +14,7 @@ h1 { margin: 0 0 4px 0; }
 .pill.absent { background: #ffd6d6; }
 .pill.qualif { background: #dcfce7; }
 .pill.best-kills { background: #fde047; }
+.pill.podium { background: #fef3c7; }
 .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
 .tab-btn { border: 1px solid #cbd5e1; background: #fff; color: #334155; border-radius: 8px; padding: 7px 11px; cursor: pointer; }
 .tab-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
@@ -25,10 +26,17 @@ h1 { margin: 0 0 4px 0; }
 .week-table { width: min(760px, 100%); table-layout: fixed; background: #fff; border-collapse: collapse; }
 .week-table th, .week-table td { border: 1px solid #d1d5db; padding: 7px 9px; font-size: 13px; }
 .week-table th { background: #e2e8f0; text-align: left; }
+.week-table thead th, .total-table thead th { position: sticky; top: 0; z-index: 4; box-shadow: inset 0 -1px 0 #cbd5e1; }
 .week-table th:nth-child(1), .week-table td:nth-child(1) { width: 90px; text-align: right; }
 .week-table th:nth-child(2), .week-table td:nth-child(2) { width: 90px; text-align: right; }
 .week-table th:nth-child(4), .week-table td:nth-child(4) { width: 80px; text-align: right; }
 .week-table td.player { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.week-table tbody tr.podium-1 td { background: #fef3c7; }
+.week-table tbody tr.podium-2 td { background: #e5e7eb; }
+.week-table tbody tr.podium-3 td { background: #fed7aa; }
+.week-table tbody tr.podium-1 td.player,
+.week-table tbody tr.podium-2 td.player,
+.week-table tbody tr.podium-3 td.player { font-weight: 700; }
 .total-table { width: 100%; background: #fff; border-collapse: collapse; }
 .total-table th, .total-table td { border: 1px solid #d1d5db; padding: 7px 9px; font-size: 13px; }
 .total-table th { background: #e2e8f0; text-align: left; }
@@ -41,24 +49,49 @@ h1 { margin: 0 0 4px 0; }
 .total-table td.repl-1 { background: #fff2b2 !important; font-weight: 600; }
 .total-table td.repl-2 { background: #fcd5b4 !important; font-weight: 700; }
 .total-table td.repl-3 { background: #fca5a5 !important; color: #7f1d1d; font-weight: 700; }
-.total-compact-table { width: min(760px, 100%); table-layout: fixed; }
-.total-compact-table th:nth-child(1), .total-compact-table td:nth-child(1) { width: 90px; text-align: right; }
-.total-compact-table th:nth-child(3), .total-compact-table td:nth-child(3) { width: 90px; text-align: right; }
-.total-compact-table th:nth-child(4), .total-compact-table td:nth-child(4) { width: 80px; text-align: right; }
-.total-compact-table th:nth-child(5), .total-compact-table td:nth-child(5) { width: 80px; text-align: right; }
+.total-compact-table { width: min(680px, 100%); table-layout: fixed; }
+.total-compact-table th:nth-child(1), .total-compact-table td:nth-child(1) { width: 70px; text-align: right; }
+.total-compact-table th:nth-child(3), .total-compact-table td:nth-child(3) { width: 80px; text-align: right; }
+.total-compact-table th:nth-child(4), .total-compact-table td:nth-child(4) { width: 70px; text-align: right; }
+.total-compact-table th:nth-child(5), .total-compact-table td:nth-child(5) { width: 70px; text-align: right; }
+.total-compact-table th:nth-child(6), .total-compact-table td:nth-child(6) { width: 76px; text-align: right; }
+.total-compact-table th.sortable { cursor: pointer; user-select: none; }
+.total-compact-table th.sortable .sort-arrow { margin-left: 5px; color: #94a3b8; font-size: 11px; }
+.total-compact-table th.sortable.sorted-asc .sort-arrow,
+.total-compact-table th.sortable.sorted-desc .sort-arrow { color: #0f172a; }
 .num { text-align: right; }
 .player.replacement { background: #fff2b2; }
 .player.absent { background: #ffd6d6; }
+.evo-up { color: #166534; font-weight: 700; }
+.evo-down { color: #b91c1c; font-weight: 700; }
+.evo-flat { color: #475569; font-weight: 700; }
+.evo-na { color: #94a3b8; }
 .progression-wrap { width: min(980px, 100%); }
 .progression-toolbar { margin: 8px 0 10px 0; display: flex; gap: 8px; align-items: center; }
 .progression-toolbar select { padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 6px; }
 #progress-chart { width: 100%; height: auto; background: #fff; border: 1px solid #d1d5db; border-radius: 8px; }
+.weekly-summary-wrap { width: min(940px, 100%); }
+.weekly-summary-wrap .summary-note { margin: 0 0 10px 0; color: #64748b; font-size: 13px; }
+.summary-table { width: min(940px, 100%); table-layout: fixed; }
+.summary-table th:nth-child(1), .summary-table td:nth-child(1) { width: 120px; }
+.summary-table th:nth-child(2), .summary-table td:nth-child(2) { width: 220px; }
+.summary-table th:nth-child(3), .summary-table td:nth-child(3) { width: 220px; }
 @media (max-width: 700px) {
 body { margin: 10px; }
 .week-table th, .week-table td { padding: 6px 4px; font-size: 12px; }
 .week-table th:nth-child(1), .week-table td:nth-child(1) { width: 44px; }
 .week-table th:nth-child(2), .week-table td:nth-child(2) { width: 52px; }
 .week-table th:nth-child(4), .week-table td:nth-child(4) { width: 44px; }
+.total-compact-table th, .total-compact-table td { padding: 6px 4px; font-size: 12px; }
+.total-compact-table th:nth-child(1), .total-compact-table td:nth-child(1) { width: 44px; }
+.total-compact-table th:nth-child(3), .total-compact-table td:nth-child(3) { width: 58px; }
+.total-compact-table th:nth-child(4), .total-compact-table td:nth-child(4) { width: 46px; }
+.total-compact-table th:nth-child(5), .total-compact-table td:nth-child(5) { width: 46px; }
+.total-compact-table th:nth-child(6), .total-compact-table td:nth-child(6) { width: 54px; }
+.summary-table th, .summary-table td { padding: 6px 5px; font-size: 12px; }
+.summary-table th:nth-child(1), .summary-table td:nth-child(1) { width: 74px; }
+.summary-table th:nth-child(2), .summary-table td:nth-child(2) { width: 140px; }
+.summary-table th:nth-child(3), .summary-table td:nth-child(3) { width: 140px; }
 }</style>
 </head>
 <body>
@@ -69,6 +102,7 @@ body { margin: 10px; }
 <span class="pill absent">Nom rouge = absent non-remplace</span>
 <span class="pill qualif">Top 10 qualifie</span>
 <span class="pill best-kills">Meilleur total kills</span>
+<span class="pill podium">Podium hebdo colore</span>
 </div>
 <div class="tabs">
 <button class="tab-btn" data-tab="week-1">Semaine 1</button>
@@ -82,6 +116,7 @@ body { margin: 10px; }
 <button class="tab-btn" data-tab="total-compact">Classement global compact</button>
 <button class="tab-btn" data-tab="total-complete">Classement global complet</button>
 <button class="tab-btn" data-tab="progression">Progression</button>
+<button class="tab-btn" data-tab="weekly-summary">Resume semaine</button>
 </div>
 <div class="tab-panels">
 <section id="week-1" class="tab-panel">
@@ -789,6 +824,10 @@ body { margin: 10px; }
 <svg id="progress-chart" viewBox="0 0 980 520" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Progression des positions"></svg>
 </div>
 </section>
+<section id="weekly-summary" class="tab-panel">
+<h2>Resume de la semaine</h2>
+<div id="weekly-summary-host" class="weekly-summary-wrap"></div>
+</section>
 </div>
 <script>
 (function() {
@@ -805,17 +844,40 @@ body { margin: 10px; }
     if (id === 'progression') {
       renderProgression();
     }
+    if (id === 'weekly-summary') {
+      renderWeeklySummary();
+    }
   }
 
   buttons.forEach(function(btn) {
     btn.addEventListener('click', function() { activate(btn.getAttribute('data-tab')); });
   });
 
-  function svgEl(tag, attrs, text) {
+  function svgEl(tag, attrs, textContent) {
     var el = document.createElementNS('http://www.w3.org/2000/svg', tag);
     Object.keys(attrs || {}).forEach(function(k) { el.setAttribute(k, attrs[k]); });
-    if (text !== undefined && text !== null) { el.textContent = text; }
+    if (textContent !== undefined && textContent !== null) { el.textContent = textContent; }
     return el;
+  }
+
+  function normalizePlayerName(value) {
+    return ((value || '') + '').trim();
+  }
+
+  function toIntOrNull(value) {
+    if (value === null || value === undefined || value === '') { return null; }
+    var n = parseInt(value, 10);
+    if (!isFinite(n) || isNaN(n)) { return null; }
+    return n;
+  }
+
+  function parseNumericText(value) {
+    var txt = ((value || '') + '').trim();
+    if (!txt) { return NaN; }
+    txt = txt.replace(/\s+/g, '').replace(',', '.').replace(/[^0-9+\-\.]/g, '');
+    if (!txt || txt === '+' || txt === '-') { return NaN; }
+    var n = parseFloat(txt);
+    return isNaN(n) ? NaN : n;
   }
 
   function ensurePlayerOptions() {
@@ -838,7 +900,6 @@ body { margin: 10px; }
     while (svg.firstChild) { svg.removeChild(svg.firstChild); }
     svg.appendChild(svgEl('text', { x: 490, y: 260, 'text-anchor': 'middle', 'font-size': '15', fill: '#64748b' }, msg));
   }
-
 
   function replacementColumnIndex(table) {
     if (!table) { return -1; }
@@ -877,6 +938,141 @@ body { margin: 10px; }
     var tables = Array.prototype.slice.call(document.querySelectorAll('table.total-table'));
     tables.forEach(function(t) { applyReplacementColorsToTable(t); });
   }
+
+  function applyWeeklyPodiumStyles() {
+    var weekTables = Array.prototype.slice.call(document.querySelectorAll('table.week-table'));
+    weekTables.forEach(function(table) {
+      var rows = Array.prototype.slice.call(table.querySelectorAll('tbody tr'));
+      rows.forEach(function(row) {
+        row.classList.remove('podium-1', 'podium-2', 'podium-3');
+        var cells = row.querySelectorAll('td');
+        if (!cells || cells.length === 0) { return; }
+        var pos = parseInt(((cells[0].textContent || '') + '').trim(), 10);
+        if (pos >= 1 && pos <= 3) {
+          row.classList.add('podium-' + pos);
+        }
+      });
+    });
+  }
+
+  function buildLastMoveMap() {
+    var map = {};
+    (progression.players || []).forEach(function(pl) {
+      var positions = pl.positions || [];
+      for (var i = positions.length - 1; i >= 1; i--) {
+        var current = toIntOrNull(positions[i]);
+        var previous = toIntOrNull(positions[i - 1]);
+        if (current === null || previous === null) { continue; }
+
+        map[pl.name] = {
+          delta: previous - current,
+          previous: previous,
+          current: current,
+          weekIndex: i
+        };
+        break;
+      }
+    });
+    return map;
+  }
+
+  function setEvolutionCell(cell, move) {
+    cell.classList.remove('evo-up', 'evo-down', 'evo-flat', 'evo-na');
+    if (!move) {
+      cell.textContent = '-';
+      cell.classList.add('evo-na');
+      cell.removeAttribute('title');
+      return;
+    }
+
+    if (move.delta > 0) {
+      cell.textContent = '+' + move.delta;
+      cell.classList.add('evo-up');
+    }
+    else if (move.delta < 0) {
+      cell.textContent = String(move.delta);
+      cell.classList.add('evo-down');
+    }
+    else {
+      cell.textContent = '0';
+      cell.classList.add('evo-flat');
+    }
+
+    cell.title = 'Evolution: ' + move.previous + ' -> ' + move.current;
+  }
+
+  function sortCompactTable(table, colIndex, direction) {
+    if (!table) { return; }
+    var tbody = table.querySelector('tbody');
+    if (!tbody) { return; }
+
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+    rows.sort(function(a, b) {
+      var aCells = a.querySelectorAll('td');
+      var bCells = b.querySelectorAll('td');
+
+      var aTxt = (aCells[colIndex] ? aCells[colIndex].textContent : '') || '';
+      var bTxt = (bCells[colIndex] ? bCells[colIndex].textContent : '') || '';
+      var aNum = parseNumericText(aTxt);
+      var bNum = parseNumericText(bTxt);
+
+      var aNa = !isFinite(aNum) || isNaN(aNum);
+      var bNa = !isFinite(bNum) || isNaN(bNum);
+      if (aNa && bNa) {
+        var aName = normalizePlayerName(aCells[1] ? aCells[1].textContent : '');
+        var bName = normalizePlayerName(bCells[1] ? bCells[1].textContent : '');
+        return aName.localeCompare(bName, 'fr');
+      }
+      if (aNa) { return 1; }
+      if (bNa) { return -1; }
+
+      if (aNum === bNum) {
+        var aa = normalizePlayerName(aCells[1] ? aCells[1].textContent : '');
+        var bb = normalizePlayerName(bCells[1] ? bCells[1].textContent : '');
+        return aa.localeCompare(bb, 'fr');
+      }
+
+      return direction === 'asc' ? (aNum - bNum) : (bNum - aNum);
+    });
+
+    rows.forEach(function(r) { tbody.appendChild(r); });
+  }
+
+  function makeCompactTableSortable(table) {
+    if (!table || table.getAttribute('data-sort-ready') === '1') { return; }
+
+    var headers = Array.prototype.slice.call(table.querySelectorAll('thead th.sortable'));
+    headers.forEach(function(th) {
+      th.addEventListener('click', function() {
+        var colIndex = parseInt(th.getAttribute('data-sort-index') || '', 10);
+        if (!isFinite(colIndex) || isNaN(colIndex)) { return; }
+
+        var currentIdx = parseInt(table.getAttribute('data-sort-index') || '', 10);
+        var currentDir = table.getAttribute('data-sort-dir') || 'desc';
+        var nextDir = 'desc';
+        if (currentIdx === colIndex && currentDir === 'desc') {
+          nextDir = 'asc';
+        }
+
+        sortCompactTable(table, colIndex, nextDir);
+        table.setAttribute('data-sort-index', String(colIndex));
+        table.setAttribute('data-sort-dir', nextDir);
+
+        headers.forEach(function(h) {
+          h.classList.remove('sorted-asc', 'sorted-desc');
+          var arrow = h.querySelector('.sort-arrow');
+          if (arrow) { arrow.textContent = '↕'; }
+        });
+
+        th.classList.add(nextDir === 'asc' ? 'sorted-asc' : 'sorted-desc');
+        var activeArrow = th.querySelector('.sort-arrow');
+        if (activeArrow) { activeArrow.textContent = nextDir === 'asc' ? '↑' : '↓'; }
+      });
+    });
+
+    table.setAttribute('data-sort-ready', '1');
+  }
+
   function renderTotalCompact() {
     var host = document.getElementById('total-compact-host');
     if (!host) { return; }
@@ -906,16 +1102,43 @@ body { margin: 10px; }
     if (killsIdx < 0 && lastIdx >= 1) { killsIdx = lastIdx - 1; }
     if (totalIdx < 0 && lastIdx >= 2) { totalIdx = lastIdx - 2; }
 
+    var moveMap = buildLastMoveMap();
+
     var table = document.createElement('table');
     table.className = 'total-table total-compact-table';
 
+    var columns = [
+      { label: 'Position', sortable: false },
+      { label: 'Joueurs', sortable: false },
+      { label: 'TOTAL', sortable: true, sortIndex: 2 },
+      { label: 'Kills', sortable: true, sortIndex: 3 },
+      { label: 'Rempl.', sortable: true, sortIndex: 4 },
+      { label: 'Evol.', sortable: true, sortIndex: 5 }
+    ];
+
     var thead = document.createElement('thead');
     var trh = document.createElement('tr');
-    ['Position', 'Joueurs', 'TOTAL', 'Kills', 'Rempl.'].forEach(function(label) {
+    columns.forEach(function(col) {
       var th = document.createElement('th');
-      th.textContent = label;
+      if (col.sortable) {
+        th.className = 'sortable';
+        th.setAttribute('data-sort-index', String(col.sortIndex));
+      }
+
+      var label = document.createElement('span');
+      label.textContent = col.label;
+      th.appendChild(label);
+
+      if (col.sortable) {
+        var arrow = document.createElement('span');
+        arrow.className = 'sort-arrow';
+        arrow.textContent = '↕';
+        th.appendChild(arrow);
+      }
+
       trh.appendChild(th);
     });
+
     thead.appendChild(trh);
     table.appendChild(thead);
 
@@ -930,7 +1153,8 @@ body { margin: 10px; }
         if (index >= 0 && index < src.length) {
           td.innerHTML = src[index].innerHTML;
           td.className = src[index].className;
-        } else {
+        }
+        else {
           td.textContent = '';
           td.className = fallbackClass || 'num';
         }
@@ -943,6 +1167,13 @@ body { margin: 10px; }
       tr.appendChild(cloneCell(totalIdx, 'num total-score'));
       tr.appendChild(cloneCell(killsIdx, 'num'));
       tr.appendChild(cloneCell(replIdx, 'num'));
+
+      var playerName = normalizePlayerName(src[1] ? src[1].textContent : '');
+      var evoCell = document.createElement('td');
+      evoCell.className = 'num';
+      setEvolutionCell(evoCell, moveMap[playerName]);
+      tr.appendChild(evoCell);
+
       tbody.appendChild(tr);
     });
 
@@ -950,8 +1181,203 @@ body { margin: 10px; }
     host.innerHTML = '';
     host.appendChild(table);
     host.setAttribute('data-ready', '1');
+
     applyReplacementColorsToTable(table);
+    makeCompactTableSortable(table);
   }
+
+  function weekSectionsSorted() {
+    var sections = Array.prototype.slice.call(document.querySelectorAll('section[id^="week-"]'));
+    sections.sort(function(a, b) {
+      var an = parseInt((a.id || '').replace('week-', ''), 10);
+      var bn = parseInt((b.id || '').replace('week-', ''), 10);
+      if (!isFinite(an) || isNaN(an)) { an = 0; }
+      if (!isFinite(bn) || isNaN(bn)) { bn = 0; }
+      return an - bn;
+    });
+    return sections;
+  }
+
+  function extractWeekTitle(section, index) {
+    var label = 'Semaine ' + (index + 1);
+    var date = '';
+
+    var h2 = section.querySelector('h2');
+    if (h2) {
+      var clone = h2.cloneNode(true);
+      var d = clone.querySelector('.week-date');
+      if (d && d.parentNode) { d.parentNode.removeChild(d); }
+      var t = (clone.textContent || '').trim();
+      if (t) { label = t; }
+    }
+
+    var dateEl = section.querySelector('.week-date');
+    if (dateEl) {
+      date = ((dateEl.textContent || '') + '').trim();
+    }
+
+    return { label: label, date: date };
+  }
+
+  function extractWeekStats(section) {
+    var rows = Array.prototype.slice.call(section.querySelectorAll('table.week-table tbody tr'));
+    var winner = '-';
+    var bestKills = null;
+    var bestKillers = [];
+
+    rows.forEach(function(row) {
+      var cells = row.querySelectorAll('td');
+      if (!cells || cells.length < 4) { return; }
+
+      var pos = parseInt(((cells[0].textContent || '') + '').trim(), 10);
+      var name = normalizePlayerName(cells[2].textContent || '');
+      var kills = parseNumericText(cells[3].textContent || '');
+
+      if (winner === '-' && pos === 1 && name) {
+        winner = name;
+      }
+
+      if (isFinite(kills) && !isNaN(kills)) {
+        if (bestKills === null || kills > bestKills) {
+          bestKills = kills;
+          bestKillers = name ? [name] : [];
+        }
+        else if (kills === bestKills && name) {
+          bestKillers.push(name);
+        }
+      }
+    });
+
+    if (bestKillers.length > 1) {
+      bestKillers.sort(function(a, b) { return a.localeCompare(b, 'fr'); });
+    }
+
+    return {
+      winner: winner,
+      bestKills: bestKills,
+      bestKillers: bestKillers
+    };
+  }
+
+  function weekProgressionLeaders(weekIndex) {
+    if (weekIndex <= 0) { return null; }
+
+    var bestDelta = null;
+    var names = [];
+
+    (progression.players || []).forEach(function(pl) {
+      var prev = toIntOrNull(pl.positions ? pl.positions[weekIndex - 1] : null);
+      var curr = toIntOrNull(pl.positions ? pl.positions[weekIndex] : null);
+      if (prev === null || curr === null) { return; }
+
+      var delta = prev - curr;
+      if (bestDelta === null || delta > bestDelta) {
+        bestDelta = delta;
+        names = [pl.name];
+      }
+      else if (delta === bestDelta) {
+        names.push(pl.name);
+      }
+    });
+
+    if (bestDelta === null) { return null; }
+
+    names.sort(function(a, b) { return a.localeCompare(b, 'fr'); });
+    return { delta: bestDelta, names: names };
+  }
+
+  function renderWeeklySummary() {
+    var host = document.getElementById('weekly-summary-host');
+    if (!host) { return; }
+    if (host.getAttribute('data-ready') === '1') { return; }
+
+    var sections = weekSectionsSorted();
+    if (!sections.length) {
+      host.textContent = 'Aucune semaine disponible.';
+      host.setAttribute('data-ready', '1');
+      return;
+    }
+
+    var note = document.createElement('p');
+    note.className = 'summary-note';
+    note.textContent = 'Vainqueur, meilleur kills et plus forte progression versus la semaine precedente.';
+
+    var table = document.createElement('table');
+    table.className = 'total-table summary-table';
+
+    var thead = document.createElement('thead');
+    var trh = document.createElement('tr');
+    ['Semaine', 'Vainqueur', 'Meilleur kills', 'Plus forte progression'].forEach(function(label) {
+      var th = document.createElement('th');
+      th.textContent = label;
+      trh.appendChild(th);
+    });
+    thead.appendChild(trh);
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+
+    sections.forEach(function(section, idx) {
+      var title = extractWeekTitle(section, idx);
+      var stats = extractWeekStats(section);
+      var leaders = weekProgressionLeaders(idx);
+
+      var tr = document.createElement('tr');
+
+      var tdWeek = document.createElement('td');
+      tdWeek.textContent = title.label;
+      if (title.date) {
+        tdWeek.appendChild(document.createElement('br'));
+        var sub = document.createElement('span');
+        sub.className = 'subdate';
+        sub.textContent = title.date;
+        tdWeek.appendChild(sub);
+      }
+      tr.appendChild(tdWeek);
+
+      var tdWinner = document.createElement('td');
+      tdWinner.textContent = stats.winner;
+      tr.appendChild(tdWinner);
+
+      var tdKills = document.createElement('td');
+      if (stats.bestKills === null || stats.bestKillers.length === 0) {
+        tdKills.textContent = '-';
+      }
+      else {
+        tdKills.textContent = stats.bestKillers.join(', ') + ' (' + String(stats.bestKills) + ')';
+      }
+      tr.appendChild(tdKills);
+
+      var tdProgress = document.createElement('td');
+      if (!leaders) {
+        tdProgress.textContent = '-';
+        tdProgress.className = 'evo-na';
+      }
+      else if (leaders.delta > 0) {
+        tdProgress.textContent = leaders.names.join(', ') + ' (+' + String(leaders.delta) + ')';
+        tdProgress.className = 'evo-up';
+      }
+      else if (leaders.delta < 0) {
+        tdProgress.textContent = leaders.names.join(', ') + ' (' + String(leaders.delta) + ')';
+        tdProgress.className = 'evo-down';
+      }
+      else {
+        tdProgress.textContent = leaders.names.join(', ') + ' (0)';
+        tdProgress.className = 'evo-flat';
+      }
+      tr.appendChild(tdProgress);
+
+      tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+
+    host.innerHTML = '';
+    host.appendChild(note);
+    host.appendChild(table);
+    host.setAttribute('data-ready', '1');
+  }
+
   function renderProgression() {
     var svg = document.getElementById('progress-chart');
     if (!svg) { return; }
@@ -1055,6 +1481,7 @@ body { margin: 10px; }
   }
 
   applyReplacementColorsAll();
+  applyWeeklyPodiumStyles();
 
   var activeBtn = buttons.find(function(b) { return b.classList.contains('active'); });
   if (activeBtn) {
@@ -1064,6 +1491,9 @@ body { margin: 10px; }
 </script>
 </body>
 </html>
+
+
+
 
 
 
