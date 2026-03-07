@@ -45,7 +45,13 @@ h1 { margin: 0 0 4px 0; }
 .progression-toolbar { margin: 8px 0 10px 0; display: flex; gap: 8px; align-items: center; }
 .progression-toolbar select { padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 6px; }
 #progress-chart { width: 100%; height: auto; background: #fff; border: 1px solid #d1d5db; border-radius: 8px; }
-</style>
+@media (max-width: 700px) {
+body { margin: 10px; }
+.week-table th, .week-table td { padding: 6px 4px; font-size: 12px; }
+.week-table th:nth-child(1), .week-table td:nth-child(1) { width: 44px; }
+.week-table th:nth-child(2), .week-table td:nth-child(2) { width: 52px; }
+.week-table th:nth-child(4), .week-table td:nth-child(4) { width: 44px; }
+}</style>
 </head>
 <body>
 <h1>Classements Poker - Semaine 7</h1>
@@ -927,3 +933,4 @@ h1 { margin: 0 0 4px 0; }
 </script>
 </body>
 </html>
+
