@@ -10,7 +10,7 @@ h1 { margin: 0 0 4px 0; }
 .meta { color: #64748b; margin-bottom: 12px; }
 .legend { margin-bottom: 14px; font-size: 13px; color: #475569; }
 .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; margin-right: 8px; border: 1px solid #cbd5e1; background: #fff; }
-.pill.replacement { background: #fff2b2; }
+.pill.replacement { background: #fed7aa; border-color: #f59e0b; }
 .pill.absent { background: #ffd6d6; }
 .pill.qualif { background: #dcfce7; }
 .pill.best-kills { background: #fde047; }
@@ -60,7 +60,7 @@ h1 { margin: 0 0 4px 0; }
 .total-compact-table th.sortable.sorted-asc .sort-arrow,
 .total-compact-table th.sortable.sorted-desc .sort-arrow { color: #0f172a; }
 .num { text-align: right; }
-.player.replacement { background: #fff2b2; }
+.player.replacement { background: transparent; box-shadow: inset 4px 0 0 #f59e0b; padding-left: 11px; font-weight: 600; }
 .player.absent { background: #ffd6d6; }
 .evo-up { color: #166534; font-weight: 700; }
 .evo-down { color: #b91c1c; font-weight: 700; }
@@ -98,7 +98,7 @@ body { margin: 10px; }
 <h1>Poker-Stanley - Classements Semaine 7</h1>
 <div class="meta">Mise a jour: 2026-03-06 19:29:00</div>
 <div class="legend">
-<span class="pill replacement">Nom jaune = remplace</span>
+<span class="pill replacement">Barre orange = remplace</span>
 <span class="pill absent">Nom rouge = absent non-remplace</span>
 <span class="pill qualif">Top 10 qualifie</span>
 <span class="pill best-kills">Meilleur total kills</span>
@@ -1491,6 +1491,7 @@ body { margin: 10px; }
 </script>
 </body>
 </html>
+
 
 
 
