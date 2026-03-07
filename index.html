@@ -23,6 +23,23 @@ h1 { margin: 0 0 4px 0; }
 .player-search input { min-width: 220px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
 .player-search button { border: 1px solid #cbd5e1; background: #fff; color: #334155; border-radius: 6px; padding: 6px 10px; cursor: pointer; }
 .player-search button:hover { background: #f8fafc; }
+.panel-actions { margin: 0 0 12px 0; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.panel-actions button { border: 1px solid #cbd5e1; background: #0f172a; color: #fff; border-radius: 6px; padding: 7px 11px; cursor: pointer; }
+.panel-actions button:disabled { opacity: 0.65; cursor: wait; }
+.panel-actions .export-status { color: #64748b; font-size: 12px; }
+.records-wrap { width: min(960px, 100%); }
+.records-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 0 0 10px 0; }
+.record-card { background: #fff; border: 1px solid #d1d5db; border-radius: 10px; padding: 10px; }
+.record-card h3 { margin: 0 0 6px 0; font-size: 13px; color: #334155; }
+.record-card .value { font-size: 20px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0; }
+.record-card .detail { margin: 0; color: #64748b; font-size: 12px; }
+.records-table { width: min(760px, 100%); }
+.compare-wrap { width: min(960px, 100%); }
+.compare-controls { margin: 0 0 10px 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.compare-controls label { color: #475569; font-size: 13px; font-weight: 600; }
+.compare-controls select { min-width: 220px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
+.compare-table { width: min(860px, 100%); }
+.compare-table th:nth-child(1), .compare-table td:nth-child(1) { width: 220px; }
 .tab-btn { border: 1px solid #cbd5e1; background: #fff; color: #334155; border-radius: 8px; padding: 7px 11px; cursor: pointer; }
 .tab-btn.active { background: #0f172a; color: #fff; border-color: #0f172a; }
 .tab-panel { display: none; }
@@ -100,6 +117,7 @@ body { margin: 10px; }
 .summary-table th:nth-child(2), .summary-table td:nth-child(2) { width: 140px; }
 .summary-table th:nth-child(3), .summary-table td:nth-child(3) { width: 140px; }
 .player-search input { width: 100%; min-width: 0; }
+.compare-controls select { width: 100%; min-width: 0; }
 }</style>
 </head>
 <body>
@@ -126,12 +144,19 @@ body { margin: 10px; }
 <button class="tab-btn" data-tab="total-complete">Classement global complet</button>
 <button class="tab-btn" data-tab="progression">Progression</button>
 <button class="tab-btn" data-tab="weekly-summary">Resume semaine</button>
+<button class="tab-btn" data-tab="records">Records saison</button>
+<button class="tab-btn" data-tab="player-compare">Comparateur</button>
 </div>
 <div class="player-search">
 <label for="player-search-input">Recherche joueur:</label>
 <input id="player-search-input" type="search" placeholder="Ex: Pierre" autocomplete="off" />
 <button id="player-search-clear" type="button">Effacer</button>
-</div><div class="tab-panels">
+</div>
+<div class="panel-actions">
+<button id="export-panel-png" type="button">Exporter PNG de la vue active</button>
+<span id="export-status" class="export-status" aria-live="polite"></span>
+</div>
+<div class="tab-panels">
 <section id="week-1" class="tab-panel">
 <h2>Semaine 1 <span class="week-date">19-janv-26</span></h2>
 <table class="week-table">
@@ -841,7 +866,22 @@ body { margin: 10px; }
 <h2>Resume de la semaine</h2>
 <div id="weekly-summary-host" class="weekly-summary-wrap"></div>
 </section>
+<section id="records" class="tab-panel">
+<h2>Records saison</h2>
+<div id="records-host" class="records-wrap"></div>
+</section>
+<section id="player-compare" class="tab-panel">
+<h2>Comparateur joueurs</h2>
+<div class="compare-controls">
+<label for="compare-player-a">Joueur A:</label>
+<select id="compare-player-a"><option value="">Selectionner</option></select>
+<label for="compare-player-b">Joueur B:</label>
+<select id="compare-player-b"><option value="">Selectionner</option></select>
 </div>
+<div id="compare-host" class="compare-wrap"></div>
+</section>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 (function() {
   var buttons = Array.prototype.slice.call(document.querySelectorAll('.tab-btn'));
@@ -849,6 +889,8 @@ body { margin: 10px; }
   var progression = {"weeks":[{"label":"Semaine 1","shortLabel":"S1","date":"19-janv-26"},{"label":"Semaine 2","shortLabel":"S2","date":"26-janv-26"},{"label":"Semaine 3","shortLabel":"S3","date":"02-févr-26"},{"label":"Semaine 4","shortLabel":"S4","date":"09-févr-26"},{"label":"Semaine 5","shortLabel":"S5","date":"16-févr-26"},{"label":"Semaine 6","shortLabel":"S6","date":"23-févr-26"},{"label":"Semaine 7","shortLabel":"S7","date":"02-mars-26"}],"players":[{"name":"Gilles Lemieux","positions":[3,3,1,1,3,3,1]},{"name":"Stéphane Caron","positions":[1,1,2,2,2,1,2]},{"name":"Pierre Talbot","positions":[2,5,4,3,1,2,3]},{"name":"Pierre-Marc Pelletier","positions":[8,2,3,4,5,6,4]},{"name":"Mario Caron","positions":[5,7,5,5,4,4,5]},{"name":"Mathieu Létourneau","positions":[17,20,16,8,6,8,6]},{"name":"Sylvain Rousseau","positions":[10,4,6,6,8,5,7]},{"name":"Tommy Caron","positions":[18,14,7,11,15,7,8]},{"name":"Julie Paquet","positions":[15,11,12,16,9,9,9]},{"name":"Anik Chaloux","positions":[13,19,13,14,10,13,10]},{"name":"Patrick Lefebvre","positions":[11,6,10,9,14,11,11]},{"name":"Serge Blackburn","positions":[7,12,9,10,7,10,12]},{"name":"Annick Proulx","positions":[6,9,11,7,11,14,13]},{"name":"Simon Munger","positions":[4,10,14,18,19,19,14]},{"name":"Nancy Cloutier","positions":[14,8,8,13,13,12,15]},{"name":"Marjorie Stewart","positions":[21,15,17,12,12,17,16]},{"name":"Pierre Cuerrier","positions":[9,13,15,15,16,20,17]},{"name":"Martin Gagnon","positions":[22,18,21,17,18,16,18]},{"name":"Daniel Lévesque","positions":[16,21,20,21,17,15,19]},{"name":"Benoit Côté","positions":[20,22,22,22,20,18,20]},{"name":"Mark-Antoine Trudel","positions":[12,16,19,19,21,22,21]},{"name":"Evans Marcoux","positions":[19,17,18,20,22,21,22]}],"maxPosition":22};
   var ACTIVE_TAB_KEY = 'poker_preview_active_tab';
   var PLAYER_FILTER_KEY = 'poker_preview_player_filter';
+  var totalSummaryCache = null;
+  var recordsCache = null;
 
   function isValidTabId(id) {
     if (!id) { return false; }
@@ -894,6 +936,12 @@ body { margin: 10px; }
     }
     if (id === 'weekly-summary') {
       renderWeeklySummary();
+    }
+    if (id === 'records') {
+      renderRecords();
+    }
+    if (id === 'player-compare') {
+      renderPlayerCompare();
     }
 
     if (!options.skipHash) {
@@ -1503,6 +1551,477 @@ body { margin: 10px; }
     host.setAttribute('data-ready', '1');
   }
 
+  function weekLabelByIndex(idx) {
+    var w = (progression.weeks || [])[idx];
+    return w && w.label ? w.label : ('Semaine ' + (idx + 1));
+  }
+
+  function getPlayerProgressionInfo(playerName) {
+    var players = progression.players || [];
+    var positions = [];
+    for (var i = 0; i < players.length; i++) {
+      if (normalizePlayerName(players[i].name) === normalizePlayerName(playerName)) {
+        positions = players[i].positions || [];
+        break;
+      }
+    }
+
+    var current = null;
+    var previous = null;
+    for (var j = positions.length - 1; j >= 0; j--) {
+      var p = toIntOrNull(positions[j]);
+      if (p === null) { continue; }
+      if (current === null) {
+        current = p;
+        continue;
+      }
+      previous = p;
+      break;
+    }
+
+    return {
+      positions: positions,
+      current: current,
+      previous: previous,
+      delta: (current !== null && previous !== null) ? (previous - current) : null
+    };
+  }
+
+  function buildWeeklyWinsMap() {
+    var wins = {};
+    var sections = weekSectionsSorted();
+    sections.forEach(function(section) {
+      var rows = Array.prototype.slice.call(section.querySelectorAll('table.week-table tbody tr'));
+      rows.forEach(function(row) {
+        var cells = row.querySelectorAll('td');
+        if (!cells || cells.length < 3) { return; }
+        var pos = toIntOrNull((cells[0].textContent || '').trim());
+        var name = normalizePlayerName(cells[2].textContent || '');
+        if (!name || pos !== 1) { return; }
+        wins[name] = (wins[name] || 0) + 1;
+      });
+    });
+    return wins;
+  }
+
+  function getTotalSummaryMap() {
+    if (totalSummaryCache) { return totalSummaryCache; }
+
+    var map = {};
+    var fullTable = document.querySelector('#total-complete table.total-table');
+    if (!fullTable) {
+      totalSummaryCache = map;
+      return map;
+    }
+
+    var headers = Array.prototype.slice.call(fullTable.querySelectorAll('thead th'));
+    var totalIdx = -1;
+    var killsIdx = -1;
+    var replIdx = -1;
+
+    headers.forEach(function(th, idx) {
+      var txt = ((th.textContent || '') + '').toUpperCase();
+      if (txt.indexOf('TOTAL') !== -1 && totalIdx < 0) { totalIdx = idx; }
+      if (txt.indexOf('KILL') !== -1) { killsIdx = idx; }
+      if (txt.indexOf('REMPL') !== -1) { replIdx = idx; }
+    });
+
+    var rows = Array.prototype.slice.call(fullTable.querySelectorAll('tbody tr'));
+    rows.forEach(function(row) {
+      var cells = row.querySelectorAll('td');
+      if (!cells || cells.length < 2) { return; }
+      var name = normalizePlayerName(cells[1].textContent || '');
+      if (!name) { return; }
+
+      map[name] = {
+        name: name,
+        rank: toIntOrNull(cells[0].textContent || ''),
+        total: parseNumericText(cells[totalIdx] ? cells[totalIdx].textContent : ''),
+        kills: parseNumericText(cells[killsIdx] ? cells[killsIdx].textContent : ''),
+        replacements: parseNumericText(cells[replIdx] ? cells[replIdx].textContent : ''),
+        wins: 0,
+        currentPos: null,
+        previousPos: null,
+        delta: null,
+        positionsText: '-'
+      };
+
+      if (!isFinite(map[name].total) || isNaN(map[name].total)) { map[name].total = 0; }
+      if (!isFinite(map[name].kills) || isNaN(map[name].kills)) { map[name].kills = 0; }
+      if (!isFinite(map[name].replacements) || isNaN(map[name].replacements)) { map[name].replacements = 0; }
+    });
+
+    var winsMap = buildWeeklyWinsMap();
+    Object.keys(winsMap).forEach(function(name) {
+      if (!map[name]) {
+        map[name] = {
+          name: name,
+          rank: null,
+          total: 0,
+          kills: 0,
+          replacements: 0,
+          wins: 0,
+          currentPos: null,
+          previousPos: null,
+          delta: null,
+          positionsText: '-'
+        };
+      }
+      map[name].wins = winsMap[name];
+    });
+
+    (progression.players || []).forEach(function(pl) {
+      var name = normalizePlayerName(pl.name || '');
+      if (!name) { return; }
+      if (!map[name]) {
+        map[name] = {
+          name: name,
+          rank: null,
+          total: 0,
+          kills: 0,
+          replacements: 0,
+          wins: 0,
+          currentPos: null,
+          previousPos: null,
+          delta: null,
+          positionsText: '-'
+        };
+      }
+
+      var info = getPlayerProgressionInfo(name);
+      map[name].currentPos = info.current;
+      map[name].previousPos = info.previous;
+      map[name].delta = info.delta;
+      map[name].positionsText = (info.positions || []).map(function(v) {
+        var n = toIntOrNull(v);
+        return (n === null) ? '-' : String(n);
+      }).join(' / ');
+    });
+
+    totalSummaryCache = map;
+    return map;
+  }
+
+  function renderRecords() {
+    var host = document.getElementById('records-host');
+    if (!host) { return; }
+    if (host.getAttribute('data-ready') === '1') { return; }
+
+    var sections = weekSectionsSorted();
+    if (!sections.length) {
+      host.textContent = 'Aucune donnee disponible.';
+      host.setAttribute('data-ready', '1');
+      return;
+    }
+
+    var maxKills = -1;
+    var maxKillsEntries = [];
+
+    sections.forEach(function(section, idx) {
+      var title = extractWeekTitle(section, idx);
+      var rows = Array.prototype.slice.call(section.querySelectorAll('table.week-table tbody tr'));
+      rows.forEach(function(row) {
+        var cells = row.querySelectorAll('td');
+        if (!cells || cells.length < 4) { return; }
+        var name = normalizePlayerName(cells[2].textContent || '');
+        var kills = parseNumericText(cells[3].textContent || '');
+        if (!name || !isFinite(kills) || isNaN(kills)) { return; }
+
+        if (kills > maxKills) {
+          maxKills = kills;
+          maxKillsEntries = [{ name: name, week: title.label }];
+        }
+        else if (kills === maxKills) {
+          maxKillsEntries.push({ name: name, week: title.label });
+        }
+      });
+    });
+
+    var bestJump = 0;
+    var bestJumpEntries = [];
+    (progression.players || []).forEach(function(pl) {
+      var positions = pl.positions || [];
+      for (var i = 1; i < positions.length; i++) {
+        var prev = toIntOrNull(positions[i - 1]);
+        var curr = toIntOrNull(positions[i]);
+        if (prev === null || curr === null) { continue; }
+        var delta = prev - curr;
+        if (delta > bestJump) {
+          bestJump = delta;
+          bestJumpEntries = [{ name: pl.name, from: weekLabelByIndex(i - 1), to: weekLabelByIndex(i), delta: delta }];
+        }
+        else if (delta === bestJump && delta > 0) {
+          bestJumpEntries.push({ name: pl.name, from: weekLabelByIndex(i - 1), to: weekLabelByIndex(i), delta: delta });
+        }
+      }
+    });
+
+    var winsMap = buildWeeklyWinsMap();
+    var topWins = 0;
+    var topWinPlayers = [];
+    Object.keys(winsMap).forEach(function(name) {
+      var w = winsMap[name] || 0;
+      if (w > topWins) {
+        topWins = w;
+        topWinPlayers = [name];
+      }
+      else if (w === topWins) {
+        topWinPlayers.push(name);
+      }
+    });
+    topWinPlayers.sort(function(a, b) { return a.localeCompare(b, 'fr'); });
+
+    function buildCard(title, value, detail) {
+      var card = document.createElement('article');
+      card.className = 'record-card';
+      var h = document.createElement('h3');
+      h.textContent = title;
+      var v = document.createElement('p');
+      v.className = 'value';
+      v.textContent = value;
+      var d = document.createElement('p');
+      d.className = 'detail';
+      d.textContent = detail;
+      card.appendChild(h);
+      card.appendChild(v);
+      card.appendChild(d);
+      return card;
+    }
+
+    var grid = document.createElement('div');
+    grid.className = 'records-grid';
+
+    if (maxKills >= 0 && maxKillsEntries.length > 0) {
+      var mkNames = maxKillsEntries.map(function(e) { return e.name; }).join(', ');
+      var mkWeeks = maxKillsEntries.map(function(e) { return e.week; }).join(', ');
+      grid.appendChild(buildCard('Plus gros kills (une semaine)', String(maxKills), mkNames + ' - ' + mkWeeks));
+    }
+    else {
+      grid.appendChild(buildCard('Plus gros kills (une semaine)', '-', 'Aucune donnee'));
+    }
+
+    if (bestJump > 0 && bestJumpEntries.length > 0) {
+      var bj = bestJumpEntries[0];
+      var names = bestJumpEntries.map(function(e) { return e.name; }).join(', ');
+      grid.appendChild(buildCard('Meilleure remontee', '+' + String(bestJump) + ' places', names + ' (' + bj.from + ' -> ' + bj.to + ')'));
+    }
+    else {
+      grid.appendChild(buildCard('Meilleure remontee', '0', 'Aucune progression positive detectee'));
+    }
+
+    if (topWins > 0 && topWinPlayers.length > 0) {
+      grid.appendChild(buildCard('Plus de 1res places', String(topWins), topWinPlayers.join(', ')));
+    }
+    else {
+      grid.appendChild(buildCard('Plus de 1res places', '0', 'Aucun vainqueur detecte'));
+    }
+
+    var winsRows = Object.keys(winsMap).map(function(name) {
+      return { name: name, wins: winsMap[name] || 0 };
+    }).sort(function(a, b) {
+      if (b.wins !== a.wins) { return b.wins - a.wins; }
+      return a.name.localeCompare(b.name, 'fr');
+    });
+
+    var winsTable = document.createElement('table');
+    winsTable.className = 'total-table records-table';
+    var thead = document.createElement('thead');
+    var trh = document.createElement('tr');
+    ['Joueur', 'Semaines gagnees'].forEach(function(label) {
+      var th = document.createElement('th');
+      th.textContent = label;
+      trh.appendChild(th);
+    });
+    thead.appendChild(trh);
+    winsTable.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    if (!winsRows.length) {
+      var trEmpty = document.createElement('tr');
+      var tdEmpty = document.createElement('td');
+      tdEmpty.colSpan = 2;
+      tdEmpty.textContent = 'Aucune victoire hebdo disponible.';
+      trEmpty.appendChild(tdEmpty);
+      tbody.appendChild(trEmpty);
+    }
+    else {
+      winsRows.forEach(function(item) {
+        var tr = document.createElement('tr');
+        var tdName = document.createElement('td');
+        tdName.textContent = item.name;
+        var tdWins = document.createElement('td');
+        tdWins.className = 'num';
+        tdWins.textContent = String(item.wins);
+        tr.appendChild(tdName);
+        tr.appendChild(tdWins);
+        tbody.appendChild(tr);
+      });
+    }
+    winsTable.appendChild(tbody);
+
+    host.innerHTML = '';
+    host.appendChild(grid);
+    host.appendChild(winsTable);
+    host.setAttribute('data-ready', '1');
+    recordsCache = { maxKills: maxKills, bestJump: bestJump, topWins: topWins };
+  }
+
+  function setupCompareSelectors() {
+    var a = document.getElementById('compare-player-a');
+    var b = document.getElementById('compare-player-b');
+    if (!a || !b) { return; }
+    if (a.getAttribute('data-ready') === '1') { return; }
+
+    var summary = getTotalSummaryMap();
+    var names = Object.keys(summary).sort(function(x, y) { return x.localeCompare(y, 'fr'); });
+
+    names.forEach(function(name) {
+      var oa = document.createElement('option');
+      oa.value = name;
+      oa.textContent = name;
+      a.appendChild(oa);
+
+      var ob = document.createElement('option');
+      ob.value = name;
+      ob.textContent = name;
+      b.appendChild(ob);
+    });
+
+    var top = Object.keys(summary).map(function(name) { return summary[name]; }).sort(function(x, y) {
+      if ((y.total || 0) !== (x.total || 0)) { return (y.total || 0) - (x.total || 0); }
+      return x.name.localeCompare(y.name, 'fr');
+    });
+
+    if (top.length > 0) { a.value = top[0].name; }
+    if (top.length > 1) { b.value = top[1].name; }
+    else if (top.length > 0) { b.value = top[0].name; }
+
+    a.addEventListener('change', renderPlayerCompare);
+    b.addEventListener('change', renderPlayerCompare);
+    a.setAttribute('data-ready', '1');
+  }
+
+  function deltaLabel(delta) {
+    if (delta === null || delta === undefined || !isFinite(delta) || isNaN(delta)) { return '-'; }
+    if (delta > 0) { return '+' + String(delta); }
+    return String(delta);
+  }
+
+  function addCompareRow(tbody, metric, aVal, bVal, className) {
+    var tr = document.createElement('tr');
+    var td0 = document.createElement('td');
+    td0.textContent = metric;
+    var td1 = document.createElement('td');
+    td1.textContent = aVal;
+    if (className) { td1.className = className; }
+    var td2 = document.createElement('td');
+    td2.textContent = bVal;
+    if (className) { td2.className = className; }
+    tr.appendChild(td0);
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    tbody.appendChild(tr);
+  }
+
+  function renderPlayerCompare() {
+    var host = document.getElementById('compare-host');
+    var aSel = document.getElementById('compare-player-a');
+    var bSel = document.getElementById('compare-player-b');
+    if (!host || !aSel || !bSel) { return; }
+
+    setupCompareSelectors();
+    var aName = normalizePlayerName(aSel.value || '');
+    var bName = normalizePlayerName(bSel.value || '');
+
+    host.innerHTML = '';
+    if (!aName || !bName) {
+      host.textContent = 'Selectionne 2 joueurs pour comparer.';
+      return;
+    }
+
+    var summary = getTotalSummaryMap();
+    var aData = summary[aName];
+    var bData = summary[bName];
+    if (!aData || !bData) {
+      host.textContent = 'Donnees de comparaison indisponibles.';
+      return;
+    }
+
+    var table = document.createElement('table');
+    table.className = 'total-table compare-table';
+    var thead = document.createElement('thead');
+    var trh = document.createElement('tr');
+    ['Indicateur', aName, bName].forEach(function(label) {
+      var th = document.createElement('th');
+      th.textContent = label;
+      trh.appendChild(th);
+    });
+    thead.appendChild(trh);
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    addCompareRow(tbody, 'Position actuelle', aData.currentPos === null ? '-' : String(aData.currentPos), bData.currentPos === null ? '-' : String(bData.currentPos));
+    addCompareRow(tbody, 'Evolution derniere semaine', deltaLabel(aData.delta), deltaLabel(bData.delta));
+    addCompareRow(tbody, 'TOTAL points', String(aData.total || 0), String(bData.total || 0), 'num');
+    addCompareRow(tbody, 'TOTAL kills', String(aData.kills || 0), String(bData.kills || 0), 'num');
+    addCompareRow(tbody, 'Remplacements', String(aData.replacements || 0), String(bData.replacements || 0), 'num');
+    addCompareRow(tbody, 'Semaines gagnees', String(aData.wins || 0), String(bData.wins || 0), 'num');
+    addCompareRow(tbody, 'Positions (S1->S7)', aData.positionsText || '-', bData.positionsText || '-');
+
+    table.appendChild(tbody);
+    host.appendChild(table);
+  }
+
+  function setupExportPng() {
+    var btn = document.getElementById('export-panel-png');
+    var status = document.getElementById('export-status');
+    if (!btn) { return; }
+    if (btn.getAttribute('data-ready') === '1') { return; }
+
+    function setStatus(msg, error) {
+      if (!status) { return; }
+      status.textContent = msg || '';
+      status.style.color = error ? '#b91c1c' : '#64748b';
+    }
+
+    btn.addEventListener('click', function() {
+      var panel = document.querySelector('.tab-panel.active');
+      if (!panel) {
+        setStatus('Aucune vue active a exporter.', true);
+        return;
+      }
+
+      if (typeof html2canvas !== 'function') {
+        setStatus('Export PNG indisponible (bibliotheque non chargee).', true);
+        return;
+      }
+
+      btn.disabled = true;
+      setStatus('Export PNG en cours...', false);
+
+      html2canvas(panel, {
+        backgroundColor: '#f4f6fb',
+        scale: 2,
+        useCORS: true,
+        logging: false
+      }).then(function(canvas) {
+        var link = document.createElement('a');
+        var stamp = new Date().toISOString().replace(/[:\.]/g, '-');
+        link.download = 'poker-' + (panel.id || 'vue') + '-' + stamp + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        setStatus('PNG exporte.', false);
+      }).catch(function(err) {
+        var msg = (err && err.message) ? err.message : 'Erreur inconnue';
+        setStatus('Export echoue: ' + msg, true);
+      }).then(function() {
+        btn.disabled = false;
+      });
+    });
+
+    btn.setAttribute('data-ready', '1');
+  }
+
   function renderProgression() {
     var svg = document.getElementById('progress-chart');
     if (!svg) { return; }
@@ -1608,6 +2127,7 @@ body { margin: 10px; }
   applyReplacementColorsAll();
   applyWeeklyPodiumStyles();
   setupPlayerSearch();
+  setupExportPng();
 
   var initialFromHash = tabIdFromHash();
   var initialTab = initialFromHash;
@@ -1636,6 +2156,16 @@ body { margin: 10px; }
 </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
 
 
 
