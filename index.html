@@ -93,9 +93,10 @@ h1 { margin: 0 0 4px 0; }
 .evo-down { color: #b91c1c; font-weight: 700; }
 .evo-flat { color: #475569; font-weight: 700; }
 .evo-na { color: #94a3b8; }
-.progression-wrap { width: min(980px, 100%); }
-.progression-toolbar { margin: 8px 0 10px 0; display: flex; gap: 8px; align-items: center; }
+.progression-toolbar { margin: 8px 0 10px 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .progression-toolbar select { padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 6px; }
+.progression-toolbar .focus-toggle { display: inline-flex; align-items: center; gap: 6px; color: #334155; font-size: 13px; }
+.progression-toolbar .focus-note { color: #64748b; font-size: 12px; }
 #progress-chart { width: 100%; height: auto; background: #fff; border: 1px solid #d1d5db; border-radius: 8px; }
 .weekly-summary-wrap { width: min(940px, 100%); overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .weekly-summary-wrap .summary-note { margin: 0 0 10px 0; color: #64748b; font-size: 13px; }
@@ -104,7 +105,15 @@ h1 { margin: 0 0 4px 0; }
 .summary-table th:nth-child(2), .summary-table td:nth-child(2) { width: 220px; }
 .summary-table th:nth-child(3), .summary-table td:nth-child(3) { width: 220px; }
 .summary-table th:nth-child(4), .summary-table td:nth-child(4) { width: 260px; }
-.summary-table td { white-space: normal; overflow-wrap: anywhere; }
+.qr-footer { margin-top: 18px; padding: 12px; border: 1px solid #d1d5db; border-radius: 10px; background: #fff; }
+.qr-footer h2 { margin: 0 0 6px 0; font-size: 18px; }
+.qr-footer .qr-note { margin: 0 0 10px 0; color: #64748b; font-size: 13px; }
+.qr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+.qr-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px; text-align: center; }
+.qr-card h3 { margin: 0 0 6px 0; color: #334155; font-size: 13px; }
+.qr-card img { width: 132px; height: 132px; max-width: 100%; border: 1px solid #e2e8f0; border-radius: 6px; background: #fff; }
+.qr-card a { display: block; margin-top: 6px; color: #334155; font-size: 12px; text-decoration: none; word-break: break-all; }
+.qr-card a:hover { text-decoration: underline; }
 @media (max-width: 700px) {
 body { margin: 10px; }
 .week-table th, .week-table td { padding: 6px 4px; font-size: 12px; }
@@ -122,7 +131,8 @@ body { margin: 10px; }
 .summary-table th:nth-child(1), .summary-table td:nth-child(1) { width: 70px; }
 .summary-table th:nth-child(2), .summary-table td:nth-child(2) { width: 125px; }
 .summary-table th:nth-child(3), .summary-table td:nth-child(3) { width: 125px; }
-.summary-table th:nth-child(4), .summary-table td:nth-child(4) { width: 180px; }
+.qr-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.qr-card img { width: 100px; height: 100px; }
 .player-search input { width: 100%; min-width: 0; }
 .compare-controls select { width: 100%; min-width: 0; }
 .week-picker select { width: 100%; min-width: 0; }
@@ -865,6 +875,11 @@ body { margin: 10px; }
 <select id="progress-player">
 <option value="">Tous les joueurs</option>
 </select>
+<label class="focus-toggle" for="progress-focus">
+<input id="progress-focus" type="checkbox" checked />
+Mode focus: Top 12 + joueur
+</label>
+<span id="progress-focus-note" class="focus-note"></span>
 </div>
 <svg id="progress-chart" viewBox="0 0 980 520" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Progression des positions"></svg>
 </div>
@@ -888,6 +903,11 @@ body { margin: 10px; }
 <div id="compare-host" class="compare-wrap"></div>
 </section>
 </div>
+<section id="tab-qrs" class="qr-footer">
+<h2>QR des onglets</h2>
+<p class="qr-note">Scanne un code pour ouvrir directement un onglet.</p>
+<div id="tab-qr-grid" class="qr-grid"></div>
+</section>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 (function() {
@@ -1110,17 +1130,27 @@ body { margin: 10px; }
   function ensurePlayerOptions() {
     var sel = document.getElementById('progress-player');
     if (!sel) { return; }
-    if (sel.options.length > 1) { return; }
 
-    var names = (progression.players || []).map(function(p) { return p.name; }).sort();
-    names.forEach(function(name) {
-      var opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name;
-      sel.appendChild(opt);
-    });
+    if (sel.options.length <= 1) {
+      var names = (progression.players || []).map(function(p) { return p.name; }).sort();
+      names.forEach(function(name) {
+        var opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        sel.appendChild(opt);
+      });
+    }
+
+    if (sel.getAttribute('data-ready') === '1') { return; }
 
     sel.addEventListener('change', renderProgression);
+
+    var focusInput = document.getElementById('progress-focus');
+    if (focusInput) {
+      focusInput.addEventListener('change', renderProgression);
+    }
+
+    sel.setAttribute('data-ready', '1');
   }
 
   function drawNoData(svg, msg) {
@@ -2255,6 +2285,50 @@ body { margin: 10px; }
     var maxPos = progression.maxPosition || 22;
     var sel = document.getElementById('progress-player');
     var selected = sel ? sel.value : '';
+    var players = progression.players || [];
+
+    var focusInput = document.getElementById('progress-focus');
+    var focusEnabled = focusInput ? !!focusInput.checked : true;
+    var focusTopN = 12;
+    var focusSet = {};
+    var topNames = [];
+
+    function lastKnownPos(values) {
+      if (!values || !values.length) { return null; }
+      for (var i = values.length - 1; i >= 0; i--) {
+        var n = toIntOrNull(values[i]);
+        if (n !== null) { return n; }
+      }
+      return null;
+    }
+
+    if (focusEnabled) {
+      var ranked = players.map(function(pl) {
+        return { name: pl.name, pos: lastKnownPos(pl.positions || []) };
+      }).filter(function(item) {
+        return item.pos !== null;
+      }).sort(function(a, b) {
+        if (a.pos !== b.pos) { return a.pos - b.pos; }
+        return a.name.localeCompare(b.name, 'fr');
+      });
+
+      topNames = ranked.slice(0, focusTopN).map(function(item) { return item.name; });
+      topNames.forEach(function(name) { focusSet[name] = true; });
+      if (selected) { focusSet[selected] = true; }
+    }
+
+    var focusNote = document.getElementById('progress-focus-note');
+    if (focusNote) {
+      if (!focusEnabled) {
+        focusNote.textContent = 'Mode complet: tous les joueurs.';
+      }
+      else if (selected && topNames.indexOf(selected) < 0) {
+        focusNote.textContent = 'Mode focus: Top 12 actuel + ' + selected + '.';
+      }
+      else {
+        focusNote.textContent = 'Mode focus: Top 12 actuel.';
+      }
+    }
 
     if (weeks.length === 0) {
       drawNoData(svg, 'Aucune semaine disponible.');
@@ -2305,11 +2379,14 @@ body { margin: 10px; }
       return segs;
     }
 
-    (progression.players || []).forEach(function(pl) {
+    players.forEach(function(pl) {
       var isSel = selected && pl.name === selected;
-      var stroke = isSel ? '#2563eb' : '#94a3b8';
-      var opacity = selected ? (isSel ? 1 : 0.22) : 0.45;
-      var widthLine = isSel ? 3 : 1;
+      var inFocus = !focusEnabled || !!focusSet[pl.name];
+      if (!inFocus) { return; }
+
+      var stroke = isSel ? '#2563eb' : (focusEnabled ? '#475569' : '#94a3b8');
+      var opacity = isSel ? 1 : (focusEnabled ? 0.78 : (selected ? 0.22 : 0.45));
+      var widthLine = isSel ? 3 : (focusEnabled ? 1.8 : 1);
 
       segments(pl.positions || []).forEach(function(seg) {
         var d = 'M ' + seg[0].x + ' ' + seg[0].y;
@@ -2330,14 +2407,68 @@ body { margin: 10px; }
           title.textContent = pl.name + ' - ' + wk + ': position ' + pos;
           c.appendChild(title);
           svg.appendChild(c);
+
+          var labelY = Math.max(margin.top + 10, cy - 8);
+          var txt = svgEl('text', {
+            x: cx,
+            y: labelY,
+            'text-anchor': 'middle',
+            'font-size': '10',
+            'font-weight': '700',
+            fill: '#1d4ed8',
+            stroke: '#ffffff',
+            'stroke-width': '2',
+            'paint-order': 'stroke fill'
+          }, String(pos));
+          svg.appendChild(txt);
         });
       }
     });
   }
+  function renderTabQrCodes() {
+    var host = document.getElementById('tab-qr-grid');
+    if (!host) { return; }
 
+    host.innerHTML = '';
+
+    var base = window.location.origin + window.location.pathname;
+    buttons.forEach(function(btn) {
+      var tabId = (btn.getAttribute('data-tab') || '').trim();
+      if (!tabId) { return; }
+
+      var rawLabel = ((btn.textContent || '') + '').replace(/\s+/g, ' ').trim();
+      var label = rawLabel.replace(/\s*\(Apres[^)]*\)\s*$/i, '');
+      var tabUrl = base + '#' + encodeURIComponent(tabId);
+      var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=4&data=' + encodeURIComponent(tabUrl);
+
+      var card = document.createElement('article');
+      card.className = 'qr-card';
+
+      var h3 = document.createElement('h3');
+      h3.textContent = label;
+
+      var img = document.createElement('img');
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.alt = 'QR ' + label;
+      img.src = qrUrl;
+
+      var link = document.createElement('a');
+      link.href = tabUrl;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.textContent = tabUrl;
+
+      card.appendChild(h3);
+      card.appendChild(img);
+      card.appendChild(link);
+      host.appendChild(card);
+    });
+  }
   applyReplacementColorsAll();
   applyWeeklyPodiumStyles();
   updateCompactWeekLabel();
+  renderTabQrCodes();
   setupPlayerSearch();
   setupExportPng();
 
@@ -2359,6 +2490,10 @@ body { margin: 10px; }
 </script>
 </body>
 </html>
+
+
+
+
 
 
 
