@@ -920,6 +920,10 @@ body { margin: 10px; }
     if (!raw) { return ''; }
     var decoded = raw;
     try { decoded = decodeURIComponent(raw); } catch (e) {}
+    if (decoded === 'weekly') {
+      pendingWeekFromHash = defaultWeekId();
+      return 'weeks';
+    }
     if (isValidTabId(decoded)) { return decoded; }
     if (isValidWeekId(decoded)) {
       pendingWeekFromHash = decoded;
@@ -2351,6 +2355,7 @@ body { margin: 10px; }
 </script>
 </body>
 </html>
+
 
 
 
