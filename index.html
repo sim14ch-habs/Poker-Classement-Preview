@@ -16,8 +16,15 @@ h1 { margin: 0 0 4px 0; }
 .pill.qualif { background: #dcfce7; }
 .pill.best-kills { background: #fde047; }
 .pill.podium { background: #fef3c7; }
+.notify-box { margin: 0 0 14px 0; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 10px; background: #fff; }
+.notify-box p { margin: 0 0 8px 0; color: #334155; font-size: 13px; }
+.notify-box .notify-note { color: #64748b; font-size: 12px; }
+.notify-form { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.notify-form label { color: #475569; font-size: 13px; font-weight: 600; }
+.notify-form input[type="email"] { min-width: 240px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
+.notify-form button { border: 1px solid #cbd5e1; background: #0f172a; color: #fff; border-radius: 6px; padding: 7px 11px; cursor: pointer; }
+.notify-form button:hover { background: #1e293b; }
 .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-.preview-banner { margin-bottom: 10px; padding: 8px 12px; border-radius: 10px; background: #0f172a; color: #f8fafc; font-size: 13px; font-weight: 600; }
 .player-search { margin: 0 0 12px 0; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .player-search label { color: #475569; font-size: 13px; font-weight: 600; }
 .player-search input { min-width: 220px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
@@ -127,12 +134,12 @@ body { margin: 10px; }
 .player-search input { width: 100%; min-width: 0; }
 .compare-controls select { width: 100%; min-width: 0; }
 .week-picker select { width: 100%; min-width: 0; }
+.notify-form input[type="email"] { width: 100%; min-width: 0; }
 }</style>
 </head>
 <body>
-<div class="preview-banner">Mode PREVIEW - modifications en test (non publiees sur le site final).</div>
 <h1>Poker Stanley</h1>
-<div class="meta">Mise a jour: 2026-03-06 19:29:00</div>
+<div class="meta">Mise a jour: 2026-03-09 13:10:50</div>
 <div class="legend">
 <span class="pill replacement">Barre orange = remplace</span>
 <span class="pill absent">Nom rouge = absent non-remplace</span>
@@ -140,6 +147,19 @@ body { margin: 10px; }
 <span class="pill best-kills">Meilleur total kills</span>
 <span class="pill podium">Podium hebdo colore</span>
 </div>
+<div class="notify-box" style="">
+<p><strong>Notification nouvelle semaine</strong></p>
+<form class="notify-form" action="https://buttondown.com/api/emails/embed-subscribe/pokerstanley" method="post" target="notify-subscribe-result">
+<label for="notify-email">Courriel:</label>
+<input id="notify-email" type="email" name="email" placeholder="vous@exemple.com" required />
+<input type="hidden" name="embed" value="1" />
+<input type="hidden" name="tag" value="poker-classement" />
+<button type="submit">S'abonner</button>
+</form>
+<p class="notify-note">Notification envoyee uniquement quand une nouvelle semaine est publiee.</p>
+<p><a href="https://buttondown.com/login?subscriber=1" target="_blank" rel="noopener">Se desinscrire / gerer mes notifications</a></p>
+</div>
+<iframe name="notify-subscribe-result" style="display:none;" title="Inscription notifications"></iframe>
 <div class="tabs">
 <button class="tab-btn active" data-tab="weeks">Classements par semaines</button>
 
@@ -364,7 +384,6 @@ body { margin: 10px; }
 <tr><td class="num">22</td><td class="num">20</td><td class="player">Evans Marcoux</td><td class="num">0</td></tr>
 </tbody></table>
 </section>
-
 <section id="total-compact" class="tab-panel">
 <h2>Classement Global Compact</h2>
 <div id="total-compact-host"></div>
@@ -859,7 +878,6 @@ body { margin: 10px; }
 </tr>
 </tbody></table>
 </section>
-
 </section>
 <section id="progression" class="tab-panel">
 <h2>Progression des positions</h2>
@@ -2355,6 +2373,12 @@ body { margin: 10px; }
 </script>
 </body>
 </html>
+
+
+
+
+
+
 
 
 
