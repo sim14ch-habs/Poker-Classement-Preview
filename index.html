@@ -40,6 +40,23 @@ h1 { margin: 0 0 4px 0; }
 .compare-controls select { min-width: 220px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
 .compare-table { width: min(860px, 100%); }
 .compare-table th:nth-child(1), .compare-table td:nth-child(1) { width: 220px; }
+.stack-calc-note { margin: 0 0 12px 0; color: #64748b; font-size: 13px; }
+.stack-calc-controls { margin: 0 0 12px 0; display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+.stack-calc-controls label { color: #475569; font-size: 13px; font-weight: 600; }
+.stack-calc-controls input { width: 110px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
+.stack-calc-controls button { border: 1px solid #cbd5e1; background: #0f172a; color: #fff; border-radius: 6px; padding: 7px 11px; cursor: pointer; }
+.stack-calc-summary { width: min(1100px, 100%); display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 0 0 12px 0; }
+.stack-calc-card { background: #fff; border: 1px solid #d1d5db; border-radius: 10px; padding: 10px; }
+.stack-calc-card h3 { margin: 0 0 6px 0; font-size: 12px; color: #475569; text-transform: uppercase; letter-spacing: 0.03em; }
+.stack-calc-card .value { margin: 0; font-size: 22px; font-weight: 800; color: #0f172a; }
+.stack-calc-card .detail { margin: 5px 0 0 0; color: #64748b; font-size: 12px; }
+.stack-calc-warning { width: min(1100px, 100%); margin: 0 0 12px 0; padding: 10px 12px; border: 1px solid #f59e0b; border-radius: 10px; background: #fff7ed; color: #9a3412; font-size: 13px; }
+.stack-calc-table-wrap { width: min(1100px, 100%); overflow-x: auto; }
+.stack-calc-table { width: min(1100px, 100%); }
+.stack-calc-table th, .stack-calc-table td { text-align: center; }
+.stack-calc-table td:nth-child(2) { text-align: left; white-space: nowrap; }
+.stack-calc-stock-table { width: min(720px, 100%); margin-top: 12px; }
+.stack-calc-stock-table th, .stack-calc-stock-table td { text-align: center; }
 .week-picker { margin: 0 0 10px 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .week-picker label { color: #475569; font-size: 13px; font-weight: 600; }
 .week-picker select { min-width: 220px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
@@ -77,17 +94,21 @@ h1 { margin: 0 0 4px 0; }
 .total-table td.repl-1 { background: #fff2b2 !important; font-weight: 600; }
 .total-table td.repl-2 { background: #fcd5b4 !important; font-weight: 700; }
 .total-table td.repl-3 { background: #fca5a5 !important; color: #7f1d1d; font-weight: 700; }
-.total-compact-table { width: min(680px, 100%); table-layout: fixed; }
-.total-compact-table th:nth-child(1), .total-compact-table td:nth-child(1) { width: 70px; text-align: right; }
-.total-compact-table th:nth-child(3), .total-compact-table td:nth-child(3) { width: 80px; text-align: right; }
-.total-compact-table th:nth-child(4), .total-compact-table td:nth-child(4) { width: 70px; text-align: right; }
-.total-compact-table th:nth-child(5), .total-compact-table td:nth-child(5) { width: 70px; text-align: right; }
-.total-compact-table th:nth-child(6), .total-compact-table td:nth-child(6) { width: 78px; text-align: right; }
-.total-compact-table th:nth-child(7), .total-compact-table td:nth-child(7) { width: 76px; text-align: right; }
+.total-compact-table { width: min(620px, 100%); table-layout: fixed; }
+.total-compact-table th, .total-compact-table td { padding: 6px 6px; text-align: center; }
+.total-compact-table th:nth-child(1), .total-compact-table td:nth-child(1) { width: 54px; }
+.total-compact-table th:nth-child(3), .total-compact-table td:nth-child(3) { width: 68px; }
+.total-compact-table th:nth-child(4), .total-compact-table td:nth-child(4) { width: 58px; }
+.total-compact-table th:nth-child(5), .total-compact-table td:nth-child(5) { width: 58px; }
+.total-compact-table th:nth-child(6), .total-compact-table td:nth-child(6) { width: 62px; }
+.total-compact-table th:nth-child(7), .total-compact-table td:nth-child(7) { width: 60px; }
+.total-compact-table td.total-player { text-align: center; }
 .total-compact-table th.sortable { cursor: pointer; user-select: none; }
 .total-compact-table th.sortable .sort-arrow { margin-left: 5px; color: #94a3b8; font-size: 11px; }
 .total-compact-table th.sortable.sorted-asc .sort-arrow,
 .total-compact-table th.sortable.sorted-desc .sort-arrow { color: #0f172a; }
+.total-compact-table tbody tr:nth-child(odd) td { background: #ffffff; }
+.total-compact-table tbody tr:nth-child(even) td { background: #e2e8f0; }
 .num { text-align: right; }
 .player.replacement { background: transparent; box-shadow: inset 4px 0 0 #f59e0b; padding-left: 11px; font-weight: 600; }
 .player.absent { background: #ffd6d6; }
@@ -148,16 +169,19 @@ body { margin: 10px; }
 .summary-table th:nth-child(1), .summary-table td:nth-child(1) { width: 70px; }
 .summary-table th:nth-child(2), .summary-table td:nth-child(2) { width: 125px; }
 .summary-table th:nth-child(3), .summary-table td:nth-child(3) { width: 125px; }
+.stack-calc-table { min-width: 930px; }
+.stack-calc-stock-table { min-width: 520px; }
 .player-search input { width: 100%; min-width: 0; }
 .compare-controls select { width: 100%; min-width: 0; }
 .week-picker select { width: 100%; min-width: 0; }
+.stack-calc-controls input { width: 100%; min-width: 0; }
 .player-card { padding: 16px; }
 .player-card-title { font-size: 22px; }
 }</style>
 </head>
 <body>
 <h1>Poker Stanley</h1>
-<div class="meta">Mise à jour: 2026-04-07 12:07:21</div>
+<div class="meta">Mise à jour: 2026-04-07 14:01:38</div>
 <div class="legend">
 <span class="pill replacement">Barre orange = remplacé</span>
 <span class="pill absent">Nom rouge = absent non-remplacé</span>
@@ -174,6 +198,7 @@ body { margin: 10px; }
 <button class="tab-btn" data-tab="weekly-summary">Résumé semaine</button>
 <button class="tab-btn" data-tab="records">Records saison</button>
 <button class="tab-btn" data-tab="player-compare">Comparateur</button>
+<button class="tab-btn preview-only" data-tab="final-stack">Stacks finale</button>
 </div>
 <div class="player-search">
 <label for="player-search-input">Recherche joueur:</label>
@@ -1056,6 +1081,17 @@ body { margin: 10px; }
 </div>
 <div id="compare-host" class="compare-wrap"></div>
 </section>
+<section id="final-stack" class="tab-panel preview-only">
+<h2>Calculateur Stacks Finale</h2>
+<p class="stack-calc-note">Basé sur tout le classement actuel. 20 jetons par joueur, avec respect du stock global de jetons.</p>
+<div class="stack-calc-controls">
+<label for="final-stack-multiplier">Multiplicateur points → jetons:</label>
+<input id="final-stack-multiplier" type="number" min="0.1" step="0.5" value="5" />
+<button id="final-stack-run" type="button">Calculer</button>
+</div>
+<div id="final-stack-summary" class="stack-calc-summary"></div>
+<div id="final-stack-host"></div>
+</section>
 </div>
 <div id="player-card-backdrop" class="player-card-backdrop" hidden>
 <div class="player-card" role="dialog" aria-modal="true" aria-labelledby="player-card-title">
@@ -1069,15 +1105,37 @@ body { margin: 10px; }
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 (function() {
+  var siteConfig = {"enableFinalStackCalculator":true};
+  if (!siteConfig || typeof siteConfig !== 'object') {
+    siteConfig = {};
+  }
+  if (!siteConfig.enableFinalStackCalculator) {
+    Array.prototype.slice.call(document.querySelectorAll('.preview-only')).forEach(function(node) {
+      if (node && node.parentNode) {
+        node.parentNode.removeChild(node);
+      }
+    });
+  }
   var buttons = Array.prototype.slice.call(document.querySelectorAll('.tab-btn'));
   var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
   var progression = {"weeks":[{"label":"Semaine 1","shortLabel":"S1","date":"19-janv-26"},{"label":"Semaine 2","shortLabel":"S2","date":"26-janv-26"},{"label":"Semaine 3","shortLabel":"S3","date":"02-févr-26"},{"label":"Semaine 4","shortLabel":"S4","date":"09-févr-26"},{"label":"Semaine 5","shortLabel":"S5","date":"16-févr-26"},{"label":"Semaine 6","shortLabel":"S6","date":"23-févr-26"},{"label":"Semaine 7","shortLabel":"S7","date":"02-mars-26"},{"label":"Semaine 8","shortLabel":"S8","date":"09-mars-26"},{"label":"Semaine 9","shortLabel":"S9","date":"16-mars-26"},{"label":"Semaine 10","shortLabel":"S10","date":"23-mars-26"},{"label":"Semaine 11","shortLabel":"S11","date":"30-mars-26"},{"label":"Semaine 12","shortLabel":"S12","date":"06-avr-26"}],"players":[{"name":"Mario Caron","positions":[5,7,5,5,4,4,5,1,1,1,1,1]},{"name":"Pierre-Marc Pelletier","positions":[8,2,3,4,5,6,4,5,4,2,3,2]},{"name":"Stéphane Caron","positions":[1,1,2,2,2,1,2,3,2,3,2,3]},{"name":"Serge Blackburn","positions":[7,12,9,10,7,10,12,8,8,6,6,4]},{"name":"Gilles Lemieux","positions":[3,3,1,1,3,3,1,2,3,5,4,5]},{"name":"Julie Paquet","positions":[15,11,12,16,9,9,9,7,7,4,5,6]},{"name":"Patrick Lefebvre","positions":[11,6,10,9,14,11,11,13,14,10,8,7]},{"name":"Sylvain Rousseau","positions":[10,4,6,6,8,5,7,10,10,11,9,8]},{"name":"Mathieu Létourneau","positions":[17,20,16,8,6,8,6,6,5,8,10,9]},{"name":"Tommy Caron","positions":[18,14,7,11,15,7,8,11,11,7,7,10]},{"name":"Pierre Talbot","positions":[2,5,4,3,1,2,3,4,6,9,11,11]},{"name":"Annick Proulx","positions":[6,9,11,7,11,14,13,12,12,12,12,12]},{"name":"Nancy Cloutier","positions":[14,8,8,13,13,12,15,9,13,13,13,13]},{"name":"Anik Chaloux","positions":[13,19,13,14,10,13,10,14,15,16,17,14]},{"name":"Marjorie Stewart","positions":[21,15,17,12,12,17,16,17,16,15,14,15]},{"name":"Pierre Cuerrier","positions":[9,13,15,15,16,20,17,18,9,14,15,16]},{"name":"Simon Munger","positions":[4,10,14,18,19,19,14,16,17,17,18,17]},{"name":"Martin Gagnon","positions":[22,18,21,17,18,16,18,15,18,18,16,18]},{"name":"Evans Marcoux","positions":[19,17,18,20,22,21,22,21,22,22,20,19]},{"name":"Benoit Côté","positions":[20,22,22,22,20,18,20,20,20,19,19,20]},{"name":"Mark-Antoine Trudel","positions":[12,16,19,19,21,22,21,22,21,21,22,21]},{"name":"Daniel Lévesque","positions":[16,21,20,21,17,15,19,19,19,20,21,22]}],"maxPosition":22};
   var ACTIVE_TAB_KEY = 'poker_preview_active_tab';
   var ACTIVE_WEEK_KEY = 'poker_preview_active_week';
   var PLAYER_FILTER_KEY = 'poker_preview_player_filter';
+  var FINAL_STACK_MULTIPLIER_KEY = 'poker_preview_final_stack_multiplier';
+  var FINAL_STACK_DENOMS = [
+    { label: '100', value: 100, stock: 325 },
+    { label: '500', value: 500, stock: 325 },
+    { label: '1 000', value: 1000, stock: 200 },
+    { label: '5 000', value: 5000, stock: 100 },
+    { label: '10 000', value: 10000, stock: 50 }
+  ];
+  var FINAL_STACK_CHIPS_PER_PLAYER = 20;
   var totalSummaryCache = null;
   var recordsCache = null;
   var raceMapCache = null;
+  var chipComboCache = null;
+  var finalStackPlanCache = {};
   var pendingWeekFromHash = '';
   function updateCompactWeekLabel() {
     var weeksCount = (progression && progression.weeks && progression.weeks.length) ? progression.weeks.length : 0;
@@ -1175,6 +1233,9 @@ body { margin: 10px; }
     }
     if (id === 'player-compare') {
       renderPlayerCompare();
+    }
+    if (id === 'final-stack') {
+      renderFinalStackCalculator();
     }
 
     if (!options.skipHash) {
@@ -2541,6 +2602,401 @@ body { margin: 10px; }
 
     table.appendChild(tbody);
     host.appendChild(table);
+  }
+
+  function formatDisplayAmount(value, decimals) {
+    if (value === null || value === undefined || !isFinite(value) || isNaN(value)) { return '-'; }
+    var digits = (decimals === undefined || decimals === null) ? 0 : decimals;
+    return Number(value).toLocaleString('fr-CA', {
+      minimumFractionDigits: digits,
+      maximumFractionDigits: digits
+    });
+  }
+
+  function formatSignedAmount(value) {
+    if (value === null || value === undefined || !isFinite(value) || isNaN(value)) { return '-'; }
+    return (value > 0 ? '+' : '') + formatDisplayAmount(value, 0);
+  }
+
+  function getFinalStackPlayers() {
+    var summary = getTotalSummaryMap();
+    return Object.keys(summary).map(function(name) {
+      return summary[name];
+    }).filter(function(item) {
+      return item && item.name;
+    }).sort(function(a, b) {
+      var aRank = toIntOrNull(a.rank);
+      var bRank = toIntOrNull(b.rank);
+      if (aRank !== null && bRank !== null && aRank !== bRank) { return aRank - bRank; }
+      if (aRank !== null && bRank === null) { return -1; }
+      if (aRank === null && bRank !== null) { return 1; }
+      if ((b.total || 0) !== (a.total || 0)) { return (b.total || 0) - (a.total || 0); }
+      return (a.name || '').localeCompare((b.name || ''), 'fr');
+    });
+  }
+
+  function getChipCombos() {
+    if (chipComboCache) { return chipComboCache; }
+
+    var combos = [];
+    for (var c10000 = 0; c10000 <= FINAL_STACK_CHIPS_PER_PLAYER; c10000++) {
+      for (var c5000 = 0; c5000 <= FINAL_STACK_CHIPS_PER_PLAYER - c10000; c5000++) {
+        for (var c1000 = 0; c1000 <= FINAL_STACK_CHIPS_PER_PLAYER - c10000 - c5000; c1000++) {
+          for (var c500 = 0; c500 <= FINAL_STACK_CHIPS_PER_PLAYER - c10000 - c5000 - c1000; c500++) {
+            var c100 = FINAL_STACK_CHIPS_PER_PLAYER - c10000 - c5000 - c1000 - c500;
+            var counts = [c100, c500, c1000, c5000, c10000];
+            var value = (c100 * 100) + (c500 * 500) + (c1000 * 1000) + (c5000 * 5000) + (c10000 * 10000);
+            combos.push({
+              counts: counts,
+              totalChips: FINAL_STACK_CHIPS_PER_PLAYER,
+              value: value
+            });
+          }
+        }
+      }
+    }
+
+    chipComboCache = combos;
+    return chipComboCache;
+  }
+
+  function buildFinalStackCandidates(target, limit) {
+    return getChipCombos().map(function(combo) {
+      return {
+        combo: combo,
+        diff: combo.value - target,
+        cost: Math.abs(combo.value - target)
+      };
+    }).sort(function(a, b) {
+      if (a.cost !== b.cost) { return a.cost - b.cost; }
+      var aOver = a.diff >= 0 ? 0 : 1;
+      var bOver = b.diff >= 0 ? 0 : 1;
+      if (aOver !== bOver) { return aOver - bOver; }
+      return a.combo.value - b.combo.value;
+    }).slice(0, limit);
+  }
+
+  function buildFinalStackPlan(players, multiplier) {
+    var key = players.map(function(player) {
+      return [player.rank, player.name, player.total].join(':');
+    }).join('|') + '|' + String(multiplier);
+    if (finalStackPlanCache[key]) { return finalStackPlanCache[key]; }
+
+    var stocks = FINAL_STACK_DENOMS.map(function(denom) { return denom.stock; });
+    var targets = players.map(function(player) { return (player.total || 0) * multiplier; });
+    var minValue = FINAL_STACK_CHIPS_PER_PLAYER * FINAL_STACK_DENOMS[0].value;
+    var maxValue = FINAL_STACK_CHIPS_PER_PLAYER * FINAL_STACK_DENOMS[FINAL_STACK_DENOMS.length - 1].value;
+    var totalChipStock = stocks.reduce(function(sum, value) { return sum + value; }, 0);
+    var requiredChipCount = players.length * FINAL_STACK_CHIPS_PER_PLAYER;
+    var warnings = [];
+
+    if (requiredChipCount > totalChipStock) {
+      return {
+        error: "Impossible: il faut " + String(requiredChipCount) + " jetons au total, mais le stock complet n'en contient que " + String(totalChipStock) + '.',
+        warnings: warnings
+      };
+    }
+
+    var belowMin = targets.filter(function(target) { return target < minValue; }).length;
+    var aboveMax = targets.filter(function(target) { return target > maxValue; }).length;
+    if (belowMin > 0) {
+      warnings.push(String(belowMin) + ' cible(s) sont sous le minimum possible de ' + formatDisplayAmount(minValue, 0) + ' avec 20 jetons.');
+    }
+    if (aboveMax > 0) {
+      warnings.push(String(aboveMax) + ' cible(s) dépassent le maximum possible de ' + formatDisplayAmount(maxValue, 0) + ' avec 20 jetons.');
+    }
+
+    var passConfigs = [
+      { candidateLimit: 60, beamSize: 180 },
+      { candidateLimit: 120, beamSize: 360 },
+      { candidateLimit: 220, beamSize: 720 },
+      { candidateLimit: 360, beamSize: 1200 }
+    ];
+
+    var bestState = null;
+    for (var passIndex = 0; passIndex < passConfigs.length; passIndex++) {
+      var pass = passConfigs[passIndex];
+      var candidateSets = targets.map(function(target) {
+        return buildFinalStackCandidates(target, pass.candidateLimit);
+      });
+      var states = [{
+        used: [0, 0, 0, 0, 0],
+        cost: 0,
+        assignments: []
+      }];
+
+      var failed = false;
+      for (var playerIdx = 0; playerIdx < players.length; playerIdx++) {
+        var nextMap = Object.create(null);
+        var candidates = candidateSets[playerIdx] || [];
+
+        for (var stateIdx = 0; stateIdx < states.length; stateIdx++) {
+          var state = states[stateIdx];
+          for (var candIdx = 0; candIdx < candidates.length; candIdx++) {
+            var candidate = candidates[candIdx];
+            var nextUsed = [];
+            var fits = true;
+
+            for (var denomIdx = 0; denomIdx < stocks.length; denomIdx++) {
+              nextUsed[denomIdx] = state.used[denomIdx] + candidate.combo.counts[denomIdx];
+              if (nextUsed[denomIdx] > stocks[denomIdx]) {
+                fits = false;
+                break;
+              }
+            }
+            if (!fits) { continue; }
+
+            var nextCost = state.cost + candidate.cost;
+            var stateKey = nextUsed.join('|');
+            var nextAssignments = state.assignments.concat([{
+              player: players[playerIdx],
+              target: targets[playerIdx],
+              combo: candidate.combo,
+              diff: candidate.diff,
+              cost: candidate.cost
+            }]);
+
+            if (!nextMap[stateKey] || nextCost < nextMap[stateKey].cost) {
+              nextMap[stateKey] = {
+                used: nextUsed,
+                cost: nextCost,
+                assignments: nextAssignments
+              };
+            }
+          }
+        }
+
+        states = Object.keys(nextMap).map(function(stateKey) {
+          return nextMap[stateKey];
+        }).sort(function(a, b) {
+          if (a.cost !== b.cost) { return a.cost - b.cost; }
+          return a.used.join('|').localeCompare(b.used.join('|'));
+        });
+
+        if (!states.length) {
+          failed = true;
+          break;
+        }
+
+        if (states.length > pass.beamSize) {
+          states = states.slice(0, pass.beamSize);
+        }
+      }
+
+      if (!failed && states.length) {
+        bestState = states[0];
+        if (passIndex > 0) {
+          warnings.push('Plan trouvé après une recherche élargie à cause des contraintes de stock.');
+        }
+        break;
+      }
+    }
+
+    if (!bestState) {
+      return {
+        error: "Impossible de trouver une répartition compatible avec le stock de jetons.",
+        warnings: warnings
+      };
+    }
+
+    var usedCounts = bestState.used.slice(0);
+    var stockRows = FINAL_STACK_DENOMS.map(function(denom, idx) {
+      return {
+        label: denom.label,
+        value: denom.value,
+        stock: denom.stock,
+        used: usedCounts[idx] || 0,
+        remaining: denom.stock - (usedCounts[idx] || 0)
+      };
+    });
+
+    var totalTarget = 0;
+    var totalFinal = 0;
+    var totalAbsError = 0;
+    bestState.assignments.forEach(function(item) {
+      totalTarget += item.target;
+      totalFinal += item.combo.value;
+      totalAbsError += Math.abs(item.diff);
+    });
+
+    var plan = {
+      players: bestState.assignments,
+      stockRows: stockRows,
+      totalTarget: totalTarget,
+      totalFinal: totalFinal,
+      totalDiff: totalFinal - totalTarget,
+      totalAbsError: totalAbsError,
+      playersCount: players.length,
+      totalChipsUsed: players.length * FINAL_STACK_CHIPS_PER_PLAYER,
+      totalChipsRemaining: stocks.reduce(function(sum, value) { return sum + value; }, 0) - (players.length * FINAL_STACK_CHIPS_PER_PLAYER),
+      warnings: warnings
+    };
+
+    finalStackPlanCache[key] = plan;
+    return plan;
+  }
+
+  function renderFinalStackCalculator() {
+    var host = document.getElementById('final-stack-host');
+    var summaryHost = document.getElementById('final-stack-summary');
+    var multiplierInput = document.getElementById('final-stack-multiplier');
+    if (!host || !summaryHost || !multiplierInput) { return; }
+
+    var multiplier = parseFloat(multiplierInput.value);
+    host.innerHTML = '';
+    summaryHost.innerHTML = '';
+
+    if (!isFinite(multiplier) || isNaN(multiplier) || multiplier <= 0) {
+      host.innerHTML = '<div class="stack-calc-warning">Entre un multiplicateur valide supérieur à 0.</div>';
+      return;
+    }
+
+    var players = getFinalStackPlayers();
+    if (!players.length) {
+      host.innerHTML = '<div class="stack-calc-warning">Aucune donnée de classement disponible pour calculer les stacks.</div>';
+      return;
+    }
+
+    var plan = buildFinalStackPlan(players, multiplier);
+    if (plan.error) {
+      host.innerHTML = '<div class="stack-calc-warning">' + plan.error + '</div>';
+      return;
+    }
+
+    function addSummaryCard(label, value, detail) {
+      var card = document.createElement('article');
+      card.className = 'stack-calc-card';
+      var h = document.createElement('h3');
+      h.textContent = label;
+      var v = document.createElement('p');
+      v.className = 'value';
+      v.textContent = value;
+      var d = document.createElement('p');
+      d.className = 'detail';
+      d.textContent = detail || '';
+      card.appendChild(h);
+      card.appendChild(v);
+      card.appendChild(d);
+      summaryHost.appendChild(card);
+    }
+
+    addSummaryCard('Joueurs', String(plan.playersCount), 'Classement actuel complet');
+    addSummaryCard('Multiplicateur', formatDisplayAmount(multiplier, (Math.round(multiplier) === multiplier) ? 0 : 1) + 'x', 'Points → jetons');
+    addSummaryCard('Stack total', formatDisplayAmount(plan.totalFinal, 0), 'Somme des stacks distribués');
+    addSummaryCard('Écart total', formatSignedAmount(Math.round(plan.totalDiff)), 'Distribué vs cible brute');
+    addSummaryCard('Erreur absolue', formatDisplayAmount(Math.round(plan.totalAbsError), 0), 'Somme des écarts individuels');
+    addSummaryCard('Jetons restants', formatDisplayAmount(plan.totalChipsRemaining, 0), 'Après distribution de 20 jetons par joueur');
+
+    (plan.warnings || []).forEach(function(msg) {
+      var warning = document.createElement('div');
+      warning.className = 'stack-calc-warning';
+      warning.textContent = msg;
+      host.appendChild(warning);
+    });
+
+    var tableWrap = document.createElement('div');
+    tableWrap.className = 'stack-calc-table-wrap';
+
+    var table = document.createElement('table');
+    table.className = 'total-table stack-calc-table';
+    var thead = document.createElement('thead');
+    var trh = document.createElement('tr');
+    ['Rang', 'Joueur', 'Points', 'Cible', 'Stack final', 'Écart', '100', '500', '1 000', '5 000', '10 000'].forEach(function(label) {
+      var th = document.createElement('th');
+      th.textContent = label;
+      trh.appendChild(th);
+    });
+    thead.appendChild(trh);
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    plan.players.forEach(function(item) {
+      var tr = document.createElement('tr');
+      var cells = [
+        item.player.rank === null ? '-' : String(item.player.rank),
+        item.player.name,
+        formatDisplayAmount(item.player.total || 0, 0),
+        formatDisplayAmount(item.target, (Math.round(item.target) === item.target) ? 0 : 1),
+        formatDisplayAmount(item.combo.value, 0),
+        formatSignedAmount(Math.round(item.diff)),
+        String(item.combo.counts[0]),
+        String(item.combo.counts[1]),
+        String(item.combo.counts[2]),
+        String(item.combo.counts[3]),
+        String(item.combo.counts[4])
+      ];
+
+      cells.forEach(function(value) {
+        var td = document.createElement('td');
+        td.textContent = value;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    tableWrap.appendChild(table);
+    host.appendChild(tableWrap);
+
+    var stockTable = document.createElement('table');
+    stockTable.className = 'total-table stack-calc-stock-table';
+    var stockHead = document.createElement('thead');
+    var stockHeadRow = document.createElement('tr');
+    ['Jeton', 'Stock', 'Utilisés', 'Restants'].forEach(function(label) {
+      var th = document.createElement('th');
+      th.textContent = label;
+      stockHeadRow.appendChild(th);
+    });
+    stockHead.appendChild(stockHeadRow);
+    stockTable.appendChild(stockHead);
+
+    var stockBody = document.createElement('tbody');
+    plan.stockRows.forEach(function(row) {
+      var tr = document.createElement('tr');
+      [row.label, String(row.stock), String(row.used), String(row.remaining)].forEach(function(value) {
+        var td = document.createElement('td');
+        td.textContent = value;
+        tr.appendChild(td);
+      });
+      stockBody.appendChild(tr);
+    });
+    stockTable.appendChild(stockBody);
+    host.appendChild(stockTable);
+  }
+
+  function setupFinalStackCalculator() {
+    var panel = document.getElementById('final-stack');
+    var input = document.getElementById('final-stack-multiplier');
+    var run = document.getElementById('final-stack-run');
+    if (!panel || !input || !run || panel.getAttribute('data-ready') === '1') { return; }
+
+    try {
+      var savedMultiplier = window.localStorage ? window.localStorage.getItem(FINAL_STACK_MULTIPLIER_KEY) : '';
+      if (savedMultiplier) {
+        input.value = savedMultiplier;
+      }
+    }
+    catch (err) {}
+
+    function triggerFinalStackRender() {
+      try {
+        if (window.localStorage) {
+          window.localStorage.setItem(FINAL_STACK_MULTIPLIER_KEY, input.value || '');
+        }
+      }
+      catch (err) {}
+      renderFinalStackCalculator();
+    }
+
+    run.addEventListener('click', triggerFinalStackRender);
+    input.addEventListener('change', triggerFinalStackRender);
+    input.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        triggerFinalStackRender();
+      }
+    });
+
+    panel.setAttribute('data-ready', '1');
+    renderFinalStackCalculator();
   }
 
   function setupExportPng() {

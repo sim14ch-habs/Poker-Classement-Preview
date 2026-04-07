@@ -598,7 +598,8 @@ function Export-PublicHtml {
         [string]$OutputPath,
         [int]$WeekNumber,
         [int]$LastPlayerRow,
-        [int]$LastWeekColHebdo
+        [int]$LastWeekColHebdo,
+        [object]$SiteConfig = $null
     )
 
     $pointsMap = Get-PointsMapFromSheet -WsCalc $WsCalc
@@ -606,6 +607,12 @@ function Export-PublicHtml {
     $totalHtml = Build-TotalTabHtml -WsTotal $WsTotal -WsHebdo $WsHebdo
     $progressionData = Build-ProgressionData -WsHebdo $WsHebdo -WsTotal $WsTotal -LastWeekCol $LastWeekColHebdo
     $progressionJson = $progressionData | ConvertTo-Json -Depth 12 -Compress
+    if ($null -eq $SiteConfig) {
+        $SiteConfig = [ordered]@{
+            enableFinalStackCalculator = $false
+        }
+    }
+    $siteConfigJson = $SiteConfig | ConvertTo-Json -Depth 8 -Compress
     $stamp = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss')
 
     $scriptDir = Split-Path -Parent $PSCommandPath
@@ -615,7 +622,7 @@ function Export-PublicHtml {
     }
 
     $html = Get-Content -Raw -LiteralPath $templatePath
-    $tokens = @('{{STAMP}}', '{{WEEK_PANELS}}', '{{TOTAL_HTML}}', '{{PROGRESSION_JSON}}')
+    $tokens = @('{{STAMP}}', '{{WEEK_PANELS}}', '{{TOTAL_HTML}}', '{{PROGRESSION_JSON}}', '{{SITE_CONFIG_JSON}}')
     foreach ($token in $tokens) {
         if (-not $html.Contains($token)) {
             throw "Template invalide: placeholder manquant $token"
@@ -626,6 +633,7 @@ function Export-PublicHtml {
     $html = $html.Replace('{{WEEK_PANELS}}', $weeklyTabs.PanelsHtml)
     $html = $html.Replace('{{TOTAL_HTML}}', $totalHtml)
     $html = $html.Replace('{{PROGRESSION_JSON}}', $progressionJson)
+    $html = $html.Replace('{{SITE_CONFIG_JSON}}', $siteConfigJson)
 
     Set-Content -LiteralPath $OutputPath -Value $html -Encoding UTF8
 }
@@ -1024,7 +1032,15 @@ try {
     }
 
     $htmlOutputFile = Join-Path $OutputDir "classement_public.html"
-    Export-PublicHtml -WsHebdo $wsHebdo -WsKills $wsKills -WsTotal $wsTotal -WsCalc $wsCalc -OutputPath $htmlOutputFile -WeekNumber $weekNumber -LastPlayerRow $lastPlayerRow -LastWeekColHebdo $lastWeekColHebdo
+    $siteConfig = [ordered]@{
+        enableFinalStackCalculator = $false
+    }
+    $publishFingerprint = ((@([string]$PublishRepoDir, [string]$PublicUrl) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }) -join ' ')
+    if ($publishFingerprint -match '(?i)preview') {
+        $siteConfig.enableFinalStackCalculator = $true
+    }
+
+    Export-PublicHtml -WsHebdo $wsHebdo -WsKills $wsKills -WsTotal $wsTotal -WsCalc $wsCalc -OutputPath $htmlOutputFile -WeekNumber $weekNumber -LastPlayerRow $lastPlayerRow -LastWeekColHebdo $lastWeekColHebdo -SiteConfig $siteConfig
 
     $repoSyncSummary = ""
     $gitPushSummary = ""
