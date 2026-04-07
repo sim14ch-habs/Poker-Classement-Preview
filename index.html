@@ -190,7 +190,7 @@ body { margin: 10px; }
 </head>
 <body>
 <h1>Poker Stanley</h1>
-<div class="meta">Mise à jour: 2026-04-07 14:20:03</div>
+<div class="meta">Mise à jour: 2026-04-07 14:22:59</div>
 <div class="legend">
 <span class="pill replacement">Barre orange = remplacé</span>
 <span class="pill absent">Nom rouge = absent non-remplacé</span>
@@ -2970,16 +2970,32 @@ body { margin: 10px; }
 
     var tableWrap = document.createElement('div');
     tableWrap.className = 'stack-calc-table-wrap';
+    var visibleStockRows = (plan.stockRows || []).filter(function(row) {
+      return row.value !== 10000 || (row.used || 0) > 0;
+    });
+    var visibleChipColumns = [
+      { label: '100', className: 'stack-chip-col-100', countIndex: 0, value: 100 },
+      { label: '500', className: 'stack-chip-col-500', countIndex: 1, value: 500 },
+      { label: '1 000', className: 'stack-chip-col-1000', countIndex: 2, value: 1000 },
+      { label: '5 000', className: 'stack-chip-col-5000', countIndex: 3, value: 5000 },
+      { label: '10 000', className: 'stack-chip-col-10000', countIndex: 4, value: 10000 }
+    ].filter(function(column) {
+      return column.value !== 10000 || visibleStockRows.some(function(row) { return row.value === 10000; });
+    });
 
     var table = document.createElement('table');
     table.className = 'total-table stack-calc-table';
     var thead = document.createElement('thead');
     var trh = document.createElement('tr');
-    var chipColumnClasses = ['', '', '', '', '', '', 'stack-chip-col-100', 'stack-chip-col-500', 'stack-chip-col-1000', 'stack-chip-col-5000', 'stack-chip-col-10000'];
-    ['Rang', 'Joueur', 'Points', 'Cible', 'Stack final', 'Écart', '100', '500', '1 000', '5 000', '10 000'].forEach(function(label, idx) {
+    ['Rang', 'Joueur', 'Points', 'Cible', 'Stack final', 'Écart'].forEach(function(label) {
       var th = document.createElement('th');
       th.textContent = label;
-      if (chipColumnClasses[idx]) { th.className = chipColumnClasses[idx]; }
+      trh.appendChild(th);
+    });
+    visibleChipColumns.forEach(function(column) {
+      var th = document.createElement('th');
+      th.textContent = column.label;
+      th.className = column.className;
       trh.appendChild(th);
     });
     thead.appendChild(trh);
@@ -2994,18 +3010,18 @@ body { margin: 10px; }
         formatDisplayAmount(item.player.total || 0, 0),
         formatDisplayAmount(item.target, (Math.round(item.target) === item.target) ? 0 : 1),
         formatDisplayAmount(item.combo.value, 0),
-        formatSignedAmount(Math.round(item.diff)),
-        String(item.combo.counts[0]),
-        String(item.combo.counts[1]),
-        String(item.combo.counts[2]),
-        String(item.combo.counts[3]),
-        String(item.combo.counts[4])
+        formatSignedAmount(Math.round(item.diff))
       ];
 
-      cells.forEach(function(value, idx) {
+      cells.forEach(function(value) {
         var td = document.createElement('td');
         td.textContent = value;
-        if (chipColumnClasses[idx]) { td.className = chipColumnClasses[idx]; }
+        tr.appendChild(td);
+      });
+      visibleChipColumns.forEach(function(column) {
+        var td = document.createElement('td');
+        td.textContent = String(item.combo.counts[column.countIndex] || 0);
+        td.className = column.className;
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
@@ -3027,7 +3043,7 @@ body { margin: 10px; }
     stockTable.appendChild(stockHead);
 
     var stockBody = document.createElement('tbody');
-    plan.stockRows.forEach(function(row) {
+    visibleStockRows.forEach(function(row) {
       var tr = document.createElement('tr');
       var chipClass = getFinalStackChipClass(row.value);
       [row.label, String(row.stock), String(row.used), String(row.remaining)].forEach(function(value, idx) {
