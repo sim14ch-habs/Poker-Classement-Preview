@@ -66,24 +66,27 @@ h1 { margin: 0 0 4px 0; }
 .stack-calc-stock-table { width: min(720px, 100%); margin-top: 12px; }
 .stack-calc-stock-table th, .stack-calc-stock-table td { text-align: center; }
 .stack-poker-visuals { width: min(1100px, 100%); display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-top: 16px; }
-.stack-poker-visuals.layout-3 { grid-template-columns: repeat(3, minmax(220px, 1fr)); grid-template-areas: ". . table3" ". table1 ." ". table2 ."; align-items: start; }
+.stack-poker-visuals.layout-3 { grid-template-columns: repeat(4, minmax(160px, 1fr)); grid-template-areas: ". . table3 table3" ". table1 table1 ." ". table2 table2 ."; align-items: start; }
 .stack-poker-group { display: flex; flex-direction: column; gap: 10px; }
 .stack-poker-group.final-group { grid-area: table1; }
 .stack-poker-group.table2-group { grid-area: table2; }
 .stack-poker-group.table3-group { grid-area: table3; }
 .stack-poker-group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .stack-poker-head-copy { display: flex; flex-direction: column; gap: 2px; }
+.stack-poker-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 .stack-poker-action { border: 1px solid #cbd5e1; background: #0f172a; color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 .stack-poker-action:hover { background: #1e293b; }
-.stack-poker-board { position: relative; min-height: 390px; border-radius: 28px; overflow: hidden; padding: 18px; border: 1px solid #0f172a; background: radial-gradient(circle at 50% 45%, #1f7a4a 0%, #14532d 58%, #052e16 100%); box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18); }
+.stack-poker-board-wrap { width: 100%; overflow-x: auto; }
+.stack-poker-board { position: relative; width: 100%; min-width: 430px; min-height: 410px; border-radius: 28px; overflow: hidden; padding: 18px; box-sizing: border-box; border: 1px solid #0f172a; background: radial-gradient(circle at 50% 45%, #1f7a4a 0%, #14532d 58%, #052e16 100%); box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18); }
 .stack-poker-board.final { background: radial-gradient(circle at 50% 45%, #1d4ed8 0%, #0f766e 18%, #14532d 58%, #052e16 100%); }
+.stack-poker-group.final-group .stack-poker-board { min-width: 560px; min-height: 430px; }
 .stack-poker-board::before { content: ''; position: absolute; inset: 20px; border-radius: 999px; border: 10px solid rgba(15, 23, 42, 0.92); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08); }
 .stack-poker-board::after { content: ''; position: absolute; inset: 56px 82px; border-radius: 999px; border: 2px dashed rgba(255, 255, 255, 0.18); }
 .stack-poker-title { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.01em; color: #0f172a; }
 .stack-poker-subtitle { margin: 0; font-size: 12px; color: #64748b; text-align: right; }
-.stack-poker-seat { position: absolute; z-index: 3; transform: translate(-50%, -50%); width: 112px; min-height: 58px; padding: 10px 9px 8px 9px; border-radius: 14px; background: rgba(255, 255, 255, 0.97); border: 1px solid rgba(15, 23, 42, 0.1); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16); text-align: center; }
+.stack-poker-seat { position: absolute; z-index: 3; transform: translate(-50%, -50%); width: 96px; min-height: 52px; padding: 9px 8px 7px 8px; border-radius: 14px; background: rgba(255, 255, 255, 0.97); border: 1px solid rgba(15, 23, 42, 0.1); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16); text-align: center; }
 .stack-poker-seat-num { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); display: inline-block; min-width: 26px; padding: 2px 7px; border-radius: 999px; background: #0f172a; color: #fff; font-size: 11px; font-weight: 700; }
-.stack-poker-seat-name { display: block; color: #0f172a; font-size: 12px; font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px; }
+.stack-poker-seat-name { display: block; color: #0f172a; font-size: 12px; font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 3px; }
 .stack-poker-seat-stack { display: block; color: #475569; font-size: 11px; margin-top: 4px; }
 .stack-poker-chip-summary { display: flex; flex-wrap: wrap; gap: 8px; }
 .stack-poker-chip-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: #fff; border: 1px solid #d1d5db; color: #0f172a; font-size: 12px; font-weight: 700; }
@@ -219,9 +222,10 @@ body { margin: 10px; }
 .stack-poker-visuals { grid-template-columns: 1fr; }
 .stack-poker-visuals.layout-3 { grid-template-columns: 1fr; grid-template-areas: none; }
 .stack-poker-group-head { align-items: flex-start; }
-.stack-poker-action { align-self: flex-start; }
-.stack-poker-board { min-height: 400px; }
-.stack-poker-seat { width: 98px; min-height: 54px; padding: 9px 7px 7px 7px; }
+.stack-poker-actions { justify-content: flex-start; }
+.stack-poker-board { min-width: 520px; min-height: 430px; }
+.stack-poker-group.final-group .stack-poker-board { min-width: 580px; }
+.stack-poker-seat { width: 90px; min-height: 50px; padding: 8px 6px 7px 6px; }
 .stack-poker-seat-name { font-size: 12px; }
 .stack-poker-seat-stack { font-size: 11px; }
 .player-card { padding: 16px; }
@@ -2025,31 +2029,31 @@ body { margin: 10px; }
     var safeCount = Math.max(count || 1, 1);
     var seatMaps = {
       10: [
-        { left: '50%', top: '84%' },
-        { left: '30%', top: '78%' },
-        { left: '14%', top: '64%' },
-        { left: '10%', top: '44%' },
-        { left: '23%', top: '24%' },
-        { left: '40%', top: '15%' },
-        { left: '60%', top: '15%' },
-        { left: '77%', top: '24%' },
-        { left: '90%', top: '44%' },
-        { left: '86%', top: '64%' }
+        { left: '50%', top: '88%' },
+        { left: '27%', top: '82%' },
+        { left: '11%', top: '68%' },
+        { left: '8%', top: '48%' },
+        { left: '19%', top: '25%' },
+        { left: '37%', top: '13%' },
+        { left: '63%', top: '13%' },
+        { left: '81%', top: '25%' },
+        { left: '92%', top: '48%' },
+        { left: '89%', top: '68%' }
       ],
       6: [
-        { left: '50%', top: '84%' },
-        { left: '18%', top: '65%' },
-        { left: '18%', top: '30%' },
-        { left: '50%', top: '14%' },
-        { left: '82%', top: '30%' },
-        { left: '82%', top: '65%' }
+        { left: '50%', top: '87%' },
+        { left: '17%', top: '66%' },
+        { left: '17%', top: '27%' },
+        { left: '50%', top: '12%' },
+        { left: '83%', top: '27%' },
+        { left: '83%', top: '66%' }
       ],
       5: [
-        { left: '50%', top: '84%' },
-        { left: '16%', top: '56%' },
-        { left: '31%', top: '19%' },
-        { left: '69%', top: '19%' },
-        { left: '84%', top: '56%' }
+        { left: '50%', top: '87%' },
+        { left: '15%', top: '58%' },
+        { left: '30%', top: '18%' },
+        { left: '70%', top: '18%' },
+        { left: '85%', top: '58%' }
       ]
     };
     if (seatMaps[safeCount] && seatMaps[safeCount][index]) {
@@ -2088,6 +2092,12 @@ body { margin: 10px; }
     });
   }
 
+  function resetFinalStackGroupSeats(groupKey) {
+    if (Object.prototype.hasOwnProperty.call(finalStackSeatShuffleState, groupKey)) {
+      delete finalStackSeatShuffleState[groupKey];
+    }
+  }
+
   function shuffleFinalStackGroupSeats(groupKey, count) {
     var order = [];
     for (var idx = 0; idx < count; idx++) {
@@ -2100,6 +2110,19 @@ body { margin: 10px; }
       order[swapIdx] = tmp;
     }
     finalStackSeatShuffleState[groupKey] = order;
+  }
+
+  function formatPokerSeatDisplayName(name) {
+    var raw = String(name || '').trim();
+    if (!raw) { return '-'; }
+    var parts = raw.split(/\s+/).filter(Boolean);
+    if (parts.length <= 1) {
+      return raw;
+    }
+    var first = parts[0];
+    var last = parts[parts.length - 1];
+    var initial = last.charAt(0).toUpperCase();
+    return first + ' ' + initial + '.';
   }
 
   function getChipCombos(minCounts) {
@@ -2588,17 +2611,31 @@ body { margin: 10px; }
       headCopy.appendChild(boardTitle);
       headCopy.appendChild(boardSubtitle);
       groupHead.appendChild(headCopy);
+      var actions = document.createElement('div');
+      actions.className = 'stack-poker-actions';
+      var resetButton = document.createElement('button');
+      resetButton.type = 'button';
+      resetButton.className = 'stack-poker-action';
+      resetButton.textContent = 'Ordre classement';
+      resetButton.addEventListener('click', function() {
+        resetFinalStackGroupSeats(group.key);
+        renderFinalStackCalculator();
+      });
+      actions.appendChild(resetButton);
       var shuffleButton = document.createElement('button');
       shuffleButton.type = 'button';
       shuffleButton.className = 'stack-poker-action';
-      shuffleButton.textContent = 'Mélanger cette table';
+      shuffleButton.textContent = 'Mélanger';
       shuffleButton.addEventListener('click', function() {
         shuffleFinalStackGroupSeats(group.key, group.players.length);
         renderFinalStackCalculator();
       });
-      groupHead.appendChild(shuffleButton);
+      actions.appendChild(shuffleButton);
+      groupHead.appendChild(actions);
       visualGroup.appendChild(groupHead);
 
+      var boardWrap = document.createElement('div');
+      boardWrap.className = 'stack-poker-board-wrap';
       var board = document.createElement('div');
       board.className = 'stack-poker-board ' + group.type;
 
@@ -2614,10 +2651,11 @@ body { margin: 10px; }
         seatNum.textContent = String(seatIdx + 1);
         var seatName = document.createElement('strong');
         seatName.className = 'stack-poker-seat-name';
-        seatName.textContent = entry.item.player.name;
+        seatName.textContent = formatPokerSeatDisplayName(entry.item.player.name);
+        seatName.title = entry.item.player.name;
         var seatStack = document.createElement('span');
         seatStack.className = 'stack-poker-seat-stack';
-        seatStack.textContent = 'Rang ' + String(entry.item.player.rank === null ? '-' : entry.item.player.rank) + ' · Stack ' + formatDisplayAmount(entry.item.combo.value, 0);
+        seatStack.textContent = 'Stack ' + formatDisplayAmount(entry.item.combo.value, 0);
 
         seat.appendChild(seatNum);
         seat.appendChild(seatName);
@@ -2625,7 +2663,8 @@ body { margin: 10px; }
         board.appendChild(seat);
       });
 
-      visualGroup.appendChild(board);
+      boardWrap.appendChild(board);
+      visualGroup.appendChild(boardWrap);
 
       var chipSummary = document.createElement('div');
       chipSummary.className = 'stack-poker-chip-summary';
