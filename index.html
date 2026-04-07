@@ -72,6 +72,9 @@ h1 { margin: 0 0 4px 0; }
 .stack-poker-group.table2-group { grid-area: table2; }
 .stack-poker-group.table3-group { grid-area: table3; }
 .stack-poker-group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.stack-poker-head-copy { display: flex; flex-direction: column; gap: 2px; }
+.stack-poker-action { border: 1px solid #cbd5e1; background: #0f172a; color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.stack-poker-action:hover { background: #1e293b; }
 .stack-poker-board { position: relative; min-height: 390px; border-radius: 28px; overflow: hidden; padding: 18px; border: 1px solid #0f172a; background: radial-gradient(circle at 50% 45%, #1f7a4a 0%, #14532d 58%, #052e16 100%); box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18); }
 .stack-poker-board.final { background: radial-gradient(circle at 50% 45%, #1d4ed8 0%, #0f766e 18%, #14532d 58%, #052e16 100%); }
 .stack-poker-board::before { content: ''; position: absolute; inset: 20px; border-radius: 999px; border: 10px solid rgba(15, 23, 42, 0.92); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08); }
@@ -216,6 +219,7 @@ body { margin: 10px; }
 .stack-poker-visuals { grid-template-columns: 1fr; }
 .stack-poker-visuals.layout-3 { grid-template-columns: 1fr; grid-template-areas: none; }
 .stack-poker-group-head { align-items: flex-start; }
+.stack-poker-action { align-self: flex-start; }
 .stack-poker-board { min-height: 400px; }
 .stack-poker-seat { width: 98px; min-height: 54px; padding: 9px 7px 7px 7px; }
 .stack-poker-seat-name { font-size: 12px; }
@@ -226,7 +230,7 @@ body { margin: 10px; }
 </head>
 <body>
 <h1>Poker Stanley</h1>
-<div class="meta">Mise à jour: 2026-04-07 15:42:38</div>
+<div class="meta">Mise à jour: 2026-04-07 15:45:25</div>
 <div class="legend">
 <span class="pill replacement">Barre orange = remplacé</span>
 <span class="pill absent">Nom rouge = absent non-remplacé</span>
@@ -1211,6 +1215,7 @@ body { margin: 10px; }
   var raceMapCache = null;
   var chipComboCache = Object.create(null);
   var finalStackPlanCache = {};
+  var finalStackSeatShuffleState = Object.create(null);
   var pendingWeekFromHash = '';
   function updateCompactWeekLabel() {
     var weeksCount = (progression && progression.weeks && progression.weeks.length) ? progression.weeks.length : 0;
@@ -2884,6 +2889,44 @@ body { margin: 10px; }
     };
   }
 
+  function getFinalStackVisualPlayers(group) {
+    var players = (group && group.players) ? group.players.slice(0) : [];
+    var order = finalStackSeatShuffleState[group.key];
+    if (!Array.isArray(order) || order.length !== players.length) {
+      return players;
+    }
+
+    var seen = Object.create(null);
+    var isValid = order.every(function(idx) {
+      if (!isFinite(idx) || isNaN(idx) || idx < 0 || idx >= players.length || seen[idx]) {
+        return false;
+      }
+      seen[idx] = true;
+      return true;
+    });
+    if (!isValid) {
+      return players;
+    }
+
+    return order.map(function(idx) {
+      return players[idx];
+    });
+  }
+
+  function shuffleFinalStackGroupSeats(groupKey, count) {
+    var order = [];
+    for (var idx = 0; idx < count; idx++) {
+      order.push(idx);
+    }
+    for (var shuffleIdx = order.length - 1; shuffleIdx > 0; shuffleIdx--) {
+      var swapIdx = Math.floor(Math.random() * (shuffleIdx + 1));
+      var tmp = order[shuffleIdx];
+      order[shuffleIdx] = order[swapIdx];
+      order[swapIdx] = tmp;
+    }
+    finalStackSeatShuffleState[groupKey] = order;
+  }
+
   function getChipCombos(minCounts) {
     var normalizedMinCounts = sanitizeFinalStackMinCounts(minCounts);
     var cacheKey = getFinalStackMinCountsKey(normalizedMinCounts);
@@ -3355,23 +3398,36 @@ body { margin: 10px; }
     stackGroups.forEach(function(group) {
       var visualGroup = document.createElement('section');
       visualGroup.className = 'stack-poker-group ' + (group.layoutClass || '');
+      var visualPlayers = getFinalStackVisualPlayers(group);
 
       var groupHead = document.createElement('div');
       groupHead.className = 'stack-poker-group-head';
+      var headCopy = document.createElement('div');
+      headCopy.className = 'stack-poker-head-copy';
       var boardTitle = document.createElement('h3');
       boardTitle.className = 'stack-poker-title';
       boardTitle.textContent = group.label;
       var boardSubtitle = document.createElement('p');
       boardSubtitle.className = 'stack-poker-subtitle';
-      boardSubtitle.textContent = String(group.players.length) + ' joueur' + (group.players.length > 1 ? 's' : '') + ' · ordre des sièges = ordre des rangs affichés';
-      groupHead.appendChild(boardTitle);
-      groupHead.appendChild(boardSubtitle);
+      boardSubtitle.textContent = String(group.players.length) + ' joueur' + (group.players.length > 1 ? 's' : '') + ' · mélange visuel des sièges seulement';
+      headCopy.appendChild(boardTitle);
+      headCopy.appendChild(boardSubtitle);
+      groupHead.appendChild(headCopy);
+      var shuffleButton = document.createElement('button');
+      shuffleButton.type = 'button';
+      shuffleButton.className = 'stack-poker-action';
+      shuffleButton.textContent = 'Mélanger cette table';
+      shuffleButton.addEventListener('click', function() {
+        shuffleFinalStackGroupSeats(group.key, group.players.length);
+        renderFinalStackCalculator();
+      });
+      groupHead.appendChild(shuffleButton);
       visualGroup.appendChild(groupHead);
 
       var board = document.createElement('div');
       board.className = 'stack-poker-board ' + group.type;
 
-      group.players.forEach(function(entry, seatIdx) {
+      visualPlayers.forEach(function(entry, seatIdx) {
         var pos = getFinalStackSeatPosition(seatIdx, group.players.length);
         var seat = document.createElement('div');
         seat.className = 'stack-poker-seat';
@@ -3380,13 +3436,13 @@ body { margin: 10px; }
 
         var seatNum = document.createElement('span');
         seatNum.className = 'stack-poker-seat-num';
-        seatNum.textContent = String(entry.seat);
+        seatNum.textContent = String(seatIdx + 1);
         var seatName = document.createElement('strong');
         seatName.className = 'stack-poker-seat-name';
         seatName.textContent = entry.item.player.name;
         var seatStack = document.createElement('span');
         seatStack.className = 'stack-poker-seat-stack';
-        seatStack.textContent = 'Stack ' + formatDisplayAmount(entry.item.combo.value, 0);
+        seatStack.textContent = 'Rang ' + String(entry.item.player.rank === null ? '-' : entry.item.player.rank) + ' · Stack ' + formatDisplayAmount(entry.item.combo.value, 0);
 
         seat.appendChild(seatNum);
         seat.appendChild(seatName);
