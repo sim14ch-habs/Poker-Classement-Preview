@@ -71,17 +71,17 @@ h1 { margin: 0 0 4px 0; }
 .stack-poker-group.final-group { grid-area: table1; }
 .stack-poker-group.table2-group { grid-area: table2; }
 .stack-poker-group.table3-group { grid-area: table3; }
-.stack-poker-board { position: relative; min-height: 330px; border-radius: 28px; overflow: hidden; padding: 18px; border: 1px solid #0f172a; background: radial-gradient(circle at 50% 45%, #1f7a4a 0%, #14532d 58%, #052e16 100%); box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18); }
+.stack-poker-group-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.stack-poker-board { position: relative; min-height: 390px; border-radius: 28px; overflow: hidden; padding: 18px; border: 1px solid #0f172a; background: radial-gradient(circle at 50% 45%, #1f7a4a 0%, #14532d 58%, #052e16 100%); box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18); }
 .stack-poker-board.final { background: radial-gradient(circle at 50% 45%, #1d4ed8 0%, #0f766e 18%, #14532d 58%, #052e16 100%); }
 .stack-poker-board::before { content: ''; position: absolute; inset: 20px; border-radius: 999px; border: 10px solid rgba(15, 23, 42, 0.92); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08); }
-.stack-poker-board::after { content: ''; position: absolute; inset: 46px 72px; border-radius: 999px; border: 2px dashed rgba(255, 255, 255, 0.18); }
-.stack-poker-header { position: relative; z-index: 2; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; color: #f8fafc; }
-.stack-poker-title { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.01em; }
-.stack-poker-subtitle { margin: 0; font-size: 12px; color: rgba(248, 250, 252, 0.78); }
-.stack-poker-seat { position: absolute; z-index: 3; transform: translate(-50%, -50%); min-width: 120px; max-width: 142px; padding: 8px 10px; border-radius: 14px; background: rgba(255, 255, 255, 0.96); border: 1px solid rgba(15, 23, 42, 0.1); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18); text-align: center; }
-.stack-poker-seat-num { display: inline-block; min-width: 24px; padding: 2px 7px; border-radius: 999px; background: #0f172a; color: #fff; font-size: 11px; font-weight: 700; margin-bottom: 4px; }
-.stack-poker-seat-name { display: block; color: #0f172a; font-size: 13px; font-weight: 700; line-height: 1.2; }
-.stack-poker-seat-stack { display: block; color: #475569; font-size: 12px; margin-top: 3px; }
+.stack-poker-board::after { content: ''; position: absolute; inset: 56px 82px; border-radius: 999px; border: 2px dashed rgba(255, 255, 255, 0.18); }
+.stack-poker-title { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.01em; color: #0f172a; }
+.stack-poker-subtitle { margin: 0; font-size: 12px; color: #64748b; text-align: right; }
+.stack-poker-seat { position: absolute; z-index: 3; transform: translate(-50%, -50%); width: 112px; min-height: 58px; padding: 10px 9px 8px 9px; border-radius: 14px; background: rgba(255, 255, 255, 0.97); border: 1px solid rgba(15, 23, 42, 0.1); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16); text-align: center; }
+.stack-poker-seat-num { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); display: inline-block; min-width: 26px; padding: 2px 7px; border-radius: 999px; background: #0f172a; color: #fff; font-size: 11px; font-weight: 700; }
+.stack-poker-seat-name { display: block; color: #0f172a; font-size: 12px; font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px; }
+.stack-poker-seat-stack { display: block; color: #475569; font-size: 11px; margin-top: 4px; }
 .stack-poker-chip-summary { display: flex; flex-wrap: wrap; gap: 8px; }
 .stack-poker-chip-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: #fff; border: 1px solid #d1d5db; color: #0f172a; font-size: 12px; font-weight: 700; }
 .stack-poker-chip-pill .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 999px; border: 1px solid rgba(15, 23, 42, 0.15); }
@@ -215,8 +215,9 @@ body { margin: 10px; }
 .stack-calc-mins-table input { width: 58px; }
 .stack-poker-visuals { grid-template-columns: 1fr; }
 .stack-poker-visuals.layout-3 { grid-template-columns: 1fr; grid-template-areas: none; }
-.stack-poker-board { min-height: 360px; }
-.stack-poker-seat { min-width: 96px; max-width: 108px; padding: 7px 8px; }
+.stack-poker-group-head { align-items: flex-start; }
+.stack-poker-board { min-height: 400px; }
+.stack-poker-seat { width: 98px; min-height: 54px; padding: 9px 7px 7px 7px; }
 .stack-poker-seat-name { font-size: 12px; }
 .stack-poker-seat-stack { font-size: 11px; }
 .player-card { padding: 16px; }
@@ -2017,6 +2018,38 @@ body { margin: 10px; }
 
   function getFinalStackSeatPosition(index, count) {
     var safeCount = Math.max(count || 1, 1);
+    var seatMaps = {
+      10: [
+        { left: '50%', top: '84%' },
+        { left: '30%', top: '78%' },
+        { left: '14%', top: '64%' },
+        { left: '10%', top: '44%' },
+        { left: '23%', top: '24%' },
+        { left: '40%', top: '15%' },
+        { left: '60%', top: '15%' },
+        { left: '77%', top: '24%' },
+        { left: '90%', top: '44%' },
+        { left: '86%', top: '64%' }
+      ],
+      6: [
+        { left: '50%', top: '84%' },
+        { left: '18%', top: '65%' },
+        { left: '18%', top: '30%' },
+        { left: '50%', top: '14%' },
+        { left: '82%', top: '30%' },
+        { left: '82%', top: '65%' }
+      ],
+      5: [
+        { left: '50%', top: '84%' },
+        { left: '16%', top: '56%' },
+        { left: '31%', top: '19%' },
+        { left: '69%', top: '19%' },
+        { left: '84%', top: '56%' }
+      ]
+    };
+    if (seatMaps[safeCount] && seatMaps[safeCount][index]) {
+      return seatMaps[safeCount][index];
+    }
     var angle = (Math.PI / 2) + ((2 * Math.PI * index) / safeCount);
     var radiusX = safeCount >= 8 ? 40 : 36;
     var radiusY = safeCount >= 8 ? 34 : 30;
@@ -2498,20 +2531,20 @@ body { margin: 10px; }
       var visualGroup = document.createElement('section');
       visualGroup.className = 'stack-poker-group ' + (group.layoutClass || '');
 
-      var board = document.createElement('div');
-      board.className = 'stack-poker-board ' + group.type;
-
-      var boardHeader = document.createElement('div');
-      boardHeader.className = 'stack-poker-header';
+      var groupHead = document.createElement('div');
+      groupHead.className = 'stack-poker-group-head';
       var boardTitle = document.createElement('h3');
       boardTitle.className = 'stack-poker-title';
       boardTitle.textContent = group.label;
       var boardSubtitle = document.createElement('p');
       boardSubtitle.className = 'stack-poker-subtitle';
       boardSubtitle.textContent = String(group.players.length) + ' joueur' + (group.players.length > 1 ? 's' : '') + ' · ordre des sièges = ordre des rangs affichés';
-      boardHeader.appendChild(boardTitle);
-      boardHeader.appendChild(boardSubtitle);
-      board.appendChild(boardHeader);
+      groupHead.appendChild(boardTitle);
+      groupHead.appendChild(boardSubtitle);
+      visualGroup.appendChild(groupHead);
+
+      var board = document.createElement('div');
+      board.className = 'stack-poker-board ' + group.type;
 
       group.players.forEach(function(entry, seatIdx) {
         var pos = getFinalStackSeatPosition(seatIdx, group.players.length);
