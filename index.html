@@ -77,9 +77,11 @@ h1 { margin: 0 0 4px 0; }
 .stack-poker-action { border: 1px solid #cbd5e1; background: #0f172a; color: #fff; border-radius: 999px; padding: 7px 12px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 .stack-poker-action:hover { background: #1e293b; }
 .stack-poker-board-wrap { width: 100%; overflow-x: auto; }
-.stack-poker-board { position: relative; width: 100%; min-width: 430px; min-height: 410px; border-radius: 28px; overflow: hidden; padding: 18px; box-sizing: border-box; border: 1px solid #0f172a; background: radial-gradient(circle at 50% 45%, #1f7a4a 0%, #14532d 58%, #052e16 100%); box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18); }
+.stack-poker-scene { position: relative; width: 100%; min-width: 620px; height: 520px; margin: 0 auto; }
+.stack-poker-group.final-group .stack-poker-scene { min-width: 760px; height: 560px; }
+.stack-poker-board { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 430px; height: 250px; border-radius: 999px; overflow: hidden; box-sizing: border-box; border: 1px solid #0f172a; background: radial-gradient(circle at 50% 45%, #1f7a4a 0%, #14532d 58%, #052e16 100%); box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18); }
 .stack-poker-board.final { background: radial-gradient(circle at 50% 45%, #1d4ed8 0%, #0f766e 18%, #14532d 58%, #052e16 100%); }
-.stack-poker-group.final-group .stack-poker-board { min-width: 560px; min-height: 430px; }
+.stack-poker-group.final-group .stack-poker-board { width: 560px; height: 300px; }
 .stack-poker-board::before { content: ''; position: absolute; inset: 20px; border-radius: 999px; border: 10px solid rgba(15, 23, 42, 0.92); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08); }
 .stack-poker-board::after { content: ''; position: absolute; inset: 56px 82px; border-radius: 999px; border: 2px dashed rgba(255, 255, 255, 0.18); }
 .stack-poker-title { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.01em; color: #0f172a; }
@@ -223,8 +225,10 @@ body { margin: 10px; }
 .stack-poker-visuals.layout-3 { grid-template-columns: 1fr; grid-template-areas: none; }
 .stack-poker-group-head { align-items: flex-start; }
 .stack-poker-actions { justify-content: flex-start; }
-.stack-poker-board { min-width: 520px; min-height: 430px; }
-.stack-poker-group.final-group .stack-poker-board { min-width: 580px; }
+.stack-poker-scene { min-width: 560px; height: 500px; }
+.stack-poker-group.final-group .stack-poker-scene { min-width: 620px; height: 520px; }
+.stack-poker-board { width: 380px; height: 220px; }
+.stack-poker-group.final-group .stack-poker-board { width: 470px; height: 260px; }
 .stack-poker-seat { width: 90px; min-height: 50px; padding: 8px 6px 7px 6px; }
 .stack-poker-seat-name { font-size: 12px; }
 .stack-poker-seat-stack { font-size: 11px; }
@@ -234,7 +238,7 @@ body { margin: 10px; }
 </head>
 <body>
 <h1>Poker Stanley</h1>
-<div class="meta">Mise à jour: 2026-04-07 15:52:27</div>
+<div class="meta">Mise à jour: 2026-04-07 15:55:31</div>
 <div class="legend">
 <span class="pill replacement">Barre orange = remplacé</span>
 <span class="pill absent">Nom rouge = absent non-remplacé</span>
@@ -3461,8 +3465,11 @@ body { margin: 10px; }
 
       var boardWrap = document.createElement('div');
       boardWrap.className = 'stack-poker-board-wrap';
+      var scene = document.createElement('div');
+      scene.className = 'stack-poker-scene';
       var board = document.createElement('div');
       board.className = 'stack-poker-board ' + group.type;
+      scene.appendChild(board);
 
       visualPlayers.forEach(function(entry, seatIdx) {
         var pos = getFinalStackSeatPosition(seatIdx, group.players.length);
@@ -3485,10 +3492,10 @@ body { margin: 10px; }
         seat.appendChild(seatNum);
         seat.appendChild(seatName);
         seat.appendChild(seatStack);
-        board.appendChild(seat);
+        scene.appendChild(seat);
       });
 
-      boardWrap.appendChild(board);
+      boardWrap.appendChild(scene);
       visualGroup.appendChild(boardWrap);
 
       var chipSummary = document.createElement('div');
