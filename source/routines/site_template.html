@@ -60,9 +60,27 @@ h1 { margin: 0 0 4px 0; }
 .stack-calc-table { width: min(1100px, 100%); }
 .stack-calc-table th, .stack-calc-table td { text-align: center; }
 .stack-calc-table td:nth-child(2) { text-align: center; white-space: nowrap; }
-.stack-calc-divider-row td { background: #cbd5e1; color: #0f172a; font-weight: 800; letter-spacing: 0.02em; border-top: 3px solid #0f172a; border-bottom: 2px solid #94a3b8; padding: 9px 10px; }
+.stack-calc-group-row td { color: #0f172a; font-weight: 800; letter-spacing: 0.02em; padding: 9px 10px; }
+.stack-calc-group-row.final td { background: #dbeafe; border-top: 3px solid #1d4ed8; border-bottom: 2px solid #93c5fd; }
+.stack-calc-group-row.consolation td { background: #e2e8f0; border-top: 3px solid #475569; border-bottom: 2px solid #94a3b8; }
 .stack-calc-stock-table { width: min(720px, 100%); margin-top: 12px; }
 .stack-calc-stock-table th, .stack-calc-stock-table td { text-align: center; }
+.stack-poker-visuals { width: min(1100px, 100%); display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-top: 16px; }
+.stack-poker-group { display: flex; flex-direction: column; gap: 10px; }
+.stack-poker-board { position: relative; min-height: 330px; border-radius: 28px; overflow: hidden; padding: 18px; border: 1px solid #0f172a; background: radial-gradient(circle at 50% 45%, #1f7a4a 0%, #14532d 58%, #052e16 100%); box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18); }
+.stack-poker-board.final { background: radial-gradient(circle at 50% 45%, #1d4ed8 0%, #0f766e 18%, #14532d 58%, #052e16 100%); }
+.stack-poker-board::before { content: ''; position: absolute; inset: 20px; border-radius: 999px; border: 10px solid rgba(15, 23, 42, 0.92); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08); }
+.stack-poker-board::after { content: ''; position: absolute; inset: 46px 72px; border-radius: 999px; border: 2px dashed rgba(255, 255, 255, 0.18); }
+.stack-poker-header { position: relative; z-index: 2; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; color: #f8fafc; }
+.stack-poker-title { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.01em; }
+.stack-poker-subtitle { margin: 0; font-size: 12px; color: rgba(248, 250, 252, 0.78); }
+.stack-poker-seat { position: absolute; z-index: 3; transform: translate(-50%, -50%); min-width: 120px; max-width: 142px; padding: 8px 10px; border-radius: 14px; background: rgba(255, 255, 255, 0.96); border: 1px solid rgba(15, 23, 42, 0.1); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.18); text-align: center; }
+.stack-poker-seat-num { display: inline-block; min-width: 24px; padding: 2px 7px; border-radius: 999px; background: #0f172a; color: #fff; font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+.stack-poker-seat-name { display: block; color: #0f172a; font-size: 13px; font-weight: 700; line-height: 1.2; }
+.stack-poker-seat-stack { display: block; color: #475569; font-size: 12px; margin-top: 3px; }
+.stack-poker-chip-summary { display: flex; flex-wrap: wrap; gap: 8px; }
+.stack-poker-chip-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: #fff; border: 1px solid #d1d5db; color: #0f172a; font-size: 12px; font-weight: 700; }
+.stack-poker-chip-pill .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 999px; border: 1px solid rgba(15, 23, 42, 0.15); }
 .stack-chip-col-100 { background: #4b5563 !important; color: #ffffff; }
 .stack-chip-col-500 { background: #8b5cf6 !important; color: #ffffff; }
 .stack-chip-col-1000 { background: #fde047 !important; color: #713f12; }
@@ -191,6 +209,11 @@ body { margin: 10px; }
 .stack-calc-controls input { width: 100%; min-width: 0; }
 .stack-calc-mins-table { min-width: 640px; }
 .stack-calc-mins-table input { width: 58px; }
+.stack-poker-visuals { grid-template-columns: 1fr; }
+.stack-poker-board { min-height: 360px; }
+.stack-poker-seat { min-width: 96px; max-width: 108px; padding: 7px 8px; }
+.stack-poker-seat-name { font-size: 12px; }
+.stack-poker-seat-stack { font-size: 11px; }
 .player-card { padding: 16px; }
 .player-card-title { font-size: 22px; }
 }</style>
@@ -274,7 +297,7 @@ body { margin: 10px; }
 </section>
 <section id="final-stack" class="tab-panel preview-only">
 <h2>Calculateur Stacks Finale</h2>
-<p class="stack-calc-note">Basé sur tout le classement actuel. 20 jetons par joueur, avec respect du stock global de jetons. Les minima par dénomination sont configurables ci-dessous.</p>
+<p class="stack-calc-note">Basé sur tout le classement actuel. 20 jetons par joueur, avec respect du stock global de jetons. Les rangs 1 à 10 restent dans l'ordre à la table finale; à partir du 11e, les joueurs alternent entre les tables de consolation 2 et 3. Les minima par dénomination sont configurables ci-dessous.</p>
 <div class="stack-calc-controls">
 <label for="final-stack-multiplier">Multiplicateur points → jetons:</label>
 <input id="final-stack-multiplier" type="number" min="0.1" step="0.5" value="5" />
@@ -1915,6 +1938,86 @@ body { margin: 10px; }
     });
   }
 
+  function buildFinalStackGroups(assignments) {
+    var groups = [];
+    var finalPlayers = assignments.slice(0, 10).map(function(item, idx) {
+      return {
+        item: item,
+        seat: idx + 1
+      };
+    });
+    if (finalPlayers.length) {
+      groups.push({
+        key: 'final',
+        label: 'Table finale ↑',
+        stockLabel: 'Finale ↑',
+        type: 'final',
+        players: finalPlayers
+      });
+    }
+
+    var consolationSource = assignments.slice(10);
+    var table2 = [];
+    var table3 = [];
+    consolationSource.forEach(function(item, idx) {
+      var enriched = {
+        item: item,
+        seat: Math.floor(idx / 2) + 1
+      };
+      if ((idx % 2) === 0) {
+        table2.push(enriched);
+      }
+      else {
+        table3.push(enriched);
+      }
+    });
+
+    if (table2.length) {
+      groups.push({
+        key: 'consolation-2',
+        label: 'Consolation ↓ · Table 2',
+        stockLabel: 'Table 2 ↓',
+        type: 'consolation',
+        players: table2
+      });
+    }
+    if (table3.length) {
+      groups.push({
+        key: 'consolation-3',
+        label: 'Consolation ↓ · Table 3',
+        stockLabel: 'Table 3 ↓',
+        type: 'consolation',
+        players: table3
+      });
+    }
+
+    return groups;
+  }
+
+  function buildFinalStackGroupChipUsage(groups) {
+    var usage = {};
+    groups.forEach(function(group) {
+      usage[group.key] = [0, 0, 0, 0, 0];
+      group.players.forEach(function(entry) {
+        FINAL_STACK_DENOMS.forEach(function(denom, idx) {
+          usage[group.key][idx] += entry.item.combo.counts[idx] || 0;
+        });
+      });
+    });
+    return usage;
+  }
+
+  function getFinalStackSeatPosition(index, count) {
+    var safeCount = Math.max(count || 1, 1);
+    var angle = (-Math.PI / 2) + ((2 * Math.PI * index) / safeCount);
+    var radiusX = safeCount >= 8 ? 40 : 36;
+    var radiusY = safeCount >= 8 ? 34 : 30;
+    return {
+      left: (50 + (Math.cos(angle) * radiusX)).toFixed(2) + '%',
+      top: (54 + (Math.sin(angle) * radiusY)).toFixed(2) + '%'
+    };
+  }
+
   function getChipCombos(minCounts) {
     var normalizedMinCounts = sanitizeFinalStackMinCounts(minCounts);
     var cacheKey = getFinalStackMinCountsKey(normalizedMinCounts);
@@ -2255,6 +2358,7 @@ body { margin: 10px; }
 
     var tableWrap = document.createElement('div');
     tableWrap.className = 'stack-calc-table-wrap';
+    var stackGroups = buildFinalStackGroups(plan.players);
     var visibleStockRows = (plan.stockRows || []).filter(function(row) {
       return row.value !== 10000 || (row.used || 0) > 0;
     });
@@ -2292,44 +2396,46 @@ body { margin: 10px; }
     table.appendChild(thead);
 
     var tbody = document.createElement('tbody');
-    plan.players.forEach(function(item, itemIdx) {
-      if (itemIdx === 10) {
-        var separatorRow = document.createElement('tr');
-        separatorRow.className = 'stack-calc-divider-row';
-        var separatorCell = document.createElement('td');
-        separatorCell.colSpan = 2 + visibleChipColumns.length + 4;
-        separatorCell.textContent = 'Après le top 10 · Reste du classement';
-        separatorRow.appendChild(separatorCell);
-        tbody.appendChild(separatorRow);
-      }
-      var tr = document.createElement('tr');
-      var cells = [
-        item.player.rank === null ? '-' : String(item.player.rank),
-        item.player.name
-      ];
+    stackGroups.forEach(function(group) {
+      var headerRow = document.createElement('tr');
+      headerRow.className = 'stack-calc-group-row ' + group.type;
+      var headerCell = document.createElement('td');
+      headerCell.colSpan = 2 + visibleChipColumns.length + 4;
+      headerCell.textContent = group.label;
+      headerRow.appendChild(headerCell);
+      tbody.appendChild(headerRow);
 
-      cells.forEach(function(value) {
-        var td = document.createElement('td');
-        td.textContent = value;
-        tr.appendChild(td);
+      group.players.forEach(function(entry) {
+        var item = entry.item;
+        var tr = document.createElement('tr');
+        var cells = [
+          item.player.rank === null ? '-' : String(item.player.rank),
+          item.player.name
+        ];
+
+        cells.forEach(function(value) {
+          var td = document.createElement('td');
+          td.textContent = value;
+          tr.appendChild(td);
+        });
+        visibleChipColumns.forEach(function(column) {
+          var td = document.createElement('td');
+          td.textContent = String(item.combo.counts[column.countIndex] || 0);
+          td.className = column.className;
+          tr.appendChild(td);
+        });
+        [
+          formatDisplayAmount(item.player.total || 0, 0),
+          formatDisplayAmount(item.target, (Math.round(item.target) === item.target) ? 0 : 1),
+          formatDisplayAmount(item.combo.value, 0),
+          formatSignedAmount(Math.round(item.diff))
+        ].forEach(function(value) {
+          var td = document.createElement('td');
+          td.textContent = value;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
       });
-      visibleChipColumns.forEach(function(column) {
-        var td = document.createElement('td');
-        td.textContent = String(item.combo.counts[column.countIndex] || 0);
-        td.className = column.className;
-        tr.appendChild(td);
-      });
-      [
-        formatDisplayAmount(item.player.total || 0, 0),
-        formatDisplayAmount(item.target, (Math.round(item.target) === item.target) ? 0 : 1),
-        formatDisplayAmount(item.combo.value, 0),
-        formatSignedAmount(Math.round(item.diff))
-      ].forEach(function(value) {
-        var td = document.createElement('td');
-        td.textContent = value;
-        tr.appendChild(td);
-      });
-      tbody.appendChild(tr);
     });
     table.appendChild(tbody);
     tableWrap.appendChild(table);
@@ -2339,7 +2445,10 @@ body { margin: 10px; }
     stockTable.className = 'total-table stack-calc-stock-table';
     var stockHead = document.createElement('thead');
     var stockHeadRow = document.createElement('tr');
-    ['Jeton', 'Stock', 'Utilisés', 'Restants'].forEach(function(label) {
+    var stockGroupColumns = stackGroups.map(function(group) {
+      return { key: group.key, label: group.stockLabel || group.label };
+    });
+    ['Jeton'].concat(stockGroupColumns.map(function(group) { return group.label; })).concat(['Total utilisés', 'Restants']).forEach(function(label) {
       var th = document.createElement('th');
       th.textContent = label;
       stockHeadRow.appendChild(th);
@@ -2348,10 +2457,17 @@ body { margin: 10px; }
     stockTable.appendChild(stockHead);
 
     var stockBody = document.createElement('tbody');
+    var groupChipUsage = buildFinalStackGroupChipUsage(stackGroups);
     visibleStockRows.forEach(function(row) {
       var tr = document.createElement('tr');
       var chipClass = getFinalStackChipClass(row.value);
-      [row.label, String(row.stock), String(row.used), String(row.remaining)].forEach(function(value, idx) {
+      var rowValues = [row.label]
+        .concat(stockGroupColumns.map(function(group) {
+          var denomIdx = FINAL_STACK_DENOMS.findIndex(function(denom) { return denom.value === row.value; });
+          return String((groupChipUsage[group.key] && denomIdx >= 0) ? (groupChipUsage[group.key][denomIdx] || 0) : 0);
+        }))
+        .concat([String(row.used), String(row.remaining)]);
+      rowValues.forEach(function(value, idx) {
         var td = document.createElement('td');
         td.textContent = value;
         if (idx === 0 && chipClass) { td.className = chipClass; }
@@ -2360,7 +2476,80 @@ body { margin: 10px; }
       stockBody.appendChild(tr);
     });
     stockTable.appendChild(stockBody);
-    host.appendChild(stockTable);
+    var stockWrap = document.createElement('div');
+    stockWrap.className = 'stack-calc-table-wrap';
+    stockWrap.appendChild(stockTable);
+    host.appendChild(stockWrap);
+
+    var visuals = document.createElement('div');
+    visuals.className = 'stack-poker-visuals';
+    stackGroups.forEach(function(group) {
+      var visualGroup = document.createElement('section');
+      visualGroup.className = 'stack-poker-group';
+
+      var board = document.createElement('div');
+      board.className = 'stack-poker-board ' + group.type;
+
+      var boardHeader = document.createElement('div');
+      boardHeader.className = 'stack-poker-header';
+      var boardTitle = document.createElement('h3');
+      boardTitle.className = 'stack-poker-title';
+      boardTitle.textContent = group.label;
+      var boardSubtitle = document.createElement('p');
+      boardSubtitle.className = 'stack-poker-subtitle';
+      boardSubtitle.textContent = String(group.players.length) + ' joueur' + (group.players.length > 1 ? 's' : '') + ' · ordre des sièges = ordre des rangs affichés';
+      boardHeader.appendChild(boardTitle);
+      boardHeader.appendChild(boardSubtitle);
+      board.appendChild(boardHeader);
+
+      group.players.forEach(function(entry, seatIdx) {
+        var pos = getFinalStackSeatPosition(seatIdx, group.players.length);
+        var seat = document.createElement('div');
+        seat.className = 'stack-poker-seat';
+        seat.style.left = pos.left;
+        seat.style.top = pos.top;
+
+        var seatNum = document.createElement('span');
+        seatNum.className = 'stack-poker-seat-num';
+        seatNum.textContent = String(entry.seat);
+        var seatName = document.createElement('strong');
+        seatName.className = 'stack-poker-seat-name';
+        seatName.textContent = entry.item.player.name;
+        var seatStack = document.createElement('span');
+        seatStack.className = 'stack-poker-seat-stack';
+        seatStack.textContent = 'Stack ' + formatDisplayAmount(entry.item.combo.value, 0);
+
+        seat.appendChild(seatNum);
+        seat.appendChild(seatName);
+        seat.appendChild(seatStack);
+        board.appendChild(seat);
+      });
+
+      visualGroup.appendChild(board);
+
+      var chipSummary = document.createElement('div');
+      chipSummary.className = 'stack-poker-chip-summary';
+      visibleChipColumns.forEach(function(column) {
+        var pill = document.createElement('div');
+        pill.className = 'stack-poker-chip-pill';
+        var swatch = document.createElement('span');
+        swatch.className = 'swatch';
+        var tdClass = getFinalStackChipClass(column.value);
+        if (tdClass === 'stack-chip-col-100') { swatch.style.background = '#4b5563'; }
+        else if (tdClass === 'stack-chip-col-500') { swatch.style.background = '#8b5cf6'; }
+        else if (tdClass === 'stack-chip-col-1000') { swatch.style.background = '#fde047'; }
+        else if (tdClass === 'stack-chip-col-5000') { swatch.style.background = '#ec4899'; }
+        else if (tdClass === 'stack-chip-col-10000') { swatch.style.background = '#fb923c'; }
+        var label = document.createElement('span');
+        label.textContent = column.label + ' × ' + String((groupChipUsage[group.key] && groupChipUsage[group.key][column.countIndex]) ? groupChipUsage[group.key][column.countIndex] : 0);
+        pill.appendChild(swatch);
+        pill.appendChild(label);
+        chipSummary.appendChild(pill);
+      });
+      visualGroup.appendChild(chipSummary);
+      visuals.appendChild(visualGroup);
+    });
+    host.appendChild(visuals);
   }
 
   function setupFinalStackCalculator() {
