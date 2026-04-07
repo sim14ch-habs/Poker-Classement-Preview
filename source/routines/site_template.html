@@ -45,6 +45,7 @@ h1 { margin: 0 0 4px 0; }
 .stack-calc-controls label { color: #475569; font-size: 13px; font-weight: 600; }
 .stack-calc-controls input { width: 110px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
 .stack-calc-controls button { border: 1px solid #cbd5e1; background: #0f172a; color: #fff; border-radius: 6px; padding: 7px 11px; cursor: pointer; }
+.stack-calc-status { color: #64748b; font-size: 12px; min-height: 18px; align-self: center; }
 .stack-calc-summary { width: min(1100px, 100%); display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 0 0 12px 0; }
 .stack-calc-card { background: #fff; border: 1px solid #d1d5db; border-radius: 10px; padding: 10px; }
 .stack-calc-card h3 { margin: 0 0 6px 0; font-size: 12px; color: #475569; text-transform: uppercase; letter-spacing: 0.03em; }
@@ -271,6 +272,7 @@ body { margin: 10px; }
 <label for="final-stack-multiplier">Multiplicateur points → jetons:</label>
 <input id="final-stack-multiplier" type="number" min="0.1" step="0.5" value="5" />
 <button id="final-stack-run" type="button">Calculer</button>
+<span id="final-stack-status" class="stack-calc-status" aria-live="polite"></span>
 </div>
 <div id="final-stack-summary" class="stack-calc-summary"></div>
 <div id="final-stack-host"></div>
@@ -2219,7 +2221,13 @@ body { margin: 10px; }
     var panel = document.getElementById('final-stack');
     var input = document.getElementById('final-stack-multiplier');
     var run = document.getElementById('final-stack-run');
-    if (!panel || !input || !run || panel.getAttribute('data-ready') === '1') { return; }
+    var status = document.getElementById('final-stack-status');
+    if (!panel || !input || !run || !status || panel.getAttribute('data-ready') === '1') { return; }
+
+    function setCalcStatus(message, error) {
+      status.textContent = message || '';
+      status.style.color = error ? '#b91c1c' : '#64748b';
+    }
 
     try {
       var savedMultiplier = window.localStorage ? window.localStorage.getItem(FINAL_STACK_MULTIPLIER_KEY) : '';
@@ -2229,27 +2237,52 @@ body { margin: 10px; }
     }
     catch (err) {}
 
-    function triggerFinalStackRender() {
+    function rememberMultiplier() {
       try {
         if (window.localStorage) {
           window.localStorage.setItem(FINAL_STACK_MULTIPLIER_KEY, input.value || '');
         }
       }
       catch (err) {}
-      renderFinalStackCalculator();
+    }
+
+    function markPending() {
+      rememberMultiplier();
+      setCalcStatus('À recalculer', false);
+    }
+
+    function triggerFinalStackRender() {
+      rememberMultiplier();
+      setCalcStatus('Calcul en cours...', false);
+      run.disabled = true;
+
+      window.setTimeout(function() {
+        try {
+          renderFinalStackCalculator();
+          setCalcStatus('Calcul terminé', false);
+        }
+        catch (err) {
+          var message = (err && err.message) ? err.message : 'Erreur inconnue';
+          setCalcStatus('Erreur: ' + message, true);
+        }
+        finally {
+          run.disabled = false;
+        }
+      }, 0);
     }
 
     run.addEventListener('click', triggerFinalStackRender);
-    input.addEventListener('input', triggerFinalStackRender);
-    input.addEventListener('change', triggerFinalStackRender);
+    input.addEventListener('input', markPending);
+    input.addEventListener('change', markPending);
     input.addEventListener('keydown', function(event) {
       if (event.key === 'Enter') {
+        event.preventDefault();
         triggerFinalStackRender();
       }
     });
 
     panel.setAttribute('data-ready', '1');
-    renderFinalStackCalculator();
+    triggerFinalStackRender();
   }
 
   function setupExportPng() {
