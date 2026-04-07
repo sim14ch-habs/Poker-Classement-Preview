@@ -60,6 +60,7 @@ h1 { margin: 0 0 4px 0; }
 .stack-calc-table { width: min(1100px, 100%); }
 .stack-calc-table th, .stack-calc-table td { text-align: center; }
 .stack-calc-table td:nth-child(2) { text-align: center; white-space: nowrap; }
+.stack-calc-divider-row td { background: #cbd5e1; color: #0f172a; font-weight: 800; letter-spacing: 0.02em; border-top: 3px solid #0f172a; border-bottom: 2px solid #94a3b8; padding: 9px 10px; }
 .stack-calc-stock-table { width: min(720px, 100%); margin-top: 12px; }
 .stack-calc-stock-table th, .stack-calc-stock-table td { text-align: center; }
 .stack-chip-col-100 { background: #4b5563 !important; color: #ffffff; }
@@ -2291,7 +2292,16 @@ body { margin: 10px; }
     table.appendChild(thead);
 
     var tbody = document.createElement('tbody');
-    plan.players.forEach(function(item) {
+    plan.players.forEach(function(item, itemIdx) {
+      if (itemIdx === 10) {
+        var separatorRow = document.createElement('tr');
+        separatorRow.className = 'stack-calc-divider-row';
+        var separatorCell = document.createElement('td');
+        separatorCell.colSpan = 2 + visibleChipColumns.length + 4;
+        separatorCell.textContent = 'Après le top 10 · Reste du classement';
+        separatorRow.appendChild(separatorCell);
+        tbody.appendChild(separatorRow);
+      }
       var tr = document.createElement('tr');
       var cells = [
         item.player.rank === null ? '-' : String(item.player.rank),
