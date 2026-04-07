@@ -266,7 +266,7 @@ body { margin: 10px; }
 </section>
 <section id="final-stack" class="tab-panel preview-only">
 <h2>Calculateur Stacks Finale</h2>
-<p class="stack-calc-note">Basé sur tout le classement actuel. 20 jetons par joueur, avec respect du stock global de jetons.</p>
+<p class="stack-calc-note">Basé sur tout le classement actuel. 20 jetons par joueur, avec respect du stock global de jetons et minimum 2 jetons de 100 par joueur.</p>
 <div class="stack-calc-controls">
 <label for="final-stack-multiplier">Multiplicateur points → jetons:</label>
 <input id="final-stack-multiplier" type="number" min="0.1" step="0.5" value="5" />
@@ -314,6 +314,7 @@ body { margin: 10px; }
     { label: '10 000', value: 10000, stock: 50 }
   ];
   var FINAL_STACK_CHIPS_PER_PLAYER = 20;
+  var FINAL_STACK_MIN_100_CHIPS = 2;
   var totalSummaryCache = null;
   var recordsCache = null;
   var raceMapCache = null;
@@ -1828,6 +1829,7 @@ body { margin: 10px; }
         for (var c1000 = 0; c1000 <= FINAL_STACK_CHIPS_PER_PLAYER - c10000 - c5000; c1000++) {
           for (var c500 = 0; c500 <= FINAL_STACK_CHIPS_PER_PLAYER - c10000 - c5000 - c1000; c500++) {
             var c100 = FINAL_STACK_CHIPS_PER_PLAYER - c10000 - c5000 - c1000 - c500;
+            if (c100 < FINAL_STACK_MIN_100_CHIPS) { continue; }
             var counts = [c100, c500, c1000, c5000, c10000];
             var value = (c100 * 100) + (c500 * 500) + (c1000 * 1000) + (c5000 * 5000) + (c10000 * 10000);
             combos.push({
@@ -1924,6 +1926,12 @@ body { margin: 10px; }
     if (requiredChipCount > totalChipStock) {
       return {
         error: "Impossible: il faut " + String(requiredChipCount) + " jetons au total, mais le stock complet n'en contient que " + String(totalChipStock) + '.',
+        warnings: warnings
+      };
+    }
+    if ((players.length * FINAL_STACK_MIN_100_CHIPS) > FINAL_STACK_DENOMS[0].stock) {
+      return {
+        error: "Impossible: il faut au moins " + String(players.length * FINAL_STACK_MIN_100_CHIPS) + " jetons de 100, mais le stock n'en contient que " + String(FINAL_STACK_DENOMS[0].stock) + '.',
         warnings: warnings
       };
     }
