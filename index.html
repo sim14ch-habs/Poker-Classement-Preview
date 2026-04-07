@@ -57,6 +57,14 @@ h1 { margin: 0 0 4px 0; }
 .stack-calc-table td:nth-child(2) { text-align: left; white-space: nowrap; }
 .stack-calc-stock-table { width: min(720px, 100%); margin-top: 12px; }
 .stack-calc-stock-table th, .stack-calc-stock-table td { text-align: center; }
+.stack-chip-col-100 { background: #4b5563 !important; color: #ffffff; }
+.stack-chip-col-500 { background: #8b5cf6 !important; color: #ffffff; }
+.stack-chip-col-1000 { background: #fde047 !important; color: #713f12; }
+.stack-chip-col-5000 { background: #ec4899 !important; color: #ffffff; }
+.stack-chip-col-10000 { background: #fb923c !important; color: #7c2d12; }
+.stack-chip-col-100 a,
+.stack-chip-col-500 a,
+.stack-chip-col-5000 a { color: #ffffff; }
 .week-picker { margin: 0 0 10px 0; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .week-picker label { color: #475569; font-size: 13px; font-weight: 600; }
 .week-picker select { min-width: 220px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
@@ -181,7 +189,7 @@ body { margin: 10px; }
 </head>
 <body>
 <h1>Poker Stanley</h1>
-<div class="meta">Mise à jour: 2026-04-07 14:05:15</div>
+<div class="meta">Mise à jour: 2026-04-07 14:10:55</div>
 <div class="legend">
 <span class="pill replacement">Barre orange = remplacé</span>
 <span class="pill absent">Nom rouge = absent non-remplacé</span>
@@ -2660,15 +2668,62 @@ body { margin: 10px; }
     return chipComboCache;
   }
 
+  function buildComboPreference(combo) {
+    var counts = (combo && combo.counts) ? combo.counts : [0, 0, 0, 0, 0];
+    return {
+      c100: counts[0] || 0,
+      c500: counts[1] || 0,
+      c1000: counts[2] || 0,
+      c5000: counts[3] || 0,
+      c10000: counts[4] || 0,
+      lowTotal: (counts[0] || 0) + (counts[1] || 0) + (counts[2] || 0)
+    };
+  }
+
+  function compareComboPreference(aPref, bPref) {
+    if (aPref.c10000 !== bPref.c10000) { return aPref.c10000 - bPref.c10000; }
+    if (aPref.c5000 !== bPref.c5000) { return aPref.c5000 - bPref.c5000; }
+    if (aPref.lowTotal !== bPref.lowTotal) { return bPref.lowTotal - aPref.lowTotal; }
+    if (aPref.c100 !== bPref.c100) { return bPref.c100 - aPref.c100; }
+    if (aPref.c500 !== bPref.c500) { return bPref.c500 - aPref.c500; }
+    if (aPref.c1000 !== bPref.c1000) { return bPref.c1000 - aPref.c1000; }
+    return 0;
+  }
+
+  function compareStatePreference(a, b) {
+    if (a.cost !== b.cost) { return a.cost - b.cost; }
+    if (a.c10000 !== b.c10000) { return a.c10000 - b.c10000; }
+    if (a.c5000 !== b.c5000) { return a.c5000 - b.c5000; }
+    if (a.lowTotal !== b.lowTotal) { return b.lowTotal - a.lowTotal; }
+    if (a.c100 !== b.c100) { return b.c100 - a.c100; }
+    if (a.c500 !== b.c500) { return b.c500 - a.c500; }
+    if (a.c1000 !== b.c1000) { return b.c1000 - a.c1000; }
+    return a.used.join('|').localeCompare(b.used.join('|'));
+  }
+
+  function getFinalStackChipClass(value) {
+    var n = toIntOrNull(value);
+    if (n === 100) { return 'stack-chip-col-100'; }
+    if (n === 500) { return 'stack-chip-col-500'; }
+    if (n === 1000) { return 'stack-chip-col-1000'; }
+    if (n === 5000) { return 'stack-chip-col-5000'; }
+    if (n === 10000) { return 'stack-chip-col-10000'; }
+    return '';
+  }
+
   function buildFinalStackCandidates(target, limit) {
     return getChipCombos().map(function(combo) {
+      var pref = buildComboPreference(combo);
       return {
         combo: combo,
         diff: combo.value - target,
-        cost: Math.abs(combo.value - target)
+        cost: Math.abs(combo.value - target),
+        pref: pref
       };
     }).sort(function(a, b) {
       if (a.cost !== b.cost) { return a.cost - b.cost; }
+      var prefCompare = compareComboPreference(a.pref, b.pref);
+      if (prefCompare !== 0) { return prefCompare; }
       var aOver = a.diff >= 0 ? 0 : 1;
       var bOver = b.diff >= 0 ? 0 : 1;
       if (aOver !== bOver) { return aOver - bOver; }
@@ -2722,6 +2777,12 @@ body { margin: 10px; }
       var states = [{
         used: [0, 0, 0, 0, 0],
         cost: 0,
+        c100: 0,
+        c500: 0,
+        c1000: 0,
+        c5000: 0,
+        c10000: 0,
+        lowTotal: 0,
         assignments: []
       }];
 
@@ -2748,30 +2809,32 @@ body { margin: 10px; }
 
             var nextCost = state.cost + candidate.cost;
             var stateKey = nextUsed.join('|');
-            var nextAssignments = state.assignments.concat([{
-              player: players[playerIdx],
-              target: targets[playerIdx],
-              combo: candidate.combo,
-              diff: candidate.diff,
-              cost: candidate.cost
-            }]);
-
-            if (!nextMap[stateKey] || nextCost < nextMap[stateKey].cost) {
-              nextMap[stateKey] = {
-                used: nextUsed,
-                cost: nextCost,
-                assignments: nextAssignments
-              };
+            var nextState = {
+              used: nextUsed,
+              cost: nextCost,
+              c100: state.c100 + candidate.pref.c100,
+              c500: state.c500 + candidate.pref.c500,
+              c1000: state.c1000 + candidate.pref.c1000,
+              c5000: state.c5000 + candidate.pref.c5000,
+              c10000: state.c10000 + candidate.pref.c10000,
+              lowTotal: state.lowTotal + candidate.pref.lowTotal,
+              assignments: state.assignments.concat([{
+                player: players[playerIdx],
+                target: targets[playerIdx],
+                combo: candidate.combo,
+                diff: candidate.diff,
+                cost: candidate.cost
+              }])
+            };
+            if (!nextMap[stateKey] || compareStatePreference(nextState, nextMap[stateKey]) < 0) {
+              nextMap[stateKey] = nextState;
             }
           }
         }
 
         states = Object.keys(nextMap).map(function(stateKey) {
           return nextMap[stateKey];
-        }).sort(function(a, b) {
-          if (a.cost !== b.cost) { return a.cost - b.cost; }
-          return a.used.join('|').localeCompare(b.used.join('|'));
-        });
+        }).sort(compareStatePreference);
 
         if (!states.length) {
           failed = true;
@@ -2901,9 +2964,11 @@ body { margin: 10px; }
     table.className = 'total-table stack-calc-table';
     var thead = document.createElement('thead');
     var trh = document.createElement('tr');
-    ['Rang', 'Joueur', 'Points', 'Cible', 'Stack final', 'Écart', '100', '500', '1 000', '5 000', '10 000'].forEach(function(label) {
+    var chipColumnClasses = ['', '', '', '', '', '', 'stack-chip-col-100', 'stack-chip-col-500', 'stack-chip-col-1000', 'stack-chip-col-5000', 'stack-chip-col-10000'];
+    ['Rang', 'Joueur', 'Points', 'Cible', 'Stack final', 'Écart', '100', '500', '1 000', '5 000', '10 000'].forEach(function(label, idx) {
       var th = document.createElement('th');
       th.textContent = label;
+      if (chipColumnClasses[idx]) { th.className = chipColumnClasses[idx]; }
       trh.appendChild(th);
     });
     thead.appendChild(trh);
@@ -2926,9 +2991,10 @@ body { margin: 10px; }
         String(item.combo.counts[4])
       ];
 
-      cells.forEach(function(value) {
+      cells.forEach(function(value, idx) {
         var td = document.createElement('td');
         td.textContent = value;
+        if (chipColumnClasses[idx]) { td.className = chipColumnClasses[idx]; }
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
@@ -2952,9 +3018,11 @@ body { margin: 10px; }
     var stockBody = document.createElement('tbody');
     plan.stockRows.forEach(function(row) {
       var tr = document.createElement('tr');
-      [row.label, String(row.stock), String(row.used), String(row.remaining)].forEach(function(value) {
+      var chipClass = getFinalStackChipClass(row.value);
+      [row.label, String(row.stock), String(row.used), String(row.remaining)].forEach(function(value, idx) {
         var td = document.createElement('td');
         td.textContent = value;
+        if (idx === 0 && chipClass) { td.className = chipClass; }
         tr.appendChild(td);
       });
       stockBody.appendChild(tr);
