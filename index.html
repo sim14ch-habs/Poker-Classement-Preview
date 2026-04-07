@@ -189,7 +189,7 @@ body { margin: 10px; }
 </head>
 <body>
 <h1>Poker Stanley</h1>
-<div class="meta">Mise à jour: 2026-04-07 14:10:55</div>
+<div class="meta">Mise à jour: 2026-04-07 14:13:32</div>
 <div class="legend">
 <span class="pill replacement">Barre orange = remplacé</span>
 <span class="pill absent">Nom rouge = absent non-remplacé</span>
@@ -1243,6 +1243,7 @@ body { margin: 10px; }
       renderPlayerCompare();
     }
     if (id === 'final-stack') {
+      setupFinalStackCalculator();
       renderFinalStackCalculator();
     }
 
@@ -3056,6 +3057,7 @@ body { margin: 10px; }
     }
 
     run.addEventListener('click', triggerFinalStackRender);
+    input.addEventListener('input', triggerFinalStackRender);
     input.addEventListener('change', triggerFinalStackRender);
     input.addEventListener('keydown', function(event) {
       if (event.key === 'Enter') {
@@ -3297,6 +3299,7 @@ body { margin: 10px; }
   setupPlayerSearch();
   setupPlayerCard();
   setupExportPng();
+  setupFinalStackCalculator();
 
   var initialFromHash = tabIdFromHash();
   var initialTab = initialFromHash || 'total-compact';

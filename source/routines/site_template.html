@@ -418,6 +418,7 @@ body { margin: 10px; }
       renderPlayerCompare();
     }
     if (id === 'final-stack') {
+      setupFinalStackCalculator();
       renderFinalStackCalculator();
     }
 
@@ -2231,6 +2232,7 @@ body { margin: 10px; }
     }
 
     run.addEventListener('click', triggerFinalStackRender);
+    input.addEventListener('input', triggerFinalStackRender);
     input.addEventListener('change', triggerFinalStackRender);
     input.addEventListener('keydown', function(event) {
       if (event.key === 'Enter') {
@@ -2472,6 +2474,7 @@ body { margin: 10px; }
   setupPlayerSearch();
   setupPlayerCard();
   setupExportPng();
+  setupFinalStackCalculator();
 
   var initialFromHash = tabIdFromHash();
   var initialTab = initialFromHash || 'total-compact';
