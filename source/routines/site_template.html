@@ -66,7 +66,11 @@ h1 { margin: 0 0 4px 0; }
 .stack-calc-stock-table { width: min(720px, 100%); margin-top: 12px; }
 .stack-calc-stock-table th, .stack-calc-stock-table td { text-align: center; }
 .stack-poker-visuals { width: min(1100px, 100%); display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-top: 16px; }
+.stack-poker-visuals.layout-3 { grid-template-columns: repeat(3, minmax(220px, 1fr)); grid-template-areas: ". . table3" ". table1 ." ". table2 ."; align-items: start; }
 .stack-poker-group { display: flex; flex-direction: column; gap: 10px; }
+.stack-poker-group.final-group { grid-area: table1; }
+.stack-poker-group.table2-group { grid-area: table2; }
+.stack-poker-group.table3-group { grid-area: table3; }
 .stack-poker-board { position: relative; min-height: 330px; border-radius: 28px; overflow: hidden; padding: 18px; border: 1px solid #0f172a; background: radial-gradient(circle at 50% 45%, #1f7a4a 0%, #14532d 58%, #052e16 100%); box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18); }
 .stack-poker-board.final { background: radial-gradient(circle at 50% 45%, #1d4ed8 0%, #0f766e 18%, #14532d 58%, #052e16 100%); }
 .stack-poker-board::before { content: ''; position: absolute; inset: 20px; border-radius: 999px; border: 10px solid rgba(15, 23, 42, 0.92); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08); }
@@ -210,6 +214,7 @@ body { margin: 10px; }
 .stack-calc-mins-table { min-width: 640px; }
 .stack-calc-mins-table input { width: 58px; }
 .stack-poker-visuals { grid-template-columns: 1fr; }
+.stack-poker-visuals.layout-3 { grid-template-columns: 1fr; grid-template-areas: none; }
 .stack-poker-board { min-height: 360px; }
 .stack-poker-seat { min-width: 96px; max-width: 108px; padding: 7px 8px; }
 .stack-poker-seat-name { font-size: 12px; }
@@ -1951,6 +1956,7 @@ body { margin: 10px; }
         key: 'final',
         label: 'Table finale ↑',
         stockLabel: 'Finale ↑',
+        layoutClass: 'final-group',
         type: 'final',
         players: finalPlayers
       });
@@ -1977,6 +1983,7 @@ body { margin: 10px; }
         key: 'consolation-2',
         label: 'Consolation ↓ · Table 2',
         stockLabel: 'Table 2 ↓',
+        layoutClass: 'table2-group',
         type: 'consolation',
         players: table2
       });
@@ -1986,6 +1993,7 @@ body { margin: 10px; }
         key: 'consolation-3',
         label: 'Consolation ↓ · Table 3',
         stockLabel: 'Table 3 ↓',
+        layoutClass: 'table3-group',
         type: 'consolation',
         players: table3
       });
@@ -2009,7 +2017,7 @@ body { margin: 10px; }
 
   function getFinalStackSeatPosition(index, count) {
     var safeCount = Math.max(count || 1, 1);
-    var angle = (-Math.PI / 2) + ((2 * Math.PI * index) / safeCount);
+    var angle = (Math.PI / 2) + ((2 * Math.PI * index) / safeCount);
     var radiusX = safeCount >= 8 ? 40 : 36;
     var radiusY = safeCount >= 8 ? 34 : 30;
     return {
@@ -2483,9 +2491,12 @@ body { margin: 10px; }
 
     var visuals = document.createElement('div');
     visuals.className = 'stack-poker-visuals';
+    if (stackGroups.length === 3) {
+      visuals.classList.add('layout-3');
+    }
     stackGroups.forEach(function(group) {
       var visualGroup = document.createElement('section');
-      visualGroup.className = 'stack-poker-group';
+      visualGroup.className = 'stack-poker-group ' + (group.layoutClass || '');
 
       var board = document.createElement('div');
       board.className = 'stack-poker-board ' + group.type;
