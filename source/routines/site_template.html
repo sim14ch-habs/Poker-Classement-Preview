@@ -2162,7 +2162,7 @@ body { margin: 10px; }
     table.className = 'total-table stack-calc-table';
     var thead = document.createElement('thead');
     var trh = document.createElement('tr');
-    ['Rang', 'Joueur', 'Points', 'Cible', 'Stack final', 'Écart'].forEach(function(label) {
+    ['Rang', 'Joueur'].forEach(function(label) {
       var th = document.createElement('th');
       th.textContent = label;
       trh.appendChild(th);
@@ -2173,6 +2173,11 @@ body { margin: 10px; }
       th.className = column.className;
       trh.appendChild(th);
     });
+    ['Points', 'Cible', 'Stack final', 'Écart'].forEach(function(label) {
+      var th = document.createElement('th');
+      th.textContent = label;
+      trh.appendChild(th);
+    });
     thead.appendChild(trh);
     table.appendChild(thead);
 
@@ -2181,11 +2186,7 @@ body { margin: 10px; }
       var tr = document.createElement('tr');
       var cells = [
         item.player.rank === null ? '-' : String(item.player.rank),
-        item.player.name,
-        formatDisplayAmount(item.player.total || 0, 0),
-        formatDisplayAmount(item.target, (Math.round(item.target) === item.target) ? 0 : 1),
-        formatDisplayAmount(item.combo.value, 0),
-        formatSignedAmount(Math.round(item.diff))
+        item.player.name
       ];
 
       cells.forEach(function(value) {
@@ -2197,6 +2198,16 @@ body { margin: 10px; }
         var td = document.createElement('td');
         td.textContent = String(item.combo.counts[column.countIndex] || 0);
         td.className = column.className;
+        tr.appendChild(td);
+      });
+      [
+        formatDisplayAmount(item.player.total || 0, 0),
+        formatDisplayAmount(item.target, (Math.round(item.target) === item.target) ? 0 : 1),
+        formatDisplayAmount(item.combo.value, 0),
+        formatSignedAmount(Math.round(item.diff))
+      ].forEach(function(value) {
+        var td = document.createElement('td');
+        td.textContent = value;
         tr.appendChild(td);
       });
       tbody.appendChild(tr);
