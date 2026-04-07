@@ -806,7 +806,7 @@ function Sync-SourceFilesToPublishRepo {
     }
 
     $readmePath = Join-Path $sourceRoot 'README.md'
-    $readme = @"
+    $readme = @'
 # Source du site Poker Stanley
 
 Ce dossier contient une copie des fichiers source utilisés pour générer et publier le site.
@@ -818,7 +818,7 @@ Ce dossier contient une copie des fichiers source utilisés pour générer et pu
 - `lancer_export_preview.bat` : export preview
 
 Le site public continue d'être servi par `index.html` à la racine du repo.
-"@
+'@
     Set-Content -LiteralPath $readmePath -Value $readme -Encoding UTF8
     [void]$synced.Add('source/README.md')
 
