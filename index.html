@@ -157,7 +157,7 @@ body { margin: 10px; }
 </head>
 <body>
 <h1>Poker Stanley</h1>
-<div class="meta">Mise à jour: 2026-04-07 11:47:32</div>
+<div class="meta">Mise à jour: 2026-04-07 12:07:21</div>
 <div class="legend">
 <span class="pill replacement">Barre orange = remplacé</span>
 <span class="pill absent">Nom rouge = absent non-remplacé</span>
@@ -1351,15 +1351,17 @@ body { margin: 10px; }
     var raceValue = '-';
     var raceDetail = 'Déjà au sommet du classement.';
     if (race && race.gap !== null) {
-      raceValue = '+' + String(race.gap);
-      raceDetail = 'Pour dépasser ' + race.targetName;
+      raceValue = '+' + String(race.pointsToPass || 1);
+      raceDetail = race.gap === 0
+        ? ('À égalité avec ' + race.targetName + ' ; 1 point pour passer devant.')
+        : (String(race.gap) + ' points de retard sur ' + race.targetName + ' ; ' + String(race.pointsToPass || (race.gap + 1)) + ' pour dépasser.');
     }
 
     grid.innerHTML = '';
     grid.appendChild(buildPlayerMetric('Position globale', globalPosText, data.globalPositionsText === '-' ? '' : ('Historique: ' + data.globalPositionsText), false));
     grid.appendChild(buildPlayerMetric('Position hebdo', weeklyPosText, data.weeklyPositionsText === '-' ? '' : ('Historique: ' + data.weeklyPositionsText), false));
     grid.appendChild(buildPlayerMetric('Évolution', evolutionText, evolutionDetail, false));
-    grid.appendChild(buildPlayerMetric('Prochain rang', raceValue, raceDetail, false));
+    grid.appendChild(buildPlayerMetric('Pour dépasser', raceValue, raceDetail, false));
     grid.appendChild(buildPlayerMetric('Total points', String(data.total || 0), '', false));
     grid.appendChild(buildPlayerMetric('Total kills', String(data.kills || 0), '', false));
     grid.appendChild(buildPlayerMetric('Remplacements', String(data.replacements || 0), '', false));
@@ -1453,8 +1455,11 @@ body { margin: 10px; }
       var target = rows[idx - 1];
       var targetTotal = (target && isFinite(target.total) && !isNaN(target.total)) ? target.total : 0;
       var currentTotal = (isFinite(entry.total) && !isNaN(entry.total)) ? entry.total : 0;
+      var rawGap = Math.max(0, Math.round(targetTotal - currentTotal));
       map[entry.name] = {
-        gap: Math.max(1, Math.round(targetTotal - currentTotal + 1)),
+        gap: rawGap,
+        pointsToPass: rawGap + 1,
+        isTied: rawGap === 0,
         targetName: target ? target.name : '',
         targetTotal: targetTotal,
         targetRank: target ? target.rank : null
@@ -1744,7 +1749,9 @@ body { margin: 10px; }
       }
       else {
         gapCell.textContent = String(race.gap);
-        gapCell.title = String(race.gap) + ' points pour dépasser ' + race.targetName;
+        gapCell.title = race.gap === 0
+          ? ('À égalité avec ' + race.targetName + ' ; 1 point pour dépasser.')
+          : (String(race.gap) + ' points de retard sur ' + race.targetName + ' ; ' + String(race.pointsToPass || (race.gap + 1)) + ' pour dépasser.');
       }
       tr.appendChild(gapCell);
 
