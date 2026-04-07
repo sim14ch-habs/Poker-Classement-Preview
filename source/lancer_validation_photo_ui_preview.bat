@@ -7,7 +7,7 @@ set "PS1=%SCRIPT_DIR%routines\validation_photo_classement_ui.ps1"
 set "XLSX=%SCRIPT_DIR%Poker Stanley Hiver 2026.xlsx"
 set "PSH=%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe"
 set "EMAIL_TO=sim_621@hotmail.com"
-set "PUBLIC_URL=https://sim14ch-habs.github.io/Poker-Classement-preview/"
+set "PUBLIC_URL=https://sim14ch-habs.github.io/Poker-Classement-Preview/"
 set "PUBLISH_REPO_DIR=%SCRIPT_DIR%Poker-Classement-preview"
 
 if not "%~1"=="" set "XLSX=%~1"

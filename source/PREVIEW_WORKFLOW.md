@@ -4,11 +4,11 @@ Ce mode publie les changements sur un site de previsualisation separé.
 
 ## URL Preview cible
 
-`https://sim14ch-habs.github.io/Poker-Classement-preview/`
+`https://sim14ch-habs.github.io/Poker-Classement-Preview/`
 
 ## Prerequis (une seule fois)
 
-1. Creer le repo GitHub: `sim14ch-habs/Poker-Classement-preview`
+1. Creer le repo GitHub: `sim14ch-habs/Poker-Classement-Preview`
 2. Dans le repo preview, activer GitHub Pages sur la branche `main`.
 3. Verifier que le dossier local existe: `Poker-Classement-preview`.
 
