@@ -610,6 +610,7 @@ function Export-PublicHtml {
     if ($null -eq $SiteConfig) {
         $SiteConfig = [ordered]@{
             enableFinalStackCalculator = $false
+            relaxDesktopHorizontalScroll = $false
         }
     }
     $siteConfigJson = $SiteConfig | ConvertTo-Json -Depth 8 -Compress
@@ -1034,10 +1035,12 @@ try {
     $htmlOutputFile = Join-Path $OutputDir "classement_public.html"
     $siteConfig = [ordered]@{
         enableFinalStackCalculator = $false
+        relaxDesktopHorizontalScroll = $false
     }
     $publishFingerprint = ((@([string]$PublishRepoDir, [string]$PublicUrl) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }) -join ' ')
     if ($publishFingerprint -match '(?i)preview') {
         $siteConfig.enableFinalStackCalculator = $true
+        $siteConfig.relaxDesktopHorizontalScroll = $true
     }
 
     Export-PublicHtml -WsHebdo $wsHebdo -WsKills $wsKills -WsTotal $wsTotal -WsCalc $wsCalc -OutputPath $htmlOutputFile -WeekNumber $weekNumber -LastPlayerRow $lastPlayerRow -LastWeekColHebdo $lastWeekColHebdo -SiteConfig $siteConfig

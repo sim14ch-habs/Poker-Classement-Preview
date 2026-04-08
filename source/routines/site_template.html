@@ -206,6 +206,13 @@ h1 { margin: 0 0 4px 0; }
 .summary-table th:nth-child(2), .summary-table td:nth-child(2) { width: 220px; }
 .summary-table th:nth-child(3), .summary-table td:nth-child(3) { width: 220px; }
 .summary-table th:nth-child(4), .summary-table td:nth-child(4) { width: 260px; }
+@media (min-width: 701px) {
+body.preview-relaxed-scroll .tab-panels { overflow-x: visible; }
+body.preview-relaxed-scroll .weekly-summary-wrap { width: 100%; overflow-x: visible; }
+body.preview-relaxed-scroll .stack-poker-board-wrap { overflow-x: visible; }
+body.preview-relaxed-scroll .stack-poker-scene { min-width: 0; width: min(720px, 100%); }
+body.preview-relaxed-scroll .stack-poker-group.final-group .stack-poker-scene { min-width: 0; width: min(760px, 100%); }
+}
 @media (max-width: 700px) {
 body { margin: 10px; }
 .week-table th, .week-table td { padding: 6px 4px; font-size: 12px; }
@@ -382,6 +389,9 @@ body { margin: 10px; }
   var siteConfig = {{SITE_CONFIG_JSON}};
   if (!siteConfig || typeof siteConfig !== 'object') {
     siteConfig = {};
+  }
+  if (siteConfig.relaxDesktopHorizontalScroll && document.body) {
+    document.body.classList.add('preview-relaxed-scroll');
   }
   if (!siteConfig.enableFinalStackCalculator) {
     Array.prototype.slice.call(document.querySelectorAll('.preview-only')).forEach(function(node) {

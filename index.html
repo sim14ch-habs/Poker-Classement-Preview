@@ -206,6 +206,13 @@ h1 { margin: 0 0 4px 0; }
 .summary-table th:nth-child(2), .summary-table td:nth-child(2) { width: 220px; }
 .summary-table th:nth-child(3), .summary-table td:nth-child(3) { width: 220px; }
 .summary-table th:nth-child(4), .summary-table td:nth-child(4) { width: 260px; }
+@media (min-width: 701px) {
+body.preview-relaxed-scroll .tab-panels { overflow-x: visible; }
+body.preview-relaxed-scroll .weekly-summary-wrap { width: 100%; overflow-x: visible; }
+body.preview-relaxed-scroll .stack-poker-board-wrap { overflow-x: visible; }
+body.preview-relaxed-scroll .stack-poker-scene { min-width: 0; width: min(720px, 100%); }
+body.preview-relaxed-scroll .stack-poker-group.final-group .stack-poker-scene { min-width: 0; width: min(760px, 100%); }
+}
 @media (max-width: 700px) {
 body { margin: 10px; }
 .week-table th, .week-table td { padding: 6px 4px; font-size: 12px; }
@@ -252,7 +259,7 @@ body { margin: 10px; }
 </head>
 <body>
 <h1>Poker Stanley</h1>
-<div class="meta">Mise à jour: 2026-04-08 11:39:13</div>
+<div class="meta">Mise à jour: 2026-04-08 11:45:39</div>
 <div class="legend">
 <span class="pill replacement">Barre orange = remplacé</span>
 <span class="pill absent">Nom rouge = absent non-remplacé</span>
@@ -1204,9 +1211,12 @@ body { margin: 10px; }
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 <script>
 (function() {
-  var siteConfig = {"enableFinalStackCalculator":true};
+  var siteConfig = {"enableFinalStackCalculator":true,"relaxDesktopHorizontalScroll":true};
   if (!siteConfig || typeof siteConfig !== 'object') {
     siteConfig = {};
+  }
+  if (siteConfig.relaxDesktopHorizontalScroll && document.body) {
+    document.body.classList.add('preview-relaxed-scroll');
   }
   if (!siteConfig.enableFinalStackCalculator) {
     Array.prototype.slice.call(document.querySelectorAll('.preview-only')).forEach(function(node) {
