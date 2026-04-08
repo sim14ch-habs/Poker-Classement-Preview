@@ -86,10 +86,21 @@ h1 { margin: 0 0 4px 0; }
 .stack-poker-board::after { content: ''; position: absolute; inset: 56px 82px; border-radius: 999px; border: 2px dashed rgba(255, 255, 255, 0.18); }
 .stack-poker-title { margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.01em; color: #0f172a; }
 .stack-poker-subtitle { margin: 0; font-size: 12px; color: #64748b; text-align: right; }
-.stack-poker-seat { position: absolute; z-index: 3; transform: translate(-50%, -50%); width: 96px; min-height: 52px; padding: 9px 8px 7px 8px; border-radius: 14px; background: rgba(255, 255, 255, 0.97); border: 1px solid rgba(15, 23, 42, 0.1); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.16); text-align: center; }
+.stack-poker-seat { position: absolute; z-index: 3; transform: translate(-50%, -50%); width: 86px; min-height: 38px; padding: 8px 7px 6px 7px; border-radius: 14px; background: rgba(255, 255, 255, 0.98); border: 1px solid rgba(15, 23, 42, 0.1); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.14); text-align: center; }
 .stack-poker-seat-num { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); display: inline-block; min-width: 26px; padding: 2px 7px; border-radius: 999px; background: #0f172a; color: #fff; font-size: 11px; font-weight: 700; }
-.stack-poker-seat-name { display: block; color: #0f172a; font-size: 12px; font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 3px; }
-.stack-poker-seat-stack { display: block; color: #475569; font-size: 11px; margin-top: 4px; }
+.stack-poker-seat-name { display: block; color: #0f172a; font-size: 12px; font-weight: 700; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 4px; }
+.stack-poker-seat-stack { display: none; }
+.stack-poker-legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.stack-poker-legend-seat { position: relative; border: 1px solid #d1d5db; border-radius: 14px; background: #fff; padding: 12px 10px 10px 10px; box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08); }
+.stack-poker-legend-seat .stack-poker-seat-num { top: -9px; }
+.stack-poker-legend-seat .stack-poker-seat-name { margin-top: 3px; white-space: normal; overflow: visible; text-overflow: clip; }
+.stack-poker-legend-stack { display: block; color: #475569; font-size: 12px; margin-top: 4px; }
+.stack-poker-legend-rank { display: block; color: #94a3b8; font-size: 11px; margin-top: 2px; }
+.stack-poker-mobile-list { display: none; }
+.stack-poker-mobile-seat { position: relative; border: 1px solid #d1d5db; border-radius: 14px; background: #fff; padding: 12px 8px 8px 8px; text-align: center; box-shadow: 0 6px 14px rgba(15, 23, 42, 0.08); }
+.stack-poker-mobile-seat .stack-poker-seat-num { top: -9px; }
+.stack-poker-mobile-seat .stack-poker-seat-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stack-poker-mobile-seat .stack-poker-seat-stack { font-size: 11px; }
 .stack-poker-chip-summary { display: flex; flex-wrap: wrap; gap: 8px; }
 .stack-poker-chip-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: #fff; border: 1px solid #d1d5db; color: #0f172a; font-size: 12px; font-weight: 700; }
 .stack-poker-chip-pill .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 999px; border: 1px solid rgba(15, 23, 42, 0.15); }
@@ -224,21 +235,24 @@ body { margin: 10px; }
 .stack-poker-visuals { grid-template-columns: 1fr; }
 .stack-poker-visuals.layout-3 { grid-template-columns: 1fr; grid-template-areas: none; }
 .stack-poker-group-head { align-items: flex-start; }
+.stack-poker-group-head { flex-direction: column; }
+.stack-poker-subtitle { text-align: left; }
 .stack-poker-actions { justify-content: flex-start; }
+.stack-poker-actions { width: 100%; }
+.stack-poker-action { flex: 1 1 0; text-align: center; }
+.stack-poker-board-wrap { display: none; }
 .stack-poker-scene { min-width: 560px; height: 500px; }
 .stack-poker-group.final-group .stack-poker-scene { min-width: 620px; height: 520px; }
 .stack-poker-board { width: 380px; height: 220px; }
 .stack-poker-group.final-group .stack-poker-board { width: 470px; height: 260px; }
-.stack-poker-seat { width: 90px; min-height: 50px; padding: 8px 6px 7px 6px; }
-.stack-poker-seat-name { font-size: 12px; }
-.stack-poker-seat-stack { font-size: 11px; }
+.stack-poker-legend { grid-template-columns: 1fr 1fr; }
 .player-card { padding: 16px; }
 .player-card-title { font-size: 22px; }
 }</style>
 </head>
 <body>
 <h1>Poker Stanley</h1>
-<div class="meta">Mise à jour: 2026-04-07 15:55:31</div>
+<div class="meta">Mise à jour: 2026-04-08 11:39:13</div>
 <div class="legend">
 <span class="pill replacement">Barre orange = remplacé</span>
 <span class="pill absent">Nom rouge = absent non-remplacé</span>
@@ -3436,7 +3450,7 @@ body { margin: 10px; }
       boardTitle.textContent = group.label;
       var boardSubtitle = document.createElement('p');
       boardSubtitle.className = 'stack-poker-subtitle';
-      boardSubtitle.textContent = String(group.players.length) + ' joueur' + (group.players.length > 1 ? 's' : '') + ' · mélange visuel des sièges seulement';
+      boardSubtitle.textContent = String(group.players.length) + ' joueur' + (group.players.length > 1 ? 's' : '');
       headCopy.appendChild(boardTitle);
       headCopy.appendChild(boardSubtitle);
       groupHead.appendChild(headCopy);
@@ -3487,7 +3501,7 @@ body { margin: 10px; }
         seatName.title = entry.item.player.name;
         var seatStack = document.createElement('span');
         seatStack.className = 'stack-poker-seat-stack';
-        seatStack.textContent = 'Stack ' + formatDisplayAmount(entry.item.combo.value, 0);
+        seatStack.textContent = formatDisplayAmount(entry.item.combo.value, 0);
 
         seat.appendChild(seatNum);
         seat.appendChild(seatName);
@@ -3497,6 +3511,31 @@ body { margin: 10px; }
 
       boardWrap.appendChild(scene);
       visualGroup.appendChild(boardWrap);
+
+      var legend = document.createElement('div');
+      legend.className = 'stack-poker-legend';
+      visualPlayers.forEach(function(entry, seatIdx) {
+        var legendSeat = document.createElement('article');
+        legendSeat.className = 'stack-poker-legend-seat';
+        var legendSeatNum = document.createElement('span');
+        legendSeatNum.className = 'stack-poker-seat-num';
+        legendSeatNum.textContent = String(seatIdx + 1);
+        var legendSeatName = document.createElement('strong');
+        legendSeatName.className = 'stack-poker-seat-name';
+        legendSeatName.textContent = entry.item.player.name;
+        var legendSeatStack = document.createElement('span');
+        legendSeatStack.className = 'stack-poker-legend-stack';
+        legendSeatStack.textContent = 'Stack ' + formatDisplayAmount(entry.item.combo.value, 0);
+        var legendSeatRank = document.createElement('span');
+        legendSeatRank.className = 'stack-poker-legend-rank';
+        legendSeatRank.textContent = 'Rang ' + String(entry.item.player.rank === null ? '-' : entry.item.player.rank);
+        legendSeat.appendChild(legendSeatNum);
+        legendSeat.appendChild(legendSeatName);
+        legendSeat.appendChild(legendSeatStack);
+        legendSeat.appendChild(legendSeatRank);
+        legend.appendChild(legendSeat);
+      });
+      visualGroup.appendChild(legend);
 
       var chipSummary = document.createElement('div');
       chipSummary.className = 'stack-poker-chip-summary';
