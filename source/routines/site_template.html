@@ -2150,6 +2150,40 @@ body { margin: 10px; }
     return first + ' ' + initial + '.';
   }
 
+  function getFinalStackPlayerKey(player) {
+    var rank = (player && player.rank !== null && player.rank !== undefined) ? String(player.rank) : '-';
+    var name = normalizePlayerName((player && player.name) ? player.name : '');
+    return rank + '|' + name;
+  }
+
+  function buildFinalStackSeatAssignments(groups) {
+    var seatAssignments = Object.create(null);
+    (groups || []).forEach(function(group) {
+      var tableLabel = group.label || group.stockLabel || '';
+      var players = getFinalStackVisualPlayers(group);
+      players.forEach(function(entry, seatIdx) {
+        seatAssignments[getFinalStackPlayerKey(entry.item.player)] = {
+          tableLabel: tableLabel,
+          seat: seatIdx + 1,
+          display: tableLabel + ' · Place ' + String(seatIdx + 1)
+        };
+      });
+    });
+    return seatAssignments;
+  }
+
+  function shuffleAllFinalStackGroupSeats(groups) {
+    (groups || []).forEach(function(group) {
+      shuffleFinalStackGroupSeats(group.key, (group.players || []).length);
+    });
+  }
+
+  function resetAllFinalStackGroupSeats(groups) {
+    (groups || []).forEach(function(group) {
+      resetFinalStackGroupSeats(group.key);
+    });
+  }
+
   function getChipCombos(minCounts) {
     var normalizedMinCounts = sanitizeFinalStackMinCounts(minCounts);
     var cacheKey = getFinalStackMinCountsKey(normalizedMinCounts);
@@ -2491,6 +2525,7 @@ body { margin: 10px; }
     var tableWrap = document.createElement('div');
     tableWrap.className = 'stack-calc-table-wrap';
     var stackGroups = buildFinalStackGroups(plan.players);
+    var seatAssignments = buildFinalStackSeatAssignments(stackGroups);
     var visibleStockRows = (plan.stockRows || []).filter(function(row) {
       return row.value !== 10000 || (row.used || 0) > 0;
     });
@@ -2504,11 +2539,33 @@ body { margin: 10px; }
       return column.value !== 10000 || visibleStockRows.some(function(row) { return row.value === 10000; });
     });
 
+    var seatActions = document.createElement('div');
+    seatActions.className = 'stack-poker-actions';
+    var resetSeatsButton = document.createElement('button');
+    resetSeatsButton.type = 'button';
+    resetSeatsButton.className = 'stack-poker-action';
+    resetSeatsButton.textContent = 'Ordre par défaut';
+    resetSeatsButton.addEventListener('click', function() {
+      resetAllFinalStackGroupSeats(stackGroups);
+      renderFinalStackCalculator();
+    });
+    seatActions.appendChild(resetSeatsButton);
+    var shuffleSeatsButton = document.createElement('button');
+    shuffleSeatsButton.type = 'button';
+    shuffleSeatsButton.className = 'stack-poker-action';
+    shuffleSeatsButton.textContent = 'Mélanger les places';
+    shuffleSeatsButton.addEventListener('click', function() {
+      shuffleAllFinalStackGroupSeats(stackGroups);
+      renderFinalStackCalculator();
+    });
+    seatActions.appendChild(shuffleSeatsButton);
+    host.appendChild(seatActions);
+
     var table = document.createElement('table');
     table.className = 'total-table stack-calc-table';
     var thead = document.createElement('thead');
     var trh = document.createElement('tr');
-    ['Rang', 'Joueur'].forEach(function(label) {
+    ['Rang', 'Joueur', 'Position table'].forEach(function(label) {
       var th = document.createElement('th');
       th.textContent = label;
       trh.appendChild(th);
@@ -2532,17 +2589,19 @@ body { margin: 10px; }
       var headerRow = document.createElement('tr');
       headerRow.className = 'stack-calc-group-row ' + group.type;
       var headerCell = document.createElement('td');
-      headerCell.colSpan = 2 + visibleChipColumns.length + 4;
+      headerCell.colSpan = 3 + visibleChipColumns.length + 4;
       headerCell.textContent = group.label;
       headerRow.appendChild(headerCell);
       tbody.appendChild(headerRow);
 
       group.players.forEach(function(entry) {
         var item = entry.item;
+        var seatInfo = seatAssignments[getFinalStackPlayerKey(item.player)] || { display: '-' };
         var tr = document.createElement('tr');
         var cells = [
           item.player.rank === null ? '-' : String(item.player.rank),
-          item.player.name
+          item.player.name,
+          seatInfo.display
         ];
 
         cells.forEach(function(value) {
@@ -2612,123 +2671,6 @@ body { margin: 10px; }
     stockWrap.className = 'stack-calc-table-wrap';
     stockWrap.appendChild(stockTable);
     host.appendChild(stockWrap);
-
-    var visuals = document.createElement('div');
-    visuals.className = 'stack-poker-visuals';
-    if (stackGroups.length === 3) {
-      visuals.classList.add('layout-3');
-    }
-    stackGroups.forEach(function(group) {
-      var visualGroup = document.createElement('section');
-      visualGroup.className = 'stack-poker-group ' + (group.layoutClass || '');
-      var visualPlayers = getFinalStackVisualPlayers(group);
-
-      var groupHead = document.createElement('div');
-      groupHead.className = 'stack-poker-group-head';
-      var headCopy = document.createElement('div');
-      headCopy.className = 'stack-poker-head-copy';
-      var boardTitle = document.createElement('h3');
-      boardTitle.className = 'stack-poker-title';
-      boardTitle.textContent = group.label;
-      var boardSubtitle = document.createElement('p');
-      boardSubtitle.className = 'stack-poker-subtitle';
-      boardSubtitle.textContent = String(group.players.length) + ' joueur' + (group.players.length > 1 ? 's' : '');
-      headCopy.appendChild(boardTitle);
-      headCopy.appendChild(boardSubtitle);
-      groupHead.appendChild(headCopy);
-      var actions = document.createElement('div');
-      actions.className = 'stack-poker-actions';
-      var resetButton = document.createElement('button');
-      resetButton.type = 'button';
-      resetButton.className = 'stack-poker-action';
-      resetButton.textContent = 'Ordre classement';
-      resetButton.addEventListener('click', function() {
-        resetFinalStackGroupSeats(group.key);
-        renderFinalStackCalculator();
-      });
-      actions.appendChild(resetButton);
-      var shuffleButton = document.createElement('button');
-      shuffleButton.type = 'button';
-      shuffleButton.className = 'stack-poker-action';
-      shuffleButton.textContent = 'Mélanger';
-      shuffleButton.addEventListener('click', function() {
-        shuffleFinalStackGroupSeats(group.key, group.players.length);
-        renderFinalStackCalculator();
-      });
-      actions.appendChild(shuffleButton);
-      groupHead.appendChild(actions);
-      visualGroup.appendChild(groupHead);
-
-      var boardWrap = document.createElement('div');
-      boardWrap.className = 'stack-poker-board-wrap';
-      var scene = document.createElement('div');
-      scene.className = 'stack-poker-scene';
-      var board = document.createElement('div');
-      board.className = 'stack-poker-board ' + group.type;
-      scene.appendChild(board);
-
-      visualPlayers.forEach(function(entry, seatIdx) {
-        var pos = getFinalStackSeatPosition(seatIdx, group.players.length);
-        var marker = document.createElement('div');
-        marker.className = 'stack-poker-marker';
-        marker.style.left = pos.left;
-        marker.style.top = pos.top;
-        marker.textContent = String(seatIdx + 1);
-        marker.title = entry.item.player.name + ' · Stack ' + formatDisplayAmount(entry.item.combo.value, 0);
-        scene.appendChild(marker);
-      });
-
-      boardWrap.appendChild(scene);
-      visualGroup.appendChild(boardWrap);
-
-      var legend = document.createElement('div');
-      legend.className = 'stack-poker-legend';
-      visualPlayers.forEach(function(entry, seatIdx) {
-        var legendSeat = document.createElement('article');
-        legendSeat.className = 'stack-poker-legend-seat';
-        var legendSeatNum = document.createElement('span');
-        legendSeatNum.className = 'stack-poker-seat-num';
-        legendSeatNum.textContent = String(seatIdx + 1);
-        var legendSeatName = document.createElement('strong');
-        legendSeatName.className = 'stack-poker-seat-name';
-        legendSeatName.textContent = entry.item.player.name;
-        var legendSeatStack = document.createElement('span');
-        legendSeatStack.className = 'stack-poker-legend-stack';
-        legendSeatStack.textContent = 'Stack ' + formatDisplayAmount(entry.item.combo.value, 0);
-        var legendSeatRank = document.createElement('span');
-        legendSeatRank.className = 'stack-poker-legend-rank';
-        legendSeatRank.textContent = 'Rang ' + String(entry.item.player.rank === null ? '-' : entry.item.player.rank);
-        legendSeat.appendChild(legendSeatNum);
-        legendSeat.appendChild(legendSeatName);
-        legendSeat.appendChild(legendSeatStack);
-        legendSeat.appendChild(legendSeatRank);
-        legend.appendChild(legendSeat);
-      });
-      visualGroup.appendChild(legend);
-
-      var chipSummary = document.createElement('div');
-      chipSummary.className = 'stack-poker-chip-summary';
-      visibleChipColumns.forEach(function(column) {
-        var pill = document.createElement('div');
-        pill.className = 'stack-poker-chip-pill';
-        var swatch = document.createElement('span');
-        swatch.className = 'swatch';
-        var tdClass = getFinalStackChipClass(column.value);
-        if (tdClass === 'stack-chip-col-100') { swatch.style.background = '#4b5563'; }
-        else if (tdClass === 'stack-chip-col-500') { swatch.style.background = '#8b5cf6'; }
-        else if (tdClass === 'stack-chip-col-1000') { swatch.style.background = '#fde047'; }
-        else if (tdClass === 'stack-chip-col-5000') { swatch.style.background = '#ec4899'; }
-        else if (tdClass === 'stack-chip-col-10000') { swatch.style.background = '#fb923c'; }
-        var label = document.createElement('span');
-        label.textContent = column.label + ' × ' + String((groupChipUsage[group.key] && groupChipUsage[group.key][column.countIndex]) ? groupChipUsage[group.key][column.countIndex] : 0);
-        pill.appendChild(swatch);
-        pill.appendChild(label);
-        chipSummary.appendChild(pill);
-      });
-      visualGroup.appendChild(chipSummary);
-      visuals.appendChild(visualGroup);
-    });
-    host.appendChild(visuals);
   }
 
   function setupFinalStackCalculator() {
