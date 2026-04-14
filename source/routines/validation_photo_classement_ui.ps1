@@ -7,6 +7,8 @@
     [string]$EmailTo = "sim_621@hotmail.com",
     [string]$PublicUrl = "",
     [string]$PublishRepoDir = "",
+    [string]$MirrorPreviewPublicUrl = "",
+    [string]$MirrorPreviewPublishRepoDir = "",
     [switch]$NoOcr,
     [switch]$SkipExport
 )
@@ -942,6 +944,42 @@ if (-not $SkipExport) {
     $exportScript = Join-Path $scriptDir 'export_classement_hebdo.ps1'
     if (-not (Test-Path -LiteralPath $exportScript)) { throw "Missing export script: $exportScript" }
     & $exportScript -WorkbookPath $resolvedWorkbookPath -OutputDir $DataDir -EmailTo $EmailTo -PublicUrl $PublicUrl -PublishRepoDir $PublishRepoDir
+
+    if (-not [string]::IsNullOrWhiteSpace($MirrorPreviewPublicUrl) -or -not [string]::IsNullOrWhiteSpace($MirrorPreviewPublishRepoDir)) {
+        $previewUrl = $MirrorPreviewPublicUrl
+        $previewRepoDir = $MirrorPreviewPublishRepoDir
+        if ([string]::IsNullOrWhiteSpace($previewUrl)) {
+            $previewUrl = "https://sim14ch-habs.github.io/Poker-Classement-Preview/"
+        }
+        if ([string]::IsNullOrWhiteSpace($previewRepoDir)) {
+            $previewRepoDir = Join-Path (Split-Path -Path $scriptDir -Parent) 'Poker-Classement-preview'
+        }
+
+        $sameRepo = $false
+        if (-not [string]::IsNullOrWhiteSpace($PublishRepoDir) -and -not [string]::IsNullOrWhiteSpace($previewRepoDir)) {
+            try {
+                $trimChars = [char[]]@('\', '/')
+                $mainRepoPath = [IO.Path]::GetFullPath($PublishRepoDir).TrimEnd($trimChars)
+                $previewRepoPath = [IO.Path]::GetFullPath($previewRepoDir).TrimEnd($trimChars)
+                $sameRepo = ($mainRepoPath -ieq $previewRepoPath)
+            }
+            catch {
+                $sameRepo = $false
+            }
+        }
+
+        if ($sameRepo) {
+            Write-Output "Synchronisation preview ignorée: même dossier que l'export principal."
+        }
+        else {
+            if (-not (Test-Path -LiteralPath $previewRepoDir)) {
+                throw "Repo preview introuvable: $previewRepoDir"
+            }
+
+            Write-Output "Synchronisation preview: $previewRepoDir"
+            & $exportScript -WorkbookPath $resolvedWorkbookPath -OutputDir $DataDir -PublicUrl $previewUrl -PublishRepoDir $previewRepoDir
+        }
+    }
 }
 
 Write-Output ("Done. Week {0} updated with validated UI." -f $context.WeekNum)

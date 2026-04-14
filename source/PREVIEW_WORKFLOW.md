@@ -20,9 +20,11 @@ Ce mode publie les changements sur un site de previsualisation separé.
 - Export seul + publication preview:
   - `lancer_export_preview.bat`
 
-## Publication publique (inchangée)
+## Publication publique + miroir preview
 
 - Continuer d'utiliser:
   - `lancer_validation_photo_ui.bat`
+
+Depuis ce lanceur public, le site complet est publié en premier, puis le preview est synchronisé automatiquement avec les mêmes données Excel. Le miroir preview ne renvoie pas de courriel.
 
 Le mode preview n'impacte pas le site public.
