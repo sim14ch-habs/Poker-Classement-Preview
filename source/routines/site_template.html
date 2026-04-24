@@ -550,6 +550,7 @@ body { margin: 10px; }
   var FINAL_STACK_CHIPS_PER_PLAYER = 20;
   var FINAL_STACK_DEFAULT_MIN_COUNTS = [2, 0, 0, 0, 0];
   var FINAL_STACK_DEFAULT_MAX_COUNTS = [20, 20, 20, 20, 0];
+  var FINAL_STACK_TABLE_BALANCE_WEIGHT = 0.05;
   var totalSummaryCache = null;
   var recordsCache = null;
   var raceMapCache = null;
@@ -3083,7 +3084,19 @@ body { margin: 10px; }
     return 0;
   }
 
+  function getFinalStackBalanceGap(finalTableTotal, consolationTotal, playersCount) {
+    if (!isFinite(playersCount) || isNaN(playersCount) || playersCount <= 10) { return 0; }
+    return Math.abs((finalTableTotal || 0) - (consolationTotal || 0));
+  }
+
+  function getFinalStackBalancePenalty(balanceGap, playersCount) {
+    if (!isFinite(playersCount) || isNaN(playersCount) || playersCount <= 10) { return 0; }
+    return Math.round((balanceGap || 0) * FINAL_STACK_TABLE_BALANCE_WEIGHT);
+  }
+
   function compareStatePreference(a, b) {
+    if ((a.priorityCost || 0) !== (b.priorityCost || 0)) { return (a.priorityCost || 0) - (b.priorityCost || 0); }
+    if ((a.balanceGap || 0) !== (b.balanceGap || 0)) { return (a.balanceGap || 0) - (b.balanceGap || 0); }
     if (a.cost !== b.cost) { return a.cost - b.cost; }
     if (a.c10000 !== b.c10000) { return a.c10000 - b.c10000; }
     if (a.c5000 !== b.c5000) { return a.c5000 - b.c5000; }
@@ -3198,6 +3211,7 @@ body { margin: 10px; }
       { candidateLimit: 220, beamSize: 720 },
       { candidateLimit: 360, beamSize: 1200 }
     ];
+    var finalTablePlayerCount = Math.min(10, players.length);
 
     var bestState = null;
     for (var passIndex = 0; passIndex < passConfigs.length; passIndex++) {
@@ -3208,6 +3222,10 @@ body { margin: 10px; }
       var states = [{
         used: [0, 0, 0, 0, 0],
         cost: 0,
+        priorityCost: 0,
+        finalTableTotal: 0,
+        consolationTotal: 0,
+        balanceGap: 0,
         c100: 0,
         c500: 0,
         c1000: 0,
@@ -3239,10 +3257,18 @@ body { margin: 10px; }
             if (!fits) { continue; }
 
             var nextCost = state.cost + candidate.cost;
+            var nextFinalTableTotal = state.finalTableTotal + (playerIdx < finalTablePlayerCount ? candidate.combo.value : 0);
+            var nextConsolationTotal = state.consolationTotal + (playerIdx >= finalTablePlayerCount ? candidate.combo.value : 0);
+            var nextBalanceGap = getFinalStackBalanceGap(nextFinalTableTotal, nextConsolationTotal, players.length);
+            var nextPriorityCost = nextCost + getFinalStackBalancePenalty(nextBalanceGap, players.length);
             var stateKey = nextUsed.join('|');
             var nextState = {
               used: nextUsed,
               cost: nextCost,
+              priorityCost: nextPriorityCost,
+              finalTableTotal: nextFinalTableTotal,
+              consolationTotal: nextConsolationTotal,
+              balanceGap: nextBalanceGap,
               c100: state.c100 + candidate.pref.c100,
               c500: state.c500 + candidate.pref.c500,
               c1000: state.c1000 + candidate.pref.c1000,
@@ -3312,6 +3338,17 @@ body { margin: 10px; }
       totalFinal += item.combo.value;
       totalAbsError += Math.abs(item.diff);
     });
+    var finalTableTotal = bestState.finalTableTotal || 0;
+    var consolationTotal = bestState.consolationTotal || 0;
+    var tableBalanceGap = getFinalStackBalanceGap(finalTableTotal, consolationTotal, players.length);
+    var tableBalanceRatio = (players.length > 10 && consolationTotal > 0) ? (finalTableTotal / consolationTotal) : null;
+    if (players.length > 10 && tableBalanceGap > 0) {
+      warnings.push(
+        'Équilibre des tables: finale ' + formatDisplayAmount(finalTableTotal, 0) +
+        ' vs consolations ' + formatDisplayAmount(consolationTotal, 0) +
+        ' (écart ' + formatDisplayAmount(tableBalanceGap, 0) + ').'
+      );
+    }
 
     var plan = {
       players: bestState.assignments,
@@ -3322,6 +3359,10 @@ body { margin: 10px; }
       totalFinal: totalFinal,
       totalDiff: totalFinal - totalTarget,
       totalAbsError: totalAbsError,
+      finalTableTotal: finalTableTotal,
+      consolationTotal: consolationTotal,
+      tableBalanceGap: tableBalanceGap,
+      tableBalanceRatio: tableBalanceRatio,
       playersCount: players.length,
       totalChipsUsed: players.length * FINAL_STACK_CHIPS_PER_PLAYER,
       totalChipsRemaining: stocks.reduce(function(sum, value) { return sum + value; }, 0) - (players.length * FINAL_STACK_CHIPS_PER_PLAYER),
@@ -3388,6 +3429,17 @@ body { margin: 10px; }
     addSummaryCard('Écart total', formatSignedAmount(Math.round(plan.totalDiff)), 'Distribué vs cible brute');
     addSummaryCard('Erreur absolue', formatDisplayAmount(Math.round(plan.totalAbsError), 0), 'Somme des écarts individuels');
     addSummaryCard('Jetons restants', formatDisplayAmount(plan.totalChipsRemaining, 0), 'Après distribution de 20 jetons par joueur');
+    if (plan.playersCount > 10) {
+      addSummaryCard('Finale', formatDisplayAmount(plan.finalTableTotal, 0), 'Somme des 10 stacks de la table finale');
+      addSummaryCard('Consolations', formatDisplayAmount(plan.consolationTotal, 0), 'Somme des deux tables consolation');
+      addSummaryCard(
+        'Équilibre tables',
+        formatDisplayAmount(plan.tableBalanceGap, 0),
+        plan.tableBalanceRatio === null
+          ? 'Aucun ratio disponible.'
+          : ('Ratio finale/consolations: ' + formatDisplayAmount(plan.tableBalanceRatio, 2) + 'x')
+      );
+    }
 
     var stackGroups = buildFinalStackGroups(plan.players);
     var seatAssignments = buildFinalStackSeatAssignments(stackGroups);
