@@ -84,6 +84,16 @@ h1 { margin: 0 0 4px 0; }
 .stack-calc-table { width: min(1100px, 100%); }
 .stack-calc-table th, .stack-calc-table td { text-align: center; }
 .stack-calc-table td:nth-child(2) { text-align: center; white-space: nowrap; }
+.stack-calc-table td.stack-chip-col-100,
+.stack-calc-table td.stack-chip-col-500,
+.stack-calc-table td.stack-chip-col-1000,
+.stack-calc-table td.stack-chip-col-5000,
+.stack-calc-table td.stack-chip-col-10000 {
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
 .stack-calc-group-row td { color: #0f172a; font-weight: 800; letter-spacing: 0.02em; padding: 9px 10px; }
 .stack-calc-group-row.final td { background: #dbeafe; border-top: 3px solid #1d4ed8; border-bottom: 2px solid #93c5fd; }
 .stack-calc-group-row.consolation td { background: #e2e8f0; border-top: 3px solid #475569; border-bottom: 2px solid #94a3b8; }
@@ -341,6 +351,11 @@ body { margin: 10px; }
 .stack-view-layout.split { grid-template-columns: 1fr; }
 .stack-calc-table { min-width: 930px; }
 .stack-calc-stock-table { min-width: 520px; }
+.stack-calc-table td.stack-chip-col-100,
+.stack-calc-table td.stack-chip-col-500,
+.stack-calc-table td.stack-chip-col-1000,
+.stack-calc-table td.stack-chip-col-5000,
+.stack-calc-table td.stack-chip-col-10000 { font-size: 16px; }
 .player-search input { width: 100%; min-width: 0; }
 .compare-controls select { width: 100%; min-width: 0; }
 .week-picker select { width: 100%; min-width: 0; }
