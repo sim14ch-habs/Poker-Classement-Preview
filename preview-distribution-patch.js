@@ -29,8 +29,19 @@
     var style = document.createElement('style');
     style.id = 'preview-distribution-patch-style';
     style.textContent = [
-      '.stack-distribution-table { width: min(860px, 100%); }',
-      '.stack-distribution-table th, .stack-distribution-table td { text-align: center; }',
+      '.stack-distribution-table { width: min(700px, 100%); table-layout: fixed; }',
+      '.stack-distribution-table th, .stack-distribution-table td { text-align: center; padding: 6px 5px; }',
+      '.stack-distribution-table th:first-child, .stack-distribution-table td:first-child { width: 210px; }',
+      '.stack-distribution-table th.stack-chip-col-100,',
+      '.stack-distribution-table th.stack-chip-col-500,',
+      '.stack-distribution-table th.stack-chip-col-1000,',
+      '.stack-distribution-table th.stack-chip-col-5000,',
+      '.stack-distribution-table th.stack-chip-col-10000,',
+      '.stack-distribution-table td.stack-chip-col-100,',
+      '.stack-distribution-table td.stack-chip-col-500,',
+      '.stack-distribution-table td.stack-chip-col-1000,',
+      '.stack-distribution-table td.stack-chip-col-5000,',
+      '.stack-distribution-table td.stack-chip-col-10000 { width: 62px; }',
       '.stack-distribution-table td.total-player { font-size: 15px; font-weight: 700; }'
     ].join('\n');
     document.head.appendChild(style);
