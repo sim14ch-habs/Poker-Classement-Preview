@@ -391,10 +391,18 @@ body { margin: 10px; }
 <td><input class="final-stack-min-input" data-denom-index="3" type="number" min="0" max="20" step="1" value="0" aria-label="Minimum jetons de 5 000 par joueur" /></td>
 <td><input class="final-stack-min-input" data-denom-index="4" type="number" min="0" max="20" step="1" value="0" aria-label="Minimum jetons de 10 000 par joueur" /></td>
 </tr>
+<tr>
+<td>Jetons maximums</td>
+<td><input class="final-stack-max-input" data-denom-index="0" type="number" min="0" max="20" step="1" value="20" aria-label="Maximum jetons de 100 par joueur" /></td>
+<td><input class="final-stack-max-input" data-denom-index="1" type="number" min="0" max="20" step="1" value="20" aria-label="Maximum jetons de 500 par joueur" /></td>
+<td><input class="final-stack-max-input" data-denom-index="2" type="number" min="0" max="20" step="1" value="20" aria-label="Maximum jetons de 1 000 par joueur" /></td>
+<td><input class="final-stack-max-input" data-denom-index="3" type="number" min="0" max="20" step="1" value="20" aria-label="Maximum jetons de 5 000 par joueur" /></td>
+<td><input class="final-stack-max-input" data-denom-index="4" type="number" min="0" max="20" step="1" value="0" aria-label="Maximum jetons de 10 000 par joueur" /></td>
+</tr>
 </tbody>
 </table>
 </div>
-<p class="stack-calc-mins-help">Le total des minimums doit rester à 20 jetons ou moins par joueur.</p>
+<p class="stack-calc-mins-help">Le total des minimums doit rester à 20 jetons ou moins par joueur. Mets un maximum à 0 pour interdire complètement une dénomination.</p>
 </div>
 <div id="final-stack-summary" class="stack-calc-summary"></div>
 <div id="final-stack-host"></div>
@@ -434,6 +442,7 @@ body { margin: 10px; }
   var PLAYER_FILTER_KEY = 'poker_preview_player_filter';
   var FINAL_STACK_MULTIPLIER_KEY = 'poker_preview_final_stack_multiplier';
   var FINAL_STACK_MIN_COUNTS_KEY = 'poker_preview_final_stack_min_counts';
+  var FINAL_STACK_MAX_COUNTS_KEY = 'poker_preview_final_stack_max_counts';
   var FINAL_STACK_DENOMS = [
     { label: '100', value: 100, stock: 325 },
     { label: '500', value: 500, stock: 325 },
@@ -443,6 +452,7 @@ body { margin: 10px; }
   ];
   var FINAL_STACK_CHIPS_PER_PLAYER = 20;
   var FINAL_STACK_DEFAULT_MIN_COUNTS = [2, 0, 0, 0, 0];
+  var FINAL_STACK_DEFAULT_MAX_COUNTS = [20, 20, 20, 20, 0];
   var totalSummaryCache = null;
   var recordsCache = null;
   var raceMapCache = null;
@@ -2132,8 +2142,24 @@ body { margin: 10px; }
     });
   }
 
+  function sanitizeFinalStackMaxCounts(maxCounts) {
+    return FINAL_STACK_DENOMS.map(function(denom, idx) {
+      var fallback = (FINAL_STACK_DEFAULT_MAX_COUNTS && idx < FINAL_STACK_DEFAULT_MAX_COUNTS.length)
+        ? FINAL_STACK_DEFAULT_MAX_COUNTS[idx]
+        : FINAL_STACK_CHIPS_PER_PLAYER;
+      var value = parseInt(maxCounts && maxCounts[idx], 10);
+      if (!isFinite(value) || isNaN(value) || value < 0) { value = fallback; }
+      if (value > FINAL_STACK_CHIPS_PER_PLAYER) { value = FINAL_STACK_CHIPS_PER_PLAYER; }
+      return value;
+    });
+  }
+
   function getFinalStackMinCountsKey(minCounts) {
     return sanitizeFinalStackMinCounts(minCounts).join('|');
+  }
+
+  function getFinalStackMaxCountsKey(maxCounts) {
+    return sanitizeFinalStackMaxCounts(maxCounts).join('|');
   }
 
   function sumFinalStackMinCounts(minCounts) {
@@ -2142,16 +2168,47 @@ body { margin: 10px; }
     }, 0);
   }
 
-  function getFinalStackValueBounds(minCounts) {
+  function sumFinalStackMaxCounts(maxCounts) {
+    return sanitizeFinalStackMaxCounts(maxCounts).reduce(function(sum, value) {
+      return sum + value;
+    }, 0);
+  }
+
+  function getFinalStackValueBounds(minCounts, maxCounts) {
     var normalized = sanitizeFinalStackMinCounts(minCounts);
+    var normalizedMax = sanitizeFinalStackMaxCounts(maxCounts);
     var fixedValue = 0;
     normalized.forEach(function(count, idx) {
       fixedValue += count * FINAL_STACK_DENOMS[idx].value;
     });
+    if (normalized.some(function(count, idx) { return count > normalizedMax[idx]; })) {
+      return { minValue: fixedValue, maxValue: fixedValue, valid: false };
+    }
+
     var remainingSlots = FINAL_STACK_CHIPS_PER_PLAYER - sumFinalStackMinCounts(normalized);
+    var minValue = fixedValue;
+    var maxValue = fixedValue;
+    var minSlots = remainingSlots;
+    var maxSlots = remainingSlots;
+
+    for (var lowIdx = 0; lowIdx < FINAL_STACK_DENOMS.length; lowIdx++) {
+      var lowExtra = Math.max(0, normalizedMax[lowIdx] - normalized[lowIdx]);
+      var lowUse = Math.min(lowExtra, minSlots);
+      minValue += lowUse * FINAL_STACK_DENOMS[lowIdx].value;
+      minSlots -= lowUse;
+    }
+
+    for (var highIdx = FINAL_STACK_DENOMS.length - 1; highIdx >= 0; highIdx--) {
+      var highExtra = Math.max(0, normalizedMax[highIdx] - normalized[highIdx]);
+      var highUse = Math.min(highExtra, maxSlots);
+      maxValue += highUse * FINAL_STACK_DENOMS[highIdx].value;
+      maxSlots -= highUse;
+    }
+
     return {
-      minValue: fixedValue + (remainingSlots * FINAL_STACK_DENOMS[0].value),
-      maxValue: fixedValue + (remainingSlots * FINAL_STACK_DENOMS[FINAL_STACK_DENOMS.length - 1].value)
+      minValue: minValue,
+      maxValue: maxValue,
+      valid: remainingSlots >= 0 && minSlots === 0 && maxSlots === 0
     };
   }
 
@@ -2164,6 +2221,27 @@ body { margin: 10px; }
       }
     });
     return active.length ? active.join(' / ') : 'Aucun minimum';
+  }
+
+  function formatFinalStackMaxCounts(maxCounts) {
+    var normalized = sanitizeFinalStackMaxCounts(maxCounts);
+    var active = [];
+    normalized.forEach(function(count, idx) {
+      if (count >= FINAL_STACK_CHIPS_PER_PLAYER) { return; }
+      if (count === 0) {
+        active.push(FINAL_STACK_DENOMS[idx].label + ' interdit');
+      }
+      else {
+        active.push(FINAL_STACK_DENOMS[idx].label + ' max ' + String(count));
+      }
+    });
+    return active.length ? active.join(' / ') : 'Aucun maximum';
+  }
+
+  function countFinalStackLimitedDenoms(maxCounts) {
+    return sanitizeFinalStackMaxCounts(maxCounts).filter(function(count) {
+      return count < FINAL_STACK_CHIPS_PER_PLAYER;
+    }).length;
   }
 
   function getFinalStackActiveMinCounts() {
@@ -2179,6 +2257,23 @@ body { margin: 10px; }
       values[denomIdx] = parseInt(input.value, 10);
     });
     return sanitizeFinalStackMinCounts(values);
+  }
+
+  function getFinalStackActiveMaxCounts() {
+    var inputs = Array.prototype.slice.call(document.querySelectorAll('.final-stack-max-input'));
+    if (!inputs.length) {
+      return FINAL_STACK_DEFAULT_MAX_COUNTS.slice(0);
+    }
+
+    var values = FINAL_STACK_DENOMS.map(function(_, idx) {
+      return FINAL_STACK_DEFAULT_MAX_COUNTS[idx];
+    });
+    inputs.forEach(function(input) {
+      var denomIdx = parseInt(input.getAttribute('data-denom-index'), 10);
+      if (!isFinite(denomIdx) || isNaN(denomIdx) || denomIdx < 0 || denomIdx >= values.length) { return; }
+      values[denomIdx] = parseInt(input.value, 10);
+    });
+    return sanitizeFinalStackMaxCounts(values);
   }
 
   function getFinalStackPlayers() {
@@ -2404,19 +2499,29 @@ body { margin: 10px; }
     });
   }
 
-  function getChipCombos(minCounts) {
+  function getChipCombos(minCounts, maxCounts) {
     var normalizedMinCounts = sanitizeFinalStackMinCounts(minCounts);
-    var cacheKey = getFinalStackMinCountsKey(normalizedMinCounts);
+    var normalizedMaxCounts = sanitizeFinalStackMaxCounts(maxCounts);
+    var cacheKey = getFinalStackMinCountsKey(normalizedMinCounts) + '||' + getFinalStackMaxCountsKey(normalizedMaxCounts);
     if (chipComboCache[cacheKey]) { return chipComboCache[cacheKey]; }
 
+    if (normalizedMinCounts.some(function(count, idx) { return count > normalizedMaxCounts[idx]; })) {
+      chipComboCache[cacheKey] = [];
+      return chipComboCache[cacheKey];
+    }
+    if (sumFinalStackMinCounts(normalizedMinCounts) > FINAL_STACK_CHIPS_PER_PLAYER || sumFinalStackMaxCounts(normalizedMaxCounts) < FINAL_STACK_CHIPS_PER_PLAYER) {
+      chipComboCache[cacheKey] = [];
+      return chipComboCache[cacheKey];
+    }
+
     var combos = [];
-    for (var c10000 = 0; c10000 <= FINAL_STACK_CHIPS_PER_PLAYER; c10000++) {
-      for (var c5000 = 0; c5000 <= FINAL_STACK_CHIPS_PER_PLAYER - c10000; c5000++) {
-        for (var c1000 = 0; c1000 <= FINAL_STACK_CHIPS_PER_PLAYER - c10000 - c5000; c1000++) {
-          for (var c500 = 0; c500 <= FINAL_STACK_CHIPS_PER_PLAYER - c10000 - c5000 - c1000; c500++) {
+    for (var c10000 = normalizedMinCounts[4]; c10000 <= Math.min(normalizedMaxCounts[4], FINAL_STACK_CHIPS_PER_PLAYER); c10000++) {
+      for (var c5000 = normalizedMinCounts[3]; c5000 <= Math.min(normalizedMaxCounts[3], FINAL_STACK_CHIPS_PER_PLAYER - c10000); c5000++) {
+        for (var c1000 = normalizedMinCounts[2]; c1000 <= Math.min(normalizedMaxCounts[2], FINAL_STACK_CHIPS_PER_PLAYER - c10000 - c5000); c1000++) {
+          for (var c500 = normalizedMinCounts[1]; c500 <= Math.min(normalizedMaxCounts[1], FINAL_STACK_CHIPS_PER_PLAYER - c10000 - c5000 - c1000); c500++) {
             var c100 = FINAL_STACK_CHIPS_PER_PLAYER - c10000 - c5000 - c1000 - c500;
             var counts = [c100, c500, c1000, c5000, c10000];
-            if (counts.some(function(count, idx) { return count < normalizedMinCounts[idx]; })) { continue; }
+            if (counts.some(function(count, idx) { return count < normalizedMinCounts[idx] || count > normalizedMaxCounts[idx]; })) { continue; }
             var value = (c100 * 100) + (c500 * 500) + (c1000 * 1000) + (c5000 * 5000) + (c10000 * 10000);
             combos.push({
               counts: counts,
@@ -2475,8 +2580,8 @@ body { margin: 10px; }
     return '';
   }
 
-  function buildFinalStackCandidates(target, limit, minCounts) {
-    return getChipCombos(minCounts).map(function(combo) {
+  function buildFinalStackCandidates(target, limit, minCounts, maxCounts) {
+    return getChipCombos(minCounts, maxCounts).map(function(combo) {
       var pref = buildComboPreference(combo);
       return {
         combo: combo,
@@ -2495,17 +2600,19 @@ body { margin: 10px; }
     }).slice(0, limit);
   }
 
-  function buildFinalStackPlan(players, multiplier, minCounts) {
+  function buildFinalStackPlan(players, multiplier, minCounts, maxCounts) {
     var normalizedMinCounts = sanitizeFinalStackMinCounts(minCounts);
+    var normalizedMaxCounts = sanitizeFinalStackMaxCounts(maxCounts);
     var key = players.map(function(player) {
       return [player.rank, player.name, player.total].join(':');
-    }).join('|') + '|' + String(multiplier) + '|' + getFinalStackMinCountsKey(normalizedMinCounts);
+    }).join('|') + '|' + String(multiplier) + '|' + getFinalStackMinCountsKey(normalizedMinCounts) + '|' + getFinalStackMaxCountsKey(normalizedMaxCounts);
     if (finalStackPlanCache[key]) { return finalStackPlanCache[key]; }
 
     var stocks = FINAL_STACK_DENOMS.map(function(denom) { return denom.stock; });
     var targets = players.map(function(player) { return (player.total || 0) * multiplier; });
     var minChipCount = sumFinalStackMinCounts(normalizedMinCounts);
-    var bounds = getFinalStackValueBounds(normalizedMinCounts);
+    var maxChipCount = sumFinalStackMaxCounts(normalizedMaxCounts);
+    var bounds = getFinalStackValueBounds(normalizedMinCounts, normalizedMaxCounts);
     var minValue = bounds.minValue;
     var maxValue = bounds.maxValue;
     var totalChipStock = stocks.reduce(function(sum, value) { return sum + value; }, 0);
@@ -2515,6 +2622,18 @@ body { margin: 10px; }
     if (minChipCount > FINAL_STACK_CHIPS_PER_PLAYER) {
       return {
         error: "Impossible: les minimums demandent " + String(minChipCount) + " jetons par joueur, mais la limite est de " + String(FINAL_STACK_CHIPS_PER_PLAYER) + '.',
+        warnings: warnings
+      };
+    }
+    if (normalizedMinCounts.some(function(count, idx) { return count > normalizedMaxCounts[idx]; })) {
+      return {
+        error: "Impossible: un maximum est inférieur au minimum pour au moins une dénomination.",
+        warnings: warnings
+      };
+    }
+    if (maxChipCount < FINAL_STACK_CHIPS_PER_PLAYER) {
+      return {
+        error: "Impossible: les maximums n'autorisent que " + String(maxChipCount) + " jetons par joueur, mais il en faut exactement " + String(FINAL_STACK_CHIPS_PER_PLAYER) + '.',
         warnings: warnings
       };
     }
@@ -2533,14 +2652,20 @@ body { margin: 10px; }
         };
       }
     }
+    if (!bounds.valid) {
+      return {
+        error: "Impossible: les contraintes de minimums et maximums ne permettent pas de construire exactement 20 jetons par joueur.",
+        warnings: warnings
+      };
+    }
 
     var belowMin = targets.filter(function(target) { return target < minValue; }).length;
     var aboveMax = targets.filter(function(target) { return target > maxValue; }).length;
     if (belowMin > 0) {
-      warnings.push(String(belowMin) + ' cible(s) sont sous le minimum possible de ' + formatDisplayAmount(minValue, 0) + ' avec 20 jetons et les minimums demandés.');
+      warnings.push(String(belowMin) + ' cible(s) sont sous le minimum possible de ' + formatDisplayAmount(minValue, 0) + ' avec 20 jetons et les contraintes demandées.');
     }
     if (aboveMax > 0) {
-      warnings.push(String(aboveMax) + ' cible(s) dépassent le maximum possible de ' + formatDisplayAmount(maxValue, 0) + ' avec 20 jetons et les minimums demandés.');
+      warnings.push(String(aboveMax) + ' cible(s) dépassent le maximum possible de ' + formatDisplayAmount(maxValue, 0) + ' avec 20 jetons et les contraintes demandées.');
     }
 
     var passConfigs = [
@@ -2554,7 +2679,7 @@ body { margin: 10px; }
     for (var passIndex = 0; passIndex < passConfigs.length; passIndex++) {
       var pass = passConfigs[passIndex];
       var candidateSets = targets.map(function(target) {
-        return buildFinalStackCandidates(target, pass.candidateLimit, normalizedMinCounts);
+        return buildFinalStackCandidates(target, pass.candidateLimit, normalizedMinCounts, normalizedMaxCounts);
       });
       var states = [{
         used: [0, 0, 0, 0, 0],
@@ -2667,6 +2792,7 @@ body { margin: 10px; }
     var plan = {
       players: bestState.assignments,
       minCounts: normalizedMinCounts,
+      maxCounts: normalizedMaxCounts,
       stockRows: stockRows,
       totalTarget: totalTarget,
       totalFinal: totalFinal,
@@ -2690,6 +2816,7 @@ body { margin: 10px; }
 
     var multiplier = parseFloat(multiplierInput.value);
     var minCounts = getFinalStackActiveMinCounts();
+    var maxCounts = getFinalStackActiveMaxCounts();
     host.innerHTML = '';
     summaryHost.innerHTML = '';
 
@@ -2704,7 +2831,7 @@ body { margin: 10px; }
       return;
     }
 
-    var plan = buildFinalStackPlan(players, multiplier, minCounts);
+    var plan = buildFinalStackPlan(players, multiplier, minCounts, maxCounts);
     if (plan.error) {
       host.innerHTML = '<div class="stack-calc-warning">' + plan.error + '</div>';
       return;
@@ -2730,6 +2857,7 @@ body { margin: 10px; }
     addSummaryCard('Joueurs', String(plan.playersCount), 'Classement actuel complet');
     addSummaryCard('Multiplicateur', formatDisplayAmount(multiplier, (Math.round(multiplier) === multiplier) ? 0 : 1) + 'x', 'Points → jetons');
     addSummaryCard('Minimums actifs', String(sumFinalStackMinCounts(plan.minCounts)), formatFinalStackMinCounts(plan.minCounts));
+    addSummaryCard('Maximums actifs', String(countFinalStackLimitedDenoms(plan.maxCounts)), formatFinalStackMaxCounts(plan.maxCounts));
     addSummaryCard('Stack total', formatDisplayAmount(plan.totalFinal, 0), 'Somme des stacks distribués');
     addSummaryCard('Écart total', formatSignedAmount(Math.round(plan.totalDiff)), 'Distribué vs cible brute');
     addSummaryCard('Erreur absolue', formatDisplayAmount(Math.round(plan.totalAbsError), 0), 'Somme des écarts individuels');
@@ -2899,6 +3027,7 @@ body { margin: 10px; }
     var run = document.getElementById('final-stack-run');
     var status = document.getElementById('final-stack-status');
     var minInputs = Array.prototype.slice.call(document.querySelectorAll('.final-stack-min-input'));
+    var maxInputs = Array.prototype.slice.call(document.querySelectorAll('.final-stack-max-input'));
     if (!panel || !input || !run || !status || panel.getAttribute('data-ready') === '1') { return; }
 
     function setCalcStatus(message, error) {
@@ -2916,6 +3045,16 @@ body { margin: 10px; }
       return normalized;
     }
 
+    function applyMaxCountsToInputs(maxCounts) {
+      var normalized = sanitizeFinalStackMaxCounts(maxCounts);
+      maxInputs.forEach(function(maxInput) {
+        var denomIdx = parseInt(maxInput.getAttribute('data-denom-index'), 10);
+        if (!isFinite(denomIdx) || isNaN(denomIdx) || denomIdx < 0 || denomIdx >= normalized.length) { return; }
+        maxInput.value = String(normalized[denomIdx] || 0);
+      });
+      return normalized;
+    }
+
     function getMinCountsFromInputs() {
       var raw = FINAL_STACK_DENOMS.map(function() { return 0; });
       minInputs.forEach(function(minInput) {
@@ -2924,6 +3063,16 @@ body { margin: 10px; }
         raw[denomIdx] = parseInt(minInput.value, 10);
       });
       return sanitizeFinalStackMinCounts(raw);
+    }
+
+    function getMaxCountsFromInputs() {
+      var raw = FINAL_STACK_DENOMS.map(function(_, idx) { return FINAL_STACK_DEFAULT_MAX_COUNTS[idx]; });
+      maxInputs.forEach(function(maxInput) {
+        var denomIdx = parseInt(maxInput.getAttribute('data-denom-index'), 10);
+        if (!isFinite(denomIdx) || isNaN(denomIdx) || denomIdx < 0 || denomIdx >= raw.length) { return; }
+        raw[denomIdx] = parseInt(maxInput.value, 10);
+      });
+      return sanitizeFinalStackMaxCounts(raw);
     }
 
     try {
@@ -2938,9 +3087,17 @@ body { margin: 10px; }
       else {
         applyMinCountsToInputs(FINAL_STACK_DEFAULT_MIN_COUNTS);
       }
+      var savedMaxCounts = window.localStorage ? window.localStorage.getItem(FINAL_STACK_MAX_COUNTS_KEY) : '';
+      if (savedMaxCounts) {
+        applyMaxCountsToInputs(JSON.parse(savedMaxCounts));
+      }
+      else {
+        applyMaxCountsToInputs(FINAL_STACK_DEFAULT_MAX_COUNTS);
+      }
     }
     catch (err) {
       applyMinCountsToInputs(FINAL_STACK_DEFAULT_MIN_COUNTS);
+      applyMaxCountsToInputs(FINAL_STACK_DEFAULT_MAX_COUNTS);
     }
 
     function rememberMultiplier() {
@@ -2961,6 +3118,15 @@ body { margin: 10px; }
       catch (err) {}
     }
 
+    function rememberMaxCounts() {
+      try {
+        if (window.localStorage) {
+          window.localStorage.setItem(FINAL_STACK_MAX_COUNTS_KEY, JSON.stringify(getMaxCountsFromInputs()));
+        }
+      }
+      catch (err) {}
+    }
+
     function markPending() {
       rememberMultiplier();
       setCalcStatus('À recalculer', false);
@@ -2968,8 +3134,10 @@ body { margin: 10px; }
 
     function triggerFinalStackRender() {
       applyMinCountsToInputs(getMinCountsFromInputs());
+      applyMaxCountsToInputs(getMaxCountsFromInputs());
       rememberMultiplier();
       rememberMinCounts();
+      rememberMaxCounts();
       setCalcStatus('Calcul en cours...', false);
       run.disabled = true;
 
@@ -3005,6 +3173,20 @@ body { margin: 10px; }
         markPending();
       });
       minInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          triggerFinalStackRender();
+        }
+      });
+    });
+    maxInputs.forEach(function(maxInput) {
+      maxInput.addEventListener('input', markPending);
+      maxInput.addEventListener('change', function() {
+        applyMaxCountsToInputs(getMaxCountsFromInputs());
+        rememberMaxCounts();
+        markPending();
+      });
+      maxInput.addEventListener('keydown', function(event) {
         if (event.key === 'Enter') {
           event.preventDefault();
           triggerFinalStackRender();
