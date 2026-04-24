@@ -58,6 +58,10 @@ h1 { margin: 0 0 4px 0; }
 .stack-calc-controls input { width: 110px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
 .stack-calc-controls button { border: 1px solid #cbd5e1; background: #0f172a; color: #fff; border-radius: 6px; padding: 7px 11px; cursor: pointer; }
 .stack-calc-status { color: #64748b; font-size: 12px; min-height: 18px; align-self: center; }
+.stack-calc-auto { min-width: 200px; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 10px; background: #f8fafc; }
+.stack-calc-auto-label { margin: 0; color: #475569; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.stack-calc-auto-value { margin: 4px 0 0 0; color: #0f172a; font-size: 18px; font-weight: 800; line-height: 1.05; }
+.stack-calc-auto-detail { margin: 5px 0 0 0; color: #64748b; font-size: 11px; line-height: 1.4; }
 .stack-calc-presets { width: min(1100px, 100%); display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 12px 0; }
 .stack-calc-preset { border: 1px solid #cbd5e1; background: #fff; color: #0f172a; border-radius: 14px; padding: 10px 12px; min-width: 150px; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; cursor: pointer; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05); }
 .stack-calc-preset:hover { background: #f8fafc; }
@@ -361,7 +365,7 @@ body { margin: 10px; }
 </head>
 <body>
 <h1>Poker Stanley</h1>
-<div class="meta">Mise à jour: 2026-04-24 13:24:26</div>
+<div class="meta">Mise à jour: 2026-04-24 13:41:04</div>
 <div class="legend">
 <span class="pill replacement">Barre orange = remplacé</span>
 <span class="pill absent">Nom rouge = absent non-remplacé</span>
@@ -1328,8 +1332,13 @@ body { margin: 10px; }
 <h2>Calculateur Stacks Finale</h2>
 <p class="stack-calc-note">Basé sur tout le classement actuel. 20 jetons par joueur, avec respect du stock global de jetons. Les rangs 1 à 10 restent dans l'ordre à la table finale; à partir du 11e, les joueurs alternent entre les tables de consolation 2 et 3. Les minima par dénomination sont configurables ci-dessous.</p>
 <div class="stack-calc-controls">
-<label for="final-stack-multiplier">Multiplicateur points → jetons:</label>
-<input id="final-stack-multiplier" type="number" min="0.1" step="0.5" value="5" />
+<label for="final-stack-multiplier">Multiplicateur fixe finale:</label>
+<input id="final-stack-multiplier" type="number" min="0.1" step="0.5" value="6" />
+<div class="stack-calc-auto">
+<p class="stack-calc-auto-label">Multiplicateur consolation auto</p>
+<p id="final-stack-consolation-multiplier" class="stack-calc-auto-value">-</p>
+<p id="final-stack-consolation-detail" class="stack-calc-auto-detail">Calé sur la somme cible de la table finale.</p>
+</div>
 <button id="final-stack-run" type="button">Calculer</button>
 <span id="final-stack-status" class="stack-calc-status" aria-live="polite"></span>
 </div>
@@ -1416,7 +1425,7 @@ body { margin: 10px; }
   var ACTIVE_TAB_KEY = 'poker_preview_active_tab';
   var ACTIVE_WEEK_KEY = 'poker_preview_active_week';
   var PLAYER_FILTER_KEY = 'poker_preview_player_filter';
-  var FINAL_STACK_MULTIPLIER_KEY = 'poker_preview_final_stack_multiplier';
+  var FINAL_STACK_FINAL_MULTIPLIER_KEY = 'poker_preview_final_stack_multiplier';
   var FINAL_STACK_MIN_COUNTS_KEY = 'poker_preview_final_stack_min_counts';
   var FINAL_STACK_MAX_COUNTS_KEY = 'poker_preview_final_stack_max_counts';
   var FINAL_STACK_PRESET_KEY = 'poker_preview_final_stack_preset';
@@ -1732,7 +1741,7 @@ body { margin: 10px; }
     if (isAdvancedFinalTableViewEnabled()) {
       btn.textContent = 'Mode table finale';
       title.textContent = 'Mode Table Finale';
-      note.textContent = "Prépare la table finale et les deux tables consolation à partir du classement actuel. Le calcul garde 20 jetons par joueur, respecte le stock global, et permet d'ajuster rapidement les contraintes avant distribution.";
+      note.textContent = "Prépare la table finale et les deux tables consolation à partir du classement actuel. Le calcul utilise maintenant un multiplicateur fixe pour la finale et un multiplicateur consolation auto pour viser la même somme cible, tout en gardant 20 jetons par joueur et le respect du stock global.";
       return;
     }
 
@@ -3975,6 +3984,45 @@ body { margin: 10px; }
     return Math.round((balanceGap || 0) * FINAL_STACK_TABLE_BALANCE_WEIGHT);
   }
 
+  function buildFinalStackMultiplierModel(players, finalTableMultiplier) {
+    var safePlayers = Array.isArray(players) ? players : [];
+    var finalCount = Math.min(10, safePlayers.length);
+    var finalPointsTotal = 0;
+    var consolationPointsTotal = 0;
+
+    safePlayers.forEach(function(player, idx) {
+      var points = parseNumericText(player && player.total);
+      if (!isFinite(points) || isNaN(points)) { points = 0; }
+      if (idx < finalCount) {
+        finalPointsTotal += points;
+      }
+      else {
+        consolationPointsTotal += points;
+      }
+    });
+
+    var finalTargetTotal = finalPointsTotal * finalTableMultiplier;
+    var consolationMultiplier = finalTableMultiplier;
+    if (safePlayers.length > finalCount && consolationPointsTotal > 0) {
+      consolationMultiplier = finalTargetTotal / consolationPointsTotal;
+    }
+
+    return {
+      finalTablePlayerCount: finalCount,
+      finalTableMultiplier: finalTableMultiplier,
+      consolationMultiplier: consolationMultiplier,
+      finalPointsTotal: finalPointsTotal,
+      consolationPointsTotal: consolationPointsTotal,
+      finalTargetTotal: finalTargetTotal,
+      consolationTargetTotal: consolationPointsTotal * consolationMultiplier,
+      targets: safePlayers.map(function(player, idx) {
+        var points = parseNumericText(player && player.total);
+        if (!isFinite(points) || isNaN(points)) { points = 0; }
+        return points * (idx < finalCount ? finalTableMultiplier : consolationMultiplier);
+      })
+    };
+  }
+
   function compareStatePreference(a, b) {
     if ((a.priorityCost || 0) !== (b.priorityCost || 0)) { return (a.priorityCost || 0) - (b.priorityCost || 0); }
     if ((a.balanceGap || 0) !== (b.balanceGap || 0)) { return (a.balanceGap || 0) - (b.balanceGap || 0); }
@@ -4018,16 +4066,17 @@ body { margin: 10px; }
     }).slice(0, limit);
   }
 
-  function buildFinalStackPlan(players, multiplier, minCounts, maxCounts) {
+  function buildFinalStackPlan(players, finalTableMultiplier, minCounts, maxCounts) {
     var normalizedMinCounts = sanitizeFinalStackMinCounts(minCounts);
     var normalizedMaxCounts = sanitizeFinalStackMaxCounts(maxCounts);
+    var multiplierModel = buildFinalStackMultiplierModel(players, finalTableMultiplier);
     var key = players.map(function(player) {
       return [player.rank, player.name, player.total].join(':');
-    }).join('|') + '|' + String(multiplier) + '|' + getFinalStackMinCountsKey(normalizedMinCounts) + '|' + getFinalStackMaxCountsKey(normalizedMaxCounts);
+    }).join('|') + '|' + String(finalTableMultiplier) + '|' + getFinalStackMinCountsKey(normalizedMinCounts) + '|' + getFinalStackMaxCountsKey(normalizedMaxCounts);
     if (finalStackPlanCache[key]) { return finalStackPlanCache[key]; }
 
     var stocks = FINAL_STACK_DENOMS.map(function(denom) { return denom.stock; });
-    var targets = players.map(function(player) { return (player.total || 0) * multiplier; });
+    var targets = multiplierModel.targets.slice(0);
     var minChipCount = sumFinalStackMinCounts(normalizedMinCounts);
     var maxChipCount = sumFinalStackMaxCounts(normalizedMaxCounts);
     var bounds = getFinalStackValueBounds(normalizedMinCounts, normalizedMaxCounts);
@@ -4092,7 +4141,7 @@ body { margin: 10px; }
       { candidateLimit: 220, beamSize: 720 },
       { candidateLimit: 360, beamSize: 1200 }
     ];
-    var finalTablePlayerCount = Math.min(10, players.length);
+    var finalTablePlayerCount = multiplierModel.finalTablePlayerCount;
 
     var bestState = null;
     for (var passIndex = 0; passIndex < passConfigs.length; passIndex++) {
@@ -4159,6 +4208,7 @@ body { margin: 10px; }
               assignments: state.assignments.concat([{
                 player: players[playerIdx],
                 target: targets[playerIdx],
+                multiplierApplied: playerIdx < finalTablePlayerCount ? multiplierModel.finalTableMultiplier : multiplierModel.consolationMultiplier,
                 combo: candidate.combo,
                 diff: candidate.diff,
                 cost: candidate.cost
@@ -4233,6 +4283,10 @@ body { margin: 10px; }
 
     var plan = {
       players: bestState.assignments,
+      finalTableMultiplier: multiplierModel.finalTableMultiplier,
+      consolationMultiplier: multiplierModel.consolationMultiplier,
+      finalTargetTotal: multiplierModel.finalTargetTotal,
+      consolationTargetTotal: multiplierModel.consolationTargetTotal,
       minCounts: normalizedMinCounts,
       maxCounts: normalizedMaxCounts,
       stockRows: stockRows,
@@ -4257,18 +4311,18 @@ body { margin: 10px; }
   function renderFinalStackCalculator() {
     var host = document.getElementById('final-stack-host');
     var summaryHost = document.getElementById('final-stack-summary');
-    var multiplierInput = document.getElementById('final-stack-multiplier');
+    var finalMultiplierInput = document.getElementById('final-stack-multiplier');
     var tabsHost = document.getElementById('final-stack-view-tabs');
-    if (!host || !summaryHost || !multiplierInput) { return; }
+    if (!host || !summaryHost || !finalMultiplierInput) { return; }
 
-    var multiplier = parseFloat(multiplierInput.value);
+    var finalMultiplier = parseFloat(finalMultiplierInput.value);
     var minCounts = getFinalStackActiveMinCounts();
     var maxCounts = getFinalStackActiveMaxCounts();
     host.innerHTML = '';
     summaryHost.innerHTML = '';
     if (tabsHost) { tabsHost.innerHTML = ''; }
 
-    if (!isFinite(multiplier) || isNaN(multiplier) || multiplier <= 0) {
+    if (!isFinite(finalMultiplier) || isNaN(finalMultiplier) || finalMultiplier <= 0) {
       host.innerHTML = '<div class="stack-calc-warning">Entre un multiplicateur valide supérieur à 0.</div>';
       return;
     }
@@ -4279,7 +4333,7 @@ body { margin: 10px; }
       return;
     }
 
-    var plan = buildFinalStackPlan(players, multiplier, minCounts, maxCounts);
+    var plan = buildFinalStackPlan(players, finalMultiplier, minCounts, maxCounts);
     if (plan.error) {
       host.innerHTML = '<div class="stack-calc-warning">' + plan.error + '</div>';
       return;
@@ -4303,7 +4357,10 @@ body { margin: 10px; }
     }
 
     addSummaryCard('Joueurs', String(plan.playersCount), 'Classement actuel complet');
-    addSummaryCard('Multiplicateur', formatDisplayAmount(multiplier, (Math.round(multiplier) === multiplier) ? 0 : 1) + 'x', 'Points vers jetons');
+    addSummaryCard('Finale fixe', formatDisplayAmount(plan.finalTableMultiplier, 2) + 'x', 'Multiplicateur appliqué au top 10');
+    if (plan.playersCount > 10) {
+      addSummaryCard('Consolations auto', formatDisplayAmount(plan.consolationMultiplier, 2) + 'x', 'Calculé pour viser la même somme cible que la finale');
+    }
     addSummaryCard('Minimums actifs', String(sumFinalStackMinCounts(plan.minCounts)), formatFinalStackMinCounts(plan.minCounts));
     addSummaryCard('Maximums actifs', String(countFinalStackLimitedDenoms(plan.maxCounts)), formatFinalStackMaxCounts(plan.maxCounts));
     addSummaryCard('Stack total', formatDisplayAmount(plan.totalFinal, 0), 'Somme des stacks distribués');
@@ -4320,6 +4377,7 @@ body { margin: 10px; }
           ? 'Aucun ratio disponible.'
           : ('Ratio finale/consolations: ' + formatDisplayAmount(plan.tableBalanceRatio, 2) + 'x')
       );
+      addSummaryCard('Sommes cibles', formatDisplayAmount(plan.finalTargetTotal, 0), 'Finale visée ' + formatDisplayAmount(plan.finalTargetTotal, 0) + ' · consolations visées ' + formatDisplayAmount(plan.consolationTargetTotal, 0));
     }
 
     var stackGroups = buildFinalStackGroups(plan.players);
@@ -4493,6 +4551,7 @@ body { margin: 10px; }
       [
         String((group.players || []).length) + ' joueurs',
         'Rangs ' + buildGroupRanksText(group),
+        'Multiplicateur ' + formatDisplayAmount(group.type === 'final' ? plan.finalTableMultiplier : plan.consolationMultiplier, 2) + 'x',
         'Stack total ' + formatDisplayAmount(totalStack, 0),
         'Écart total ' + formatSignedAmount(Math.round(totalDiff))
       ].forEach(function(text) {
@@ -4695,6 +4754,8 @@ body { margin: 10px; }
     var input = document.getElementById('final-stack-multiplier');
     var run = document.getElementById('final-stack-run');
     var status = document.getElementById('final-stack-status');
+    var consolationMultiplierValue = document.getElementById('final-stack-consolation-multiplier');
+    var consolationMultiplierDetail = document.getElementById('final-stack-consolation-detail');
     var presetHost = document.getElementById('final-stack-presets');
     var presetMeta = document.getElementById('final-stack-preset-meta');
     var minInputs = Array.prototype.slice.call(document.querySelectorAll('.final-stack-min-input'));
@@ -4744,6 +4805,27 @@ body { margin: 10px; }
         raw[denomIdx] = parseInt(maxInput.value, 10);
       });
       return sanitizeFinalStackMaxCounts(raw);
+    }
+
+    function updateConsolationMultiplierPreview() {
+      if (!consolationMultiplierValue || !consolationMultiplierDetail) { return; }
+      var finalMultiplier = parseFloat(input.value);
+      if (!isFinite(finalMultiplier) || isNaN(finalMultiplier) || finalMultiplier <= 0) {
+        consolationMultiplierValue.textContent = '-';
+        consolationMultiplierDetail.textContent = 'Entre un multiplicateur finale valide.';
+        return;
+      }
+
+      var players = getFinalStackPlayers();
+      var model = buildFinalStackMultiplierModel(players, finalMultiplier);
+      if (!players.length || players.length <= model.finalTablePlayerCount) {
+        consolationMultiplierValue.textContent = formatDisplayAmount(finalMultiplier, 2) + 'x';
+        consolationMultiplierDetail.textContent = 'Aucune table consolation détectée pour le moment.';
+        return;
+      }
+
+      consolationMultiplierValue.textContent = formatDisplayAmount(model.consolationMultiplier, 2) + 'x';
+      consolationMultiplierDetail.textContent = 'Finale visée ' + formatDisplayAmount(model.finalTargetTotal, 0) + ' · consolations visées ' + formatDisplayAmount(model.consolationTargetTotal, 0);
     }
 
     function syncPresetUi() {
@@ -4815,7 +4897,7 @@ body { margin: 10px; }
     }
 
     try {
-      var savedMultiplier = window.localStorage ? window.localStorage.getItem(FINAL_STACK_MULTIPLIER_KEY) : '';
+      var savedMultiplier = window.localStorage ? window.localStorage.getItem(FINAL_STACK_FINAL_MULTIPLIER_KEY) : '';
       if (savedMultiplier) {
         input.value = savedMultiplier;
       }
@@ -4853,7 +4935,7 @@ body { margin: 10px; }
     function rememberMultiplier() {
       try {
         if (window.localStorage) {
-          window.localStorage.setItem(FINAL_STACK_MULTIPLIER_KEY, input.value || '');
+          window.localStorage.setItem(FINAL_STACK_FINAL_MULTIPLIER_KEY, input.value || '');
         }
       }
       catch (err) {}
@@ -4879,6 +4961,7 @@ body { margin: 10px; }
 
     function markPending() {
       rememberMultiplier();
+      updateConsolationMultiplierPreview();
       syncPresetUi();
       setCalcStatus('À recalculer', false);
     }
@@ -4889,6 +4972,7 @@ body { margin: 10px; }
       rememberMultiplier();
       rememberMinCounts();
       rememberMaxCounts();
+      updateConsolationMultiplierPreview();
       syncPresetUi();
       setCalcStatus('Calcul en cours...', false);
       run.disabled = true;
@@ -4947,6 +5031,7 @@ body { margin: 10px; }
     });
 
     setupPresetButtons();
+    updateConsolationMultiplierPreview();
     panel.setAttribute('data-ready', '1');
     triggerFinalStackRender();
   }
