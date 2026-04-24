@@ -611,6 +611,7 @@ function Export-PublicHtml {
         $SiteConfig = [ordered]@{
             enableFinalStackCalculator = $false
             relaxDesktopHorizontalScroll = $false
+            seasonStage = 'regular'
         }
     }
     $siteConfigJson = $SiteConfig | ConvertTo-Json -Depth 8 -Compress
@@ -1036,6 +1037,7 @@ try {
     $siteConfig = [ordered]@{
         enableFinalStackCalculator = $false
         relaxDesktopHorizontalScroll = $false
+        seasonStage = if ($weekNumber -ge 14) { 'finale' } else { 'regular' }
     }
     $publishFingerprint = ((@([string]$PublishRepoDir, [string]$PublicUrl) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }) -join ' ')
     if ($publishFingerprint -match '(?i)preview') {

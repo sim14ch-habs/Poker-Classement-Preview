@@ -165,6 +165,27 @@ h1 { margin: 0 0 4px 0; }
 .total-compact-table th.sortable.sorted-desc .sort-arrow { color: #0f172a; }
 .total-compact-table tbody tr:nth-child(odd) td { background: #ffffff; }
 .total-compact-table tbody tr:nth-child(even) td { background: #e2e8f0; }
+.season-finale-banner { position: relative; margin: 0 0 16px 0; padding: 20px; border-radius: 22px; color: #f8fafc; background: radial-gradient(circle at top right, rgba(250, 204, 21, 0.34), transparent 34%), linear-gradient(135deg, #0f172a 0%, #14532d 52%, #0f3d2e 100%); box-shadow: 0 20px 46px rgba(15, 23, 42, 0.18); overflow: hidden; }
+.season-finale-banner::after { content: ''; position: absolute; inset: 12px; border: 1px solid rgba(248, 250, 252, 0.14); border-radius: 16px; pointer-events: none; }
+.season-finale-kicker { position: relative; z-index: 1; margin: 0 0 8px 0; color: #fde68a; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.season-finale-title { position: relative; z-index: 1; margin: 0; font-size: 30px; line-height: 1.02; letter-spacing: -0.03em; }
+.season-finale-copy { position: relative; z-index: 1; max-width: 720px; margin: 10px 0 0 0; color: rgba(248, 250, 252, 0.9); font-size: 15px; line-height: 1.55; }
+.season-finale-grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.9fr); gap: 14px; margin-top: 18px; align-items: stretch; }
+.season-finale-podium { display: grid; gap: 10px; }
+.season-finale-podium-item { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 12px; align-items: center; padding: 12px 14px; border-radius: 16px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.12); backdrop-filter: blur(4px); }
+.season-finale-podium-rank { display: flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 18px; font-size: 26px; font-weight: 900; color: #0f172a; background: linear-gradient(160deg, #f8fafc 0%, #cbd5e1 100%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6); }
+.season-finale-podium-item.rank-1 .season-finale-podium-rank { background: linear-gradient(160deg, #fde68a 0%, #f59e0b 100%); }
+.season-finale-podium-item.rank-2 .season-finale-podium-rank { background: linear-gradient(160deg, #f8fafc 0%, #cbd5e1 100%); }
+.season-finale-podium-item.rank-3 .season-finale-podium-rank { background: linear-gradient(160deg, #fdba74 0%, #c2410c 100%); color: #fff7ed; }
+.season-finale-podium-label { margin: 0; color: #cbd5e1; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.season-finale-podium-name { margin: 4px 0 0 0; font-size: 21px; font-weight: 800; line-height: 1.08; color: #ffffff; }
+.season-finale-podium-meta { margin: 6px 0 0 0; color: rgba(248, 250, 252, 0.8); font-size: 13px; }
+.season-finale-side { display: grid; gap: 10px; }
+.season-finale-stat { padding: 14px 16px; border-radius: 16px; background: rgba(15, 23, 42, 0.28); border: 1px solid rgba(255, 255, 255, 0.12); }
+.season-finale-stat-label { margin: 0; color: #cbd5e1; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.season-finale-stat-value { margin: 6px 0 0 0; font-size: 23px; font-weight: 800; line-height: 1.08; color: #ffffff; }
+.season-finale-stat-detail { margin: 6px 0 0 0; color: rgba(248, 250, 252, 0.82); font-size: 13px; line-height: 1.45; }
+.season-finale-note { margin: 6px 0 0 0; color: #fde68a; font-size: 13px; font-weight: 700; }
 .num { text-align: center; }
 .player.replacement { background: transparent; box-shadow: inset 4px 0 0 #f59e0b; font-weight: 600; }
 .player.absent { background: #ffd6d6; }
@@ -232,6 +253,13 @@ body { margin: 10px; }
 .summary-table th:nth-child(1), .summary-table td:nth-child(1) { width: 70px; }
 .summary-table th:nth-child(2), .summary-table td:nth-child(2) { width: 125px; }
 .summary-table th:nth-child(3), .summary-table td:nth-child(3) { width: 125px; }
+.season-finale-banner { padding: 16px; border-radius: 18px; }
+.season-finale-title { font-size: 24px; }
+.season-finale-copy { font-size: 14px; }
+.season-finale-grid { grid-template-columns: 1fr; }
+.season-finale-podium-item { grid-template-columns: 50px minmax(0, 1fr); gap: 10px; padding: 11px 12px; }
+.season-finale-podium-rank { width: 50px; height: 50px; border-radius: 14px; font-size: 22px; }
+.season-finale-podium-name { font-size: 18px; }
 .stack-calc-table { min-width: 930px; }
 .stack-calc-stock-table { min-width: 520px; }
 .player-search input { width: 100%; min-width: 0; }
@@ -296,6 +324,7 @@ body { margin: 10px; }
 {{WEEK_PANELS}}
 <section id="total-compact" class="tab-panel active">
 <h2>Classement Global Compact</h2>
+<div id="season-finale-banner-host"></div>
 <div id="total-compact-host"></div>
 </section>
 <section id="total-complete" class="tab-panel">
@@ -421,9 +450,27 @@ body { margin: 10px; }
   var finalStackPlanCache = {};
   var finalStackSeatShuffleState = Object.create(null);
   var pendingWeekFromHash = '';
+
+  function isSeasonFinaleMode() {
+    return !!(siteConfig && siteConfig.seasonStage === 'finale');
+  }
+
   function updateCompactWeekLabel() {
     var weeksCount = (progression && progression.weeks && progression.weeks.length) ? progression.weeks.length : 0;
     if (!isFinite(weeksCount) || isNaN(weeksCount) || weeksCount < 0) { weeksCount = 0; }
+
+    if (isSeasonFinaleMode()) {
+      var finalBtn = document.querySelector('.tab-btn[data-tab="total-compact"]');
+      if (finalBtn) {
+        finalBtn.textContent = 'Classement final';
+      }
+
+      var finalTitle = document.querySelector('#total-compact h2');
+      if (finalTitle) {
+        finalTitle.textContent = 'Classement final de la saison régulière';
+      }
+      return;
+    }
 
     var weekWord = weeksCount === 1 ? 'semaine' : 'semaines';
     var suffix = ' (Après ' + String(weeksCount) + ' ' + weekWord + ')';
@@ -992,6 +1039,8 @@ body { margin: 10px; }
     var host = document.getElementById('total-compact-host');
     if (!host) { return; }
     if (host.getAttribute('data-ready') === '1') { return; }
+
+    renderSeasonFinaleBanner();
 
     var fullTable = document.querySelector('#total-complete table.total-table');
     if (!fullTable) {
@@ -1613,6 +1662,177 @@ body { margin: 10px; }
 
     totalSummaryCache = map;
     return map;
+  }
+
+  function getSeasonFinaleData() {
+    var summary = getTotalSummaryMap();
+    var players = Object.keys(summary).map(function(name) {
+      return summary[name];
+    }).filter(function(item) {
+      return item && item.name;
+    }).sort(function(a, b) {
+      var aRank = toIntOrNull(a.rank);
+      var bRank = toIntOrNull(b.rank);
+      if (aRank !== null && bRank !== null && aRank !== bRank) { return aRank - bRank; }
+      if (aRank !== null && bRank === null) { return -1; }
+      if (aRank === null && bRank !== null) { return 1; }
+      if ((b.total || 0) !== (a.total || 0)) { return (b.total || 0) - (a.total || 0); }
+      if ((b.kills || 0) !== (a.kills || 0)) { return (b.kills || 0) - (a.kills || 0); }
+      return a.name.localeCompare(b.name, 'fr');
+    });
+
+    var podium = players.slice(0, 3);
+    var topKills = null;
+    var topKillPlayers = [];
+    players.forEach(function(item) {
+      var kills = parseNumericText(item.kills);
+      if (!isFinite(kills) || isNaN(kills)) { kills = 0; }
+      if (topKills === null || kills > topKills) {
+        topKills = kills;
+        topKillPlayers = [item.name];
+      }
+      else if (kills === topKills) {
+        topKillPlayers.push(item.name);
+      }
+    });
+    topKillPlayers.sort(function(a, b) { return a.localeCompare(b, 'fr'); });
+
+    var winsMap = buildWeeklyWinsMap();
+    var topWins = 0;
+    var topWinPlayers = [];
+    Object.keys(winsMap).forEach(function(name) {
+      var wins = winsMap[name] || 0;
+      if (wins > topWins) {
+        topWins = wins;
+        topWinPlayers = [name];
+      }
+      else if (wins === topWins) {
+        topWinPlayers.push(name);
+      }
+    });
+    topWinPlayers.sort(function(a, b) { return a.localeCompare(b, 'fr'); });
+
+    return {
+      weeksCount: (progression && progression.weeks && progression.weeks.length) ? progression.weeks.length : 0,
+      podium: podium,
+      champion: podium.length ? podium[0] : null,
+      topKills: topKills,
+      topKillPlayers: topKillPlayers,
+      topWins: topWins,
+      topWinPlayers: topWinPlayers
+    };
+  }
+
+  function renderSeasonFinaleBanner() {
+    var host = document.getElementById('season-finale-banner-host');
+    if (!host) { return; }
+    host.innerHTML = '';
+    host.hidden = true;
+
+    if (!isSeasonFinaleMode()) { return; }
+
+    var finale = getSeasonFinaleData();
+    if (!finale || !finale.podium || !finale.podium.length) { return; }
+
+    var banner = document.createElement('section');
+    banner.className = 'season-finale-banner';
+
+    var kicker = document.createElement('p');
+    kicker.className = 'season-finale-kicker';
+    kicker.textContent = 'Clôture de la saison régulière';
+    banner.appendChild(kicker);
+
+    var title = document.createElement('h3');
+    title.className = 'season-finale-title';
+    title.textContent = 'Classement final confirmé avant la table finale';
+    banner.appendChild(title);
+
+    var copy = document.createElement('p');
+    copy.className = 'season-finale-copy';
+    copy.textContent = String(finale.weeksCount) + ' semaines plus tard, le classement est figé. Le podium est connu, le roi des kills aussi, et tout le monde sait maintenant qui arrive avec le momentum vers la table finale.';
+    banner.appendChild(copy);
+
+    var grid = document.createElement('div');
+    grid.className = 'season-finale-grid';
+
+    var podium = document.createElement('div');
+    podium.className = 'season-finale-podium';
+    ['Champion', 'Vice-champion', '3e place'].forEach(function(label, idx) {
+      var item = finale.podium[idx];
+      if (!item) { return; }
+
+      var card = document.createElement('article');
+      card.className = 'season-finale-podium-item rank-' + String(idx + 1);
+
+      var rank = document.createElement('div');
+      rank.className = 'season-finale-podium-rank';
+      rank.textContent = String(idx + 1);
+      card.appendChild(rank);
+
+      var body = document.createElement('div');
+      var role = document.createElement('p');
+      role.className = 'season-finale-podium-label';
+      role.textContent = label;
+      var name = document.createElement('p');
+      name.className = 'season-finale-podium-name';
+      name.textContent = item.name;
+      var meta = document.createElement('p');
+      meta.className = 'season-finale-podium-meta';
+      meta.textContent = String(item.total || 0) + ' points · ' + String(item.kills || 0) + ' kills';
+      body.appendChild(role);
+      body.appendChild(name);
+      body.appendChild(meta);
+      card.appendChild(body);
+
+      podium.appendChild(card);
+    });
+    grid.appendChild(podium);
+
+    var side = document.createElement('div');
+    side.className = 'season-finale-side';
+
+    var killsCard = document.createElement('article');
+    killsCard.className = 'season-finale-stat';
+    var killsLabel = document.createElement('p');
+    killsLabel.className = 'season-finale-stat-label';
+    killsLabel.textContent = 'Roi des kills';
+    var killsValue = document.createElement('p');
+    killsValue.className = 'season-finale-stat-value';
+    killsValue.textContent = finale.topKillPlayers.length ? finale.topKillPlayers.join(', ') : '-';
+    var killsDetail = document.createElement('p');
+    killsDetail.className = 'season-finale-stat-detail';
+    killsDetail.textContent = (finale.topKills === null) ? 'Aucun kill total disponible.' : (String(finale.topKills) + ' kills au cumul sur la saison.');
+    killsCard.appendChild(killsLabel);
+    killsCard.appendChild(killsValue);
+    killsCard.appendChild(killsDetail);
+    side.appendChild(killsCard);
+
+    var winsCard = document.createElement('article');
+    winsCard.className = 'season-finale-stat';
+    var winsLabel = document.createElement('p');
+    winsLabel.className = 'season-finale-stat-label';
+    winsLabel.textContent = 'Plus de soirées gagnées';
+    var winsValue = document.createElement('p');
+    winsValue.className = 'season-finale-stat-value';
+    winsValue.textContent = finale.topWinPlayers.length ? finale.topWinPlayers.join(', ') : '-';
+    var winsDetail = document.createElement('p');
+    winsDetail.className = 'season-finale-stat-detail';
+    winsDetail.textContent = finale.topWins > 0 ? (String(finale.topWins) + ' victoires hebdomadaires.') : 'Aucune victoire hebdo détectée.';
+    winsCard.appendChild(winsLabel);
+    winsCard.appendChild(winsValue);
+    winsCard.appendChild(winsDetail);
+    side.appendChild(winsCard);
+
+    var note = document.createElement('p');
+    note.className = 'season-finale-note';
+    note.textContent = 'Cap maintenant sur la table finale.';
+    side.appendChild(note);
+
+    grid.appendChild(side);
+    banner.appendChild(grid);
+
+    host.hidden = false;
+    host.appendChild(banner);
   }
 
   function renderRecords() {
