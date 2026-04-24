@@ -16,6 +16,22 @@ function Release-ComObjectSafe {
     }
 }
 
+function Get-SeasonLabelFromWorkbookPath {
+    param([string]$WorkbookPath)
+
+    $name = [System.IO.Path]::GetFileNameWithoutExtension([string]$WorkbookPath)
+    if ([string]::IsNullOrWhiteSpace($name)) {
+        return "Saison en cours"
+    }
+
+    $label = ($name -replace '^(?i)\s*Poker\s+Stanley\s*', '').Trim()
+    if ([string]::IsNullOrWhiteSpace($label)) {
+        return $name.Trim()
+    }
+
+    return $label
+}
+
 function Get-PointsMapFromSheet {
     param([object]$WsCalc)
 
@@ -1034,13 +1050,29 @@ try {
     }
 
     $htmlOutputFile = Join-Path $OutputDir "classement_public.html"
+    $publishFingerprint = ((@([string]$PublishRepoDir, [string]$PublicUrl) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }) -join ' ')
+    $isPreviewPublish = $publishFingerprint -match '(?i)preview'
+    $seasonLabel = Get-SeasonLabelFromWorkbookPath -WorkbookPath $WorkbookPath
     $siteConfig = [ordered]@{
         enableFinalStackCalculator = $true
         relaxDesktopHorizontalScroll = $false
         seasonStage = if ($weekNumber -ge 14) { 'finale' } else { 'regular' }
+        seasonLabel = $seasonLabel
+        seasons = @(
+            [ordered]@{
+                id = (($seasonLabel.ToLowerInvariant() -replace '[^a-z0-9]+', '-') -replace '^-+|-+$', '')
+                label = $seasonLabel
+                stage = if ($weekNumber -ge 14) { 'archive' } else { 'active' }
+                weeks = $weekNumber
+                active = $true
+            }
+        )
+        enableSeasonArchive = $isPreviewPublish
+        enableSeasonSelector = $isPreviewPublish
+        enableAdvancedFinalTableView = $isPreviewPublish
+        enableFinalStackPresets = $isPreviewPublish
     }
-    $publishFingerprint = ((@([string]$PublishRepoDir, [string]$PublicUrl) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }) -join ' ')
-    if ($publishFingerprint -match '(?i)preview') {
+    if ($isPreviewPublish) {
         $siteConfig.relaxDesktopHorizontalScroll = $true
     }
 

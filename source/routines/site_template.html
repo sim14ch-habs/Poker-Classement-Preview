@@ -27,6 +27,18 @@ h1 { margin: 0 0 4px 0; }
 .panel-actions button { border: 1px solid #cbd5e1; background: #0f172a; color: #fff; border-radius: 6px; padding: 7px 11px; cursor: pointer; }
 .panel-actions button:disabled { opacity: 0.65; cursor: wait; }
 .panel-actions .export-status { color: #64748b; font-size: 12px; }
+.season-switcher { margin: 0 0 14px 0; padding: 14px 16px; border: 1px solid #d6deea; border-radius: 18px; background: linear-gradient(135deg, #ffffff 0%, #eef4ff 100%); display: flex; gap: 16px; align-items: end; justify-content: space-between; flex-wrap: wrap; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06); }
+.season-switcher-copy { display: flex; flex-direction: column; gap: 5px; }
+.season-switcher-kicker { margin: 0; color: #1d4ed8; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.season-switcher-title { margin: 0; color: #0f172a; font-size: 22px; font-weight: 800; line-height: 1.05; }
+.season-switcher-note { margin: 0; color: #475569; font-size: 13px; max-width: 620px; }
+.season-switcher-controls { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; }
+.season-switcher-field { display: flex; flex-direction: column; gap: 6px; }
+.season-switcher-field label { color: #475569; font-size: 12px; font-weight: 700; }
+.season-switcher-field select { min-width: 220px; padding: 7px 10px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 13px; background: #fff; color: #0f172a; }
+.season-switcher-badges { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.season-switcher-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: #ffffff; border: 1px solid #dbe4f0; color: #334155; font-size: 12px; font-weight: 700; }
+.season-switcher-badge.preview { background: #ecfccb; border-color: #bef264; color: #365314; }
 .records-wrap { width: min(960px, 100%); }
 .records-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 0 0 10px 0; }
 .record-card { background: #fff; border: 1px solid #d1d5db; border-radius: 10px; padding: 10px; }
@@ -46,6 +58,14 @@ h1 { margin: 0 0 4px 0; }
 .stack-calc-controls input { width: 110px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
 .stack-calc-controls button { border: 1px solid #cbd5e1; background: #0f172a; color: #fff; border-radius: 6px; padding: 7px 11px; cursor: pointer; }
 .stack-calc-status { color: #64748b; font-size: 12px; min-height: 18px; align-self: center; }
+.stack-calc-presets { width: min(1100px, 100%); display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 12px 0; }
+.stack-calc-preset { border: 1px solid #cbd5e1; background: #fff; color: #0f172a; border-radius: 14px; padding: 10px 12px; min-width: 150px; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; cursor: pointer; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.05); }
+.stack-calc-preset:hover { background: #f8fafc; }
+.stack-calc-preset.active { background: #0f172a; color: #fff; border-color: #0f172a; }
+.stack-calc-preset-title { font-size: 13px; font-weight: 800; }
+.stack-calc-preset-detail { font-size: 11px; color: #64748b; }
+.stack-calc-preset.active .stack-calc-preset-detail { color: rgba(255, 255, 255, 0.8); }
+.stack-calc-preset-meta { width: min(1100px, 100%); margin: -2px 0 12px 0; color: #64748b; font-size: 12px; }
 .stack-calc-mins { width: min(1100px, 100%); margin: 0 0 12px 0; }
 .stack-calc-mins-table { width: min(760px, 100%); }
 .stack-calc-mins-table input { width: 72px; padding: 6px 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; text-align: center; }
@@ -65,6 +85,24 @@ h1 { margin: 0 0 4px 0; }
 .stack-calc-group-row.consolation td { background: #e2e8f0; border-top: 3px solid #475569; border-bottom: 2px solid #94a3b8; }
 .stack-calc-stock-table { width: min(720px, 100%); margin-top: 12px; }
 .stack-calc-stock-table th, .stack-calc-stock-table td { text-align: center; }
+.stack-view-tabs { width: min(1100px, 100%); display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 12px 0; }
+.stack-view-tab { border: 1px solid #cbd5e1; background: #fff; color: #334155; border-radius: 999px; padding: 8px 12px; font-size: 12px; font-weight: 700; cursor: pointer; }
+.stack-view-tab.active { background: #0f172a; color: #fff; border-color: #0f172a; }
+.stack-view-card { width: min(1100px, 100%); margin: 0 0 12px 0; padding: 16px 18px; border-radius: 18px; background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); border: 1px solid #d8e1ec; box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06); }
+.stack-view-kicker { margin: 0 0 6px 0; color: #1d4ed8; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.stack-view-title { margin: 0; color: #0f172a; font-size: 24px; font-weight: 800; line-height: 1.05; }
+.stack-view-detail { margin: 8px 0 0 0; color: #475569; font-size: 14px; line-height: 1.55; max-width: 760px; }
+.stack-view-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.stack-view-badge { display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 999px; background: #ffffff; border: 1px solid #dbe4f0; color: #334155; font-size: 12px; font-weight: 700; }
+.stack-view-layout { width: min(1100px, 100%); display: grid; gap: 12px; }
+.stack-view-layout.split { grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.9fr); align-items: start; }
+.stack-view-sidecard { background: #fff; border: 1px solid #d1d5db; border-radius: 16px; padding: 14px; }
+.stack-view-sidecard h3 { margin: 0 0 8px 0; color: #0f172a; font-size: 14px; }
+.stack-view-sidecard p { margin: 0; color: #475569; font-size: 13px; line-height: 1.55; }
+.stack-view-sidecard ul { margin: 8px 0 0 18px; color: #475569; font-size: 13px; line-height: 1.55; }
+.stack-view-table { width: 100%; }
+.stack-view-table th, .stack-view-table td { text-align: center; }
+.stack-view-stock-note { width: min(1100px, 100%); margin: 10px 0 0 0; color: #64748b; font-size: 12px; }
 .stack-poker-visuals { width: min(1100px, 100%); display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; margin-top: 16px; }
 .stack-poker-visuals.layout-3 { grid-template-columns: repeat(4, minmax(160px, 1fr)); grid-template-areas: ". . table3 table3" ". table1 table1 ." ". table2 table2 ."; align-items: start; }
 .stack-poker-group { display: flex; flex-direction: column; gap: 10px; }
@@ -186,6 +224,32 @@ h1 { margin: 0 0 4px 0; }
 .season-finale-stat-value { margin: 6px 0 0 0; font-size: 23px; font-weight: 800; line-height: 1.08; color: #ffffff; }
 .season-finale-stat-detail { margin: 6px 0 0 0; color: rgba(248, 250, 252, 0.82); font-size: 13px; line-height: 1.45; }
 .season-finale-note { margin: 6px 0 0 0; color: #fde68a; font-size: 13px; font-weight: 700; }
+.season-archive-wrap { width: min(1120px, 100%); display: grid; gap: 14px; }
+.season-archive-hero { padding: 20px; border-radius: 22px; background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 52%, #1e3a8a 100%); color: #f8fafc; box-shadow: 0 20px 44px rgba(15, 23, 42, 0.18); }
+.season-archive-kicker { margin: 0 0 8px 0; color: #bfdbfe; font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.season-archive-title { margin: 0; font-size: 30px; line-height: 1.03; letter-spacing: -0.03em; }
+.season-archive-copy { margin: 10px 0 0 0; max-width: 760px; color: rgba(248, 250, 252, 0.88); font-size: 15px; line-height: 1.6; }
+.season-archive-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.season-archive-badge { display: inline-flex; align-items: center; padding: 6px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(255, 255, 255, 0.18); color: #eff6ff; font-size: 12px; font-weight: 700; }
+.season-archive-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.season-archive-stat { background: #fff; border: 1px solid #d1d5db; border-radius: 16px; padding: 14px; }
+.season-archive-stat h3 { margin: 0 0 6px 0; color: #475569; font-size: 12px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+.season-archive-stat .value { margin: 0; color: #0f172a; font-size: 24px; font-weight: 800; line-height: 1.08; }
+.season-archive-stat .detail { margin: 6px 0 0 0; color: #64748b; font-size: 12px; line-height: 1.5; }
+.season-archive-podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.season-archive-podium-card { background: #fff; border: 1px solid #d1d5db; border-radius: 16px; padding: 14px; }
+.season-archive-podium-card.rank-1 { background: linear-gradient(180deg, #fff7db 0%, #ffffff 100%); }
+.season-archive-podium-card.rank-2 { background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%); }
+.season-archive-podium-card.rank-3 { background: linear-gradient(180deg, #fff1e6 0%, #ffffff 100%); }
+.season-archive-podium-label { margin: 0; color: #64748b; font-size: 11px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; }
+.season-archive-podium-name { margin: 5px 0 0 0; color: #0f172a; font-size: 22px; font-weight: 800; line-height: 1.08; }
+.season-archive-podium-meta { margin: 6px 0 0 0; color: #475569; font-size: 13px; }
+.season-archive-panels { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(260px, 0.9fr); gap: 14px; align-items: start; }
+.season-archive-panel { background: #fff; border: 1px solid #d1d5db; border-radius: 18px; padding: 16px; }
+.season-archive-panel h3 { margin: 0 0 10px 0; color: #0f172a; font-size: 18px; }
+.season-archive-panel p { margin: 0; color: #475569; font-size: 14px; line-height: 1.55; }
+.season-archive-panel ul { margin: 10px 0 0 18px; color: #475569; font-size: 13px; line-height: 1.6; }
+.season-archive-table { width: 100%; }
 .num { text-align: center; }
 .player.replacement { background: transparent; box-shadow: inset 4px 0 0 #f59e0b; font-weight: 600; }
 .player.absent { background: #ffd6d6; }
@@ -260,6 +324,17 @@ body { margin: 10px; }
 .season-finale-podium-item { grid-template-columns: 50px minmax(0, 1fr); gap: 10px; padding: 11px 12px; }
 .season-finale-podium-rank { width: 50px; height: 50px; border-radius: 14px; font-size: 22px; }
 .season-finale-podium-name { font-size: 18px; }
+.season-switcher { padding: 14px; }
+.season-switcher-title { font-size: 19px; }
+.season-switcher-field,
+.season-switcher-controls,
+.season-switcher-field select { width: 100%; min-width: 0; }
+.season-archive-title { font-size: 24px; }
+.season-archive-copy { font-size: 14px; }
+.season-archive-podium { grid-template-columns: 1fr; }
+.season-archive-panels { grid-template-columns: 1fr; }
+.stack-calc-preset { flex: 1 1 calc(50% - 8px); min-width: 0; }
+.stack-view-layout.split { grid-template-columns: 1fr; }
 .stack-calc-table { min-width: 930px; }
 .stack-calc-stock-table { min-width: 520px; }
 .player-search input { width: 100%; min-width: 0; }
@@ -268,6 +343,8 @@ body { margin: 10px; }
 .stack-calc-controls input { width: 100%; min-width: 0; }
 .stack-calc-mins-table { min-width: 640px; }
 .stack-calc-mins-table input { width: 58px; }
+.stack-view-tabs { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 2px; }
+.stack-view-tab { flex: 0 0 auto; }
 .stack-poker-visuals { grid-template-columns: 1fr; }
 .stack-poker-visuals.layout-3 { grid-template-columns: 1fr; grid-template-areas: none; }
 .stack-poker-group-head { align-items: flex-start; }
@@ -292,10 +369,12 @@ body { margin: 10px; }
 <span class="pill best-kills">Meilleur total kills</span>
 <span class="pill podium">Podium hebdo coloré</span>
 </div>
+<div id="season-switcher-host" class="season-selector-only"></div>
 <div class="tabs">
 <button class="tab-btn" data-tab="weeks">Classements par semaines</button>
 
 <button class="tab-btn active" data-tab="total-compact">Classement global compact</button>
+<button class="tab-btn season-archive-only" data-tab="season-archive">Archive saison</button>
 <button class="tab-btn" data-tab="total-complete">Classement global complet</button>
 <button class="tab-btn" data-tab="progression">Progression</button>
 <button class="tab-btn" data-tab="weekly-summary">Résumé semaine</button>
@@ -326,6 +405,10 @@ body { margin: 10px; }
 <h2>Classement Global Compact</h2>
 <div id="season-finale-banner-host"></div>
 <div id="total-compact-host"></div>
+</section>
+<section id="season-archive" class="tab-panel season-archive-only">
+<h2>Archive de saison</h2>
+<div id="season-archive-host"></div>
 </section>
 <section id="total-complete" class="tab-panel">
 {{TOTAL_HTML}}
@@ -369,6 +452,8 @@ body { margin: 10px; }
 <button id="final-stack-run" type="button">Calculer</button>
 <span id="final-stack-status" class="stack-calc-status" aria-live="polite"></span>
 </div>
+<div id="final-stack-presets" class="stack-calc-presets"></div>
+<div id="final-stack-preset-meta" class="stack-calc-preset-meta"></div>
 <div class="stack-calc-mins">
 <div class="stack-calc-table-wrap">
 <table class="total-table stack-calc-mins-table">
@@ -405,6 +490,7 @@ body { margin: 10px; }
 <p class="stack-calc-mins-help">Le total des minimums doit rester à 20 jetons ou moins par joueur. Mets un maximum à 0 pour interdire complètement une dénomination.</p>
 </div>
 <div id="final-stack-summary" class="stack-calc-summary"></div>
+<div id="final-stack-view-tabs" class="stack-view-tabs"></div>
 <div id="final-stack-host"></div>
 </section>
 </div>
@@ -424,15 +510,24 @@ body { margin: 10px; }
   if (!siteConfig || typeof siteConfig !== 'object') {
     siteConfig = {};
   }
-  if (siteConfig.relaxDesktopHorizontalScroll && document.body) {
-    document.body.classList.add('preview-relaxed-scroll');
-  }
-  if (!siteConfig.enableFinalStackCalculator) {
-    Array.prototype.slice.call(document.querySelectorAll('.preview-only')).forEach(function(node) {
+  function removeFlaggedNodes(selector) {
+    Array.prototype.slice.call(document.querySelectorAll(selector)).forEach(function(node) {
       if (node && node.parentNode) {
         node.parentNode.removeChild(node);
       }
     });
+  }
+  if (siteConfig.relaxDesktopHorizontalScroll && document.body) {
+    document.body.classList.add('preview-relaxed-scroll');
+  }
+  if (!siteConfig.enableFinalStackCalculator) {
+    removeFlaggedNodes('.preview-only');
+  }
+  if (!siteConfig.enableSeasonArchive) {
+    removeFlaggedNodes('.season-archive-only');
+  }
+  if (!siteConfig.enableSeasonSelector) {
+    removeFlaggedNodes('.season-selector-only');
   }
   var buttons = Array.prototype.slice.call(document.querySelectorAll('.tab-btn'));
   var panels = Array.prototype.slice.call(document.querySelectorAll('.tab-panel'));
@@ -443,6 +538,8 @@ body { margin: 10px; }
   var FINAL_STACK_MULTIPLIER_KEY = 'poker_preview_final_stack_multiplier';
   var FINAL_STACK_MIN_COUNTS_KEY = 'poker_preview_final_stack_min_counts';
   var FINAL_STACK_MAX_COUNTS_KEY = 'poker_preview_final_stack_max_counts';
+  var FINAL_STACK_PRESET_KEY = 'poker_preview_final_stack_preset';
+  var FINAL_STACK_VIEW_KEY = 'poker_preview_final_stack_view';
   var FINAL_STACK_DENOMS = [
     { label: '100', value: 100, stock: 325 },
     { label: '500', value: 500, stock: 325 },
@@ -459,10 +556,28 @@ body { margin: 10px; }
   var chipComboCache = Object.create(null);
   var finalStackPlanCache = {};
   var finalStackSeatShuffleState = Object.create(null);
+  var finalStackCurrentPreset = '';
+  var finalStackCurrentView = '';
   var pendingWeekFromHash = '';
 
   function isSeasonFinaleMode() {
     return !!(siteConfig && siteConfig.seasonStage === 'finale');
+  }
+
+  function isSeasonSelectorEnabled() {
+    return !!(siteConfig && siteConfig.enableSeasonSelector);
+  }
+
+  function isSeasonArchiveEnabled() {
+    return !!(siteConfig && siteConfig.enableSeasonArchive);
+  }
+
+  function isAdvancedFinalTableViewEnabled() {
+    return !!(siteConfig && siteConfig.enableAdvancedFinalTableView);
+  }
+
+  function areFinalStackPresetsEnabled() {
+    return !!(siteConfig && siteConfig.enableFinalStackPresets);
   }
 
   function updateCompactWeekLabel() {
@@ -563,6 +678,9 @@ body { margin: 10px; }
     if (id === 'total-compact') {
       renderTotalCompact();
     }
+    if (id === 'season-archive') {
+      renderSeasonArchive();
+    }
     if (id === 'progression') {
       renderProgression();
     }
@@ -610,6 +728,135 @@ body { margin: 10px; }
 
   function normalizePlayerName(value) {
     return ((value || '') + '').trim();
+  }
+
+  function getSeasonWeeksCount() {
+    var weeks = (progression && progression.weeks && progression.weeks.length) ? progression.weeks.length : 0;
+    if (!isFinite(weeks) || isNaN(weeks) || weeks < 0) { return 0; }
+    return weeks;
+  }
+
+  function getSeasonLabel() {
+    var label = normalizePlayerName(siteConfig && siteConfig.seasonLabel ? siteConfig.seasonLabel : '');
+    return label || 'Saison actuelle';
+  }
+
+  function buildSeasonSlug(label) {
+    return (String(label || '').toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')) || 'saison-actuelle';
+  }
+
+  function getSeasonOptions() {
+    if (siteConfig && Array.isArray(siteConfig.seasons) && siteConfig.seasons.length) {
+      return siteConfig.seasons.slice(0);
+    }
+    return [{
+      id: buildSeasonSlug(getSeasonLabel()),
+      label: getSeasonLabel(),
+      stage: isSeasonFinaleMode() ? 'archive' : 'active',
+      weeks: getSeasonWeeksCount(),
+      active: true
+    }];
+  }
+
+  function getSeasonStatusLabel(option) {
+    var stage = String(option && option.stage ? option.stage : (isSeasonFinaleMode() ? 'archive' : 'active')).toLowerCase();
+    if (stage === 'archive' || stage === 'archived' || stage === 'finale') { return 'Saison archivée'; }
+    if (stage === 'active' || stage === 'regular') { return 'Saison en cours'; }
+    return 'Saison';
+  }
+
+  function renderSeasonSelector() {
+    var host = document.getElementById('season-switcher-host');
+    if (!host) { return; }
+    host.innerHTML = '';
+    host.hidden = true;
+
+    if (!isSeasonSelectorEnabled()) { return; }
+
+    var seasons = getSeasonOptions();
+    if (!seasons.length) { return; }
+    var activeSeason = seasons.filter(function(option) { return !!option.active; })[0] || seasons[0];
+    var weeksCount = getSeasonWeeksCount();
+    var weekWord = weeksCount === 1 ? 'semaine' : 'semaines';
+
+    var wrap = document.createElement('section');
+    wrap.className = 'season-switcher';
+
+    var copy = document.createElement('div');
+    copy.className = 'season-switcher-copy';
+    var kicker = document.createElement('p');
+    kicker.className = 'season-switcher-kicker';
+    kicker.textContent = 'Navigation saison';
+    var title = document.createElement('h2');
+    title.className = 'season-switcher-title';
+    title.textContent = activeSeason.label || getSeasonLabel();
+    var note = document.createElement('p');
+    note.className = 'season-switcher-note';
+    note.textContent = 'Le sélecteur de saison est prêt pour accueillir les prochaines archives sans ajouter d’onglets supplémentaires.';
+    copy.appendChild(kicker);
+    copy.appendChild(title);
+    copy.appendChild(note);
+
+    var controls = document.createElement('div');
+    controls.className = 'season-switcher-controls';
+    var field = document.createElement('div');
+    field.className = 'season-switcher-field';
+    var label = document.createElement('label');
+    label.setAttribute('for', 'season-select');
+    label.textContent = 'Saison';
+    var select = document.createElement('select');
+    select.id = 'season-select';
+    seasons.forEach(function(option) {
+      var opt = document.createElement('option');
+      opt.value = option.id || buildSeasonSlug(option.label || getSeasonLabel());
+      opt.textContent = option.label || getSeasonLabel();
+      if (option === activeSeason || option.active) {
+        opt.selected = true;
+      }
+      select.appendChild(opt);
+    });
+    field.appendChild(label);
+    field.appendChild(select);
+    controls.appendChild(field);
+
+    var badges = document.createElement('div');
+    badges.className = 'season-switcher-badges';
+    [
+      getSeasonStatusLabel(activeSeason),
+      String(weeksCount) + ' ' + weekWord,
+      'Preview seulement'
+    ].forEach(function(text, idx) {
+      var badge = document.createElement('span');
+      badge.className = 'season-switcher-badge' + (idx === 2 ? ' preview' : '');
+      badge.textContent = text;
+      badges.appendChild(badge);
+    });
+    controls.appendChild(badges);
+
+    wrap.appendChild(copy);
+    wrap.appendChild(controls);
+    host.hidden = false;
+    host.appendChild(wrap);
+  }
+
+  function updateFinalStackLabels() {
+    var btn = document.querySelector('.tab-btn[data-tab="final-stack"]');
+    var title = document.querySelector('#final-stack h2');
+    var note = document.querySelector('#final-stack .stack-calc-note');
+    if (!btn || !title || !note) { return; }
+
+    if (isAdvancedFinalTableViewEnabled()) {
+      btn.textContent = 'Mode table finale';
+      title.textContent = 'Mode Table Finale';
+      note.textContent = "Prépare la table finale et les deux tables consolation à partir du classement actuel. Le calcul garde 20 jetons par joueur, respecte le stock global, et permet d'ajuster rapidement les contraintes avant distribution.";
+      return;
+    }
+
+    btn.textContent = 'Stacks finale';
+    title.textContent = 'Calculateur Stacks Finale';
+    note.textContent = "Basé sur tout le classement actuel. 20 jetons par joueur, avec respect du stock global de jetons. Les rangs 1 à 10 restent dans l'ordre à la table finale; à partir du 11e, les joueurs alternent entre les tables de consolation 2 et 3. Les minima par dénomination sont configurables ci-dessous.";
   }
 
   function toIntOrNull(value) {
@@ -1845,6 +2092,196 @@ body { margin: 10px; }
     host.appendChild(banner);
   }
 
+  function renderSeasonArchive() {
+    var host = document.getElementById('season-archive-host');
+    if (!host) { return; }
+    if (host.getAttribute('data-ready') === '1') { return; }
+
+    host.innerHTML = '';
+    if (!isSeasonArchiveEnabled()) { return; }
+
+    var finale = getSeasonFinaleData();
+    var players = getFinalStackPlayers();
+    if (!players.length) {
+      host.textContent = 'Aucune donnée disponible pour construire l’archive de saison.';
+      host.setAttribute('data-ready', '1');
+      return;
+    }
+
+    var moveMap = buildLastMoveMap();
+    var seasonLabel = getSeasonLabel();
+    var top10 = players.slice(0, 10);
+    var totalPlayers = players.length;
+    var wrap = document.createElement('div');
+    wrap.className = 'season-archive-wrap';
+
+    var hero = document.createElement('section');
+    hero.className = 'season-archive-hero';
+    var kicker = document.createElement('p');
+    kicker.className = 'season-archive-kicker';
+    kicker.textContent = 'Archive de saison';
+    var title = document.createElement('h3');
+    title.className = 'season-archive-title';
+    title.textContent = seasonLabel;
+    var copy = document.createElement('p');
+    copy.className = 'season-archive-copy';
+    copy.textContent = 'La saison régulière est maintenant figée. Cette archive met en avant le podium final, les distinctions individuelles et les dix joueurs qui passent à la table finale.';
+    var heroBadges = document.createElement('div');
+    heroBadges.className = 'season-archive-badges';
+    [
+      getSeasonStatusLabel({ stage: 'archive' }),
+      String(finale.weeksCount || getSeasonWeeksCount()) + ' semaines jouées',
+      String(top10.length) + ' qualifiés à la table finale'
+    ].forEach(function(text) {
+      var badge = document.createElement('span');
+      badge.className = 'season-archive-badge';
+      badge.textContent = text;
+      heroBadges.appendChild(badge);
+    });
+    hero.appendChild(kicker);
+    hero.appendChild(title);
+    hero.appendChild(copy);
+    hero.appendChild(heroBadges);
+    wrap.appendChild(hero);
+
+    var stats = document.createElement('div');
+    stats.className = 'season-archive-stats';
+    [
+      {
+        label: 'Champion',
+        value: finale.champion ? finale.champion.name : '-',
+        detail: finale.champion ? (String(finale.champion.total || 0) + ' points au total.') : 'Aucun champion détecté.'
+      },
+      {
+        label: 'Roi des kills',
+        value: finale.topKillPlayers.length ? finale.topKillPlayers.join(', ') : '-',
+        detail: finale.topKills === null ? 'Aucun kill cumulé détecté.' : (String(finale.topKills) + ' kills sur la saison.')
+      },
+      {
+        label: 'Plus de soirées gagnées',
+        value: finale.topWinPlayers.length ? finale.topWinPlayers.join(', ') : '-',
+        detail: finale.topWins > 0 ? (String(finale.topWins) + ' victoires hebdomadaires.') : 'Aucune victoire hebdo détectée.'
+      },
+      {
+        label: 'Joueurs classés',
+        value: String(totalPlayers),
+        detail: String(top10.length) + ' joueurs passent à la table finale.'
+      }
+    ].forEach(function(stat) {
+      var card = document.createElement('article');
+      card.className = 'season-archive-stat';
+      var label = document.createElement('h3');
+      label.textContent = stat.label;
+      var value = document.createElement('p');
+      value.className = 'value';
+      value.textContent = stat.value;
+      var detail = document.createElement('p');
+      detail.className = 'detail';
+      detail.textContent = stat.detail;
+      card.appendChild(label);
+      card.appendChild(value);
+      card.appendChild(detail);
+      stats.appendChild(card);
+    });
+    wrap.appendChild(stats);
+
+    if (finale.podium && finale.podium.length) {
+      var podium = document.createElement('div');
+      podium.className = 'season-archive-podium';
+      ['Champion', 'Vice-champion', '3e place'].forEach(function(label, idx) {
+        var item = finale.podium[idx];
+        if (!item) { return; }
+        var card = document.createElement('article');
+        card.className = 'season-archive-podium-card rank-' + String(idx + 1);
+        var role = document.createElement('p');
+        role.className = 'season-archive-podium-label';
+        role.textContent = label;
+        var name = document.createElement('p');
+        name.className = 'season-archive-podium-name';
+        name.textContent = item.name;
+        var meta = document.createElement('p');
+        meta.className = 'season-archive-podium-meta';
+        meta.textContent = String(item.total || 0) + ' points · ' + String(item.kills || 0) + ' kills';
+        card.appendChild(role);
+        card.appendChild(name);
+        card.appendChild(meta);
+        podium.appendChild(card);
+      });
+      wrap.appendChild(podium);
+    }
+
+    var panels = document.createElement('div');
+    panels.className = 'season-archive-panels';
+
+    var qualifiers = document.createElement('section');
+    qualifiers.className = 'season-archive-panel';
+    var qualifiersTitle = document.createElement('h3');
+    qualifiersTitle.textContent = 'Top 10 vers la table finale';
+    qualifiers.appendChild(qualifiersTitle);
+
+    var table = document.createElement('table');
+    table.className = 'total-table season-archive-table';
+    var thead = document.createElement('thead');
+    var headRow = document.createElement('tr');
+    ['Pos.', 'Joueur', 'Total', 'Kills', 'Évol.'].forEach(function(label) {
+      var th = document.createElement('th');
+      th.textContent = label;
+      headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    var tbody = document.createElement('tbody');
+    top10.forEach(function(player) {
+      var tr = document.createElement('tr');
+      [
+        player.rank === null ? '-' : String(player.rank),
+        player.name,
+        String(player.total || 0),
+        String(player.kills || 0)
+      ].forEach(function(value, idx) {
+        var td = document.createElement('td');
+        td.textContent = value;
+        td.className = idx === 1 ? 'total-player' : 'num';
+        tr.appendChild(td);
+      });
+      var evo = document.createElement('td');
+      evo.className = 'num';
+      setEvolutionCell(evo, moveMap[player.name]);
+      tr.appendChild(evo);
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    qualifiers.appendChild(table);
+    panels.appendChild(qualifiers);
+
+    var notes = document.createElement('section');
+    notes.className = 'season-archive-panel';
+    var notesTitle = document.createElement('h3');
+    notesTitle.textContent = 'Clés de lecture avant la finale';
+    var notesCopy = document.createElement('p');
+    notesCopy.textContent = 'Cette vue archive la saison régulière. Elle met le contexte en place avant la table finale, sans obliger à fouiller dans tous les onglets.';
+    var list = document.createElement('ul');
+    [
+      'Le top 10 est figé et qualifié pour la table finale.',
+      'Les autres joueurs basculent vers les tables consolation.',
+      'Le mode table finale du preview permet maintenant de passer table par table.',
+      'Le sélecteur de saisons est prêt pour les prochaines archives.'
+    ].forEach(function(text) {
+      var li = document.createElement('li');
+      li.textContent = text;
+      list.appendChild(li);
+    });
+    notes.appendChild(notesTitle);
+    notes.appendChild(notesCopy);
+    notes.appendChild(list);
+    panels.appendChild(notes);
+
+    wrap.appendChild(panels);
+    host.appendChild(wrap);
+    host.setAttribute('data-ready', '1');
+  }
+
   function renderRecords() {
     var host = document.getElementById('records-host');
     if (!host) { return; }
@@ -2274,6 +2711,93 @@ body { margin: 10px; }
       values[denomIdx] = parseInt(input.value, 10);
     });
     return sanitizeFinalStackMaxCounts(values);
+  }
+
+  function finalStackCountsEqual(a, b) {
+    var left = Array.isArray(a) ? a : [];
+    var right = Array.isArray(b) ? b : [];
+    if (left.length !== right.length) { return false; }
+    for (var idx = 0; idx < left.length; idx++) {
+      if ((left[idx] || 0) !== (right[idx] || 0)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function getFinalStackPresetDefinitions() {
+    return [
+      {
+        id: 'sans-10000',
+        label: 'Sans 10 000',
+        detail: 'Le réglage classique, sans plaque de 10 000.',
+        minCounts: [2, 0, 0, 0, 0],
+        maxCounts: [20, 20, 20, 20, 0]
+      },
+      {
+        id: 'petites-coupures',
+        label: 'Petites coupures',
+        detail: 'Favorise les jetons de départ plus faciles à jouer.',
+        minCounts: [4, 3, 1, 0, 0],
+        maxCounts: [14, 10, 8, 3, 0]
+      },
+      {
+        id: 'equilibre',
+        label: 'Équilibré',
+        detail: 'Mix stable entre lisibilité et grosses valeurs.',
+        minCounts: [2, 1, 1, 0, 0],
+        maxCounts: [10, 8, 7, 5, 0]
+      },
+      {
+        id: 'distribution-rapide',
+        label: 'Distribution rapide',
+        detail: 'Moins de petites coupures, plus simple à distribuer.',
+        minCounts: [2, 1, 0, 1, 0],
+        maxCounts: [8, 6, 6, 7, 0]
+      }
+    ];
+  }
+
+  function findFinalStackPreset(minCounts, maxCounts) {
+    var normalizedMin = sanitizeFinalStackMinCounts(minCounts);
+    var normalizedMax = sanitizeFinalStackMaxCounts(maxCounts);
+    var presets = getFinalStackPresetDefinitions();
+    for (var idx = 0; idx < presets.length; idx++) {
+      var preset = presets[idx];
+      if (finalStackCountsEqual(normalizedMin, sanitizeFinalStackMinCounts(preset.minCounts)) &&
+          finalStackCountsEqual(normalizedMax, sanitizeFinalStackMaxCounts(preset.maxCounts))) {
+        return preset;
+      }
+    }
+    return null;
+  }
+
+  function getFinalStackPresetById(id) {
+    var presetId = String(id || '').trim();
+    return getFinalStackPresetDefinitions().filter(function(preset) {
+      return preset.id === presetId;
+    })[0] || null;
+  }
+
+  function getFinalStackAvailableViews(stackGroups) {
+    var views = [{ key: 'overview', label: 'Vue complète' }];
+    (stackGroups || []).forEach(function(group) {
+      views.push({
+        key: group.key,
+        label: group.label
+      });
+    });
+    return views;
+  }
+
+  function getFinalStackDefaultView(stackGroups) {
+    var views = getFinalStackAvailableViews(stackGroups);
+    if (!views.length) { return 'overview'; }
+    var saved = '';
+    try { saved = window.localStorage ? (window.localStorage.getItem(FINAL_STACK_VIEW_KEY) || '') : ''; } catch (err) {}
+    var validSaved = views.some(function(view) { return view.key === saved; });
+    if (validSaved) { return saved; }
+    return 'overview';
   }
 
   function getFinalStackPlayers() {
@@ -2812,6 +3336,7 @@ body { margin: 10px; }
     var host = document.getElementById('final-stack-host');
     var summaryHost = document.getElementById('final-stack-summary');
     var multiplierInput = document.getElementById('final-stack-multiplier');
+    var tabsHost = document.getElementById('final-stack-view-tabs');
     if (!host || !summaryHost || !multiplierInput) { return; }
 
     var multiplier = parseFloat(multiplierInput.value);
@@ -2819,6 +3344,7 @@ body { margin: 10px; }
     var maxCounts = getFinalStackActiveMaxCounts();
     host.innerHTML = '';
     summaryHost.innerHTML = '';
+    if (tabsHost) { tabsHost.innerHTML = ''; }
 
     if (!isFinite(multiplier) || isNaN(multiplier) || multiplier <= 0) {
       host.innerHTML = '<div class="stack-calc-warning">Entre un multiplicateur valide supérieur à 0.</div>';
@@ -2855,7 +3381,7 @@ body { margin: 10px; }
     }
 
     addSummaryCard('Joueurs', String(plan.playersCount), 'Classement actuel complet');
-    addSummaryCard('Multiplicateur', formatDisplayAmount(multiplier, (Math.round(multiplier) === multiplier) ? 0 : 1) + 'x', 'Points → jetons');
+    addSummaryCard('Multiplicateur', formatDisplayAmount(multiplier, (Math.round(multiplier) === multiplier) ? 0 : 1) + 'x', 'Points vers jetons');
     addSummaryCard('Minimums actifs', String(sumFinalStackMinCounts(plan.minCounts)), formatFinalStackMinCounts(plan.minCounts));
     addSummaryCard('Maximums actifs', String(countFinalStackLimitedDenoms(plan.maxCounts)), formatFinalStackMaxCounts(plan.maxCounts));
     addSummaryCard('Stack total', formatDisplayAmount(plan.totalFinal, 0), 'Somme des stacks distribués');
@@ -2863,17 +3389,9 @@ body { margin: 10px; }
     addSummaryCard('Erreur absolue', formatDisplayAmount(Math.round(plan.totalAbsError), 0), 'Somme des écarts individuels');
     addSummaryCard('Jetons restants', formatDisplayAmount(plan.totalChipsRemaining, 0), 'Après distribution de 20 jetons par joueur');
 
-    (plan.warnings || []).forEach(function(msg) {
-      var warning = document.createElement('div');
-      warning.className = 'stack-calc-warning';
-      warning.textContent = msg;
-      host.appendChild(warning);
-    });
-
-    var tableWrap = document.createElement('div');
-    tableWrap.className = 'stack-calc-table-wrap';
     var stackGroups = buildFinalStackGroups(plan.players);
     var seatAssignments = buildFinalStackSeatAssignments(stackGroups);
+    var groupChipUsage = buildFinalStackGroupChipUsage(stackGroups);
     var visibleStockRows = (plan.stockRows || []).filter(function(row) {
       return row.value !== 10000 || (row.used || 0) > 0;
     });
@@ -2885,6 +3403,13 @@ body { margin: 10px; }
       { label: '10 000', className: 'stack-chip-col-10000', countIndex: 4, value: 10000 }
     ].filter(function(column) {
       return column.value !== 10000 || visibleStockRows.some(function(row) { return row.value === 10000; });
+    });
+
+    (plan.warnings || []).forEach(function(msg) {
+      var warning = document.createElement('div');
+      warning.className = 'stack-calc-warning';
+      warning.textContent = msg;
+      host.appendChild(warning);
     });
 
     var seatActions = document.createElement('div');
@@ -2909,116 +3434,327 @@ body { margin: 10px; }
     seatActions.appendChild(shuffleSeatsButton);
     host.appendChild(seatActions);
 
-    var table = document.createElement('table');
-    table.className = 'total-table stack-calc-table';
-    var thead = document.createElement('thead');
-    var trh = document.createElement('tr');
-    ['Rang', 'Joueur', 'Position table'].forEach(function(label) {
-      var th = document.createElement('th');
-      th.textContent = label;
-      trh.appendChild(th);
-    });
-    visibleChipColumns.forEach(function(column) {
-      var th = document.createElement('th');
-      th.textContent = column.label;
-      th.className = column.className;
-      trh.appendChild(th);
-    });
-    ['Points', 'Cible', 'Stack final', 'Écart'].forEach(function(label) {
-      var th = document.createElement('th');
-      th.textContent = label;
-      trh.appendChild(th);
-    });
-    thead.appendChild(trh);
-    table.appendChild(thead);
+    function buildSharedHeaders(includeSeatOnly) {
+      var labels = includeSeatOnly ? ['Place', 'Rang', 'Joueur'] : ['Rang', 'Joueur', 'Position table'];
+      return labels.concat(visibleChipColumns.map(function(column) { return column.label; })).concat(['Points', 'Cible', 'Stack final', 'Écart']);
+    }
 
-    var tbody = document.createElement('tbody');
-    stackGroups.forEach(function(group) {
-      var headerRow = document.createElement('tr');
-      headerRow.className = 'stack-calc-group-row ' + group.type;
-      var headerCell = document.createElement('td');
-      headerCell.colSpan = 3 + visibleChipColumns.length + 4;
-      headerCell.textContent = group.label;
-      headerRow.appendChild(headerCell);
-      tbody.appendChild(headerRow);
-
-      group.players.forEach(function(entry) {
-        var item = entry.item;
-        var seatInfo = seatAssignments[getFinalStackPlayerKey(item.player)] || { display: '-' };
-        var tr = document.createElement('tr');
-        var cells = [
-          item.player.rank === null ? '-' : String(item.player.rank),
-          item.player.name,
-          seatInfo.display
-        ];
-
-        cells.forEach(function(value) {
-          var td = document.createElement('td');
-          td.textContent = value;
-          tr.appendChild(td);
-        });
-        visibleChipColumns.forEach(function(column) {
-          var td = document.createElement('td');
-          td.textContent = String(item.combo.counts[column.countIndex] || 0);
-          td.className = column.className;
-          tr.appendChild(td);
-        });
-        [
-          formatDisplayAmount(item.player.total || 0, 0),
-          formatDisplayAmount(item.target, (Math.round(item.target) === item.target) ? 0 : 1),
-          formatDisplayAmount(item.combo.value, 0),
-          formatSignedAmount(Math.round(item.diff))
-        ].forEach(function(value) {
-          var td = document.createElement('td');
-          td.textContent = value;
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
-    });
-    table.appendChild(tbody);
-    tableWrap.appendChild(table);
-    host.appendChild(tableWrap);
-
-    var stockTable = document.createElement('table');
-    stockTable.className = 'total-table stack-calc-stock-table';
-    var stockHead = document.createElement('thead');
-    var stockHeadRow = document.createElement('tr');
-    var stockGroupColumns = stackGroups.map(function(group) {
-      return { key: group.key, label: group.stockLabel || group.label };
-    });
-    ['Jeton'].concat(stockGroupColumns.map(function(group) { return group.label; })).concat(['Total utilisés', 'Restants']).forEach(function(label) {
-      var th = document.createElement('th');
-      th.textContent = label;
-      stockHeadRow.appendChild(th);
-    });
-    stockHead.appendChild(stockHeadRow);
-    stockTable.appendChild(stockHead);
-
-    var stockBody = document.createElement('tbody');
-    var groupChipUsage = buildFinalStackGroupChipUsage(stackGroups);
-    visibleStockRows.forEach(function(row) {
-      var tr = document.createElement('tr');
-      var chipClass = getFinalStackChipClass(row.value);
-      var rowValues = [row.label]
-        .concat(stockGroupColumns.map(function(group) {
-          var denomIdx = FINAL_STACK_DENOMS.findIndex(function(denom) { return denom.value === row.value; });
-          return String((groupChipUsage[group.key] && denomIdx >= 0) ? (groupChipUsage[group.key][denomIdx] || 0) : 0);
-        }))
-        .concat([String(row.used), String(row.remaining)]);
-      rowValues.forEach(function(value, idx) {
+    function appendChipCounts(tr, item) {
+      visibleChipColumns.forEach(function(column) {
         var td = document.createElement('td');
-        td.textContent = value;
-        if (idx === 0 && chipClass) { td.className = chipClass; }
+        td.textContent = String(item.combo.counts[column.countIndex] || 0);
+        td.className = column.className;
         tr.appendChild(td);
       });
-      stockBody.appendChild(tr);
-    });
-    stockTable.appendChild(stockBody);
-    var stockWrap = document.createElement('div');
-    stockWrap.className = 'stack-calc-table-wrap';
-    stockWrap.appendChild(stockTable);
-    host.appendChild(stockWrap);
+    }
+
+    function appendFinalValues(tr, item) {
+      [
+        formatDisplayAmount(item.player.total || 0, 0),
+        formatDisplayAmount(item.target, (Math.round(item.target) === item.target) ? 0 : 1),
+        formatDisplayAmount(item.combo.value, 0),
+        formatSignedAmount(Math.round(item.diff))
+      ].forEach(function(value) {
+        var td = document.createElement('td');
+        td.textContent = value;
+        td.className = 'num';
+        tr.appendChild(td);
+      });
+    }
+
+    function buildOverviewTable() {
+      var tableWrap = document.createElement('div');
+      tableWrap.className = 'stack-calc-table-wrap';
+      var table = document.createElement('table');
+      table.className = 'total-table stack-calc-table stack-view-table';
+      var thead = document.createElement('thead');
+      var trh = document.createElement('tr');
+      buildSharedHeaders(false).forEach(function(label, idx) {
+        var th = document.createElement('th');
+        th.textContent = label;
+        if (idx >= 3 && idx < (3 + visibleChipColumns.length)) {
+          th.className = visibleChipColumns[idx - 3].className;
+        }
+        trh.appendChild(th);
+      });
+      thead.appendChild(trh);
+      table.appendChild(thead);
+
+      var tbody = document.createElement('tbody');
+      stackGroups.forEach(function(group) {
+        var headerRow = document.createElement('tr');
+        headerRow.className = 'stack-calc-group-row ' + group.type;
+        var headerCell = document.createElement('td');
+        headerCell.colSpan = 3 + visibleChipColumns.length + 4;
+        headerCell.textContent = group.label;
+        headerRow.appendChild(headerCell);
+        tbody.appendChild(headerRow);
+
+        group.players.forEach(function(entry) {
+          var item = entry.item;
+          var seatInfo = seatAssignments[getFinalStackPlayerKey(item.player)] || { display: '-' };
+          var tr = document.createElement('tr');
+          [
+            item.player.rank === null ? '-' : String(item.player.rank),
+            item.player.name,
+            seatInfo.display
+          ].forEach(function(value, idx) {
+            var td = document.createElement('td');
+            td.textContent = value;
+            td.className = idx === 1 ? 'total-player' : 'num';
+            tr.appendChild(td);
+          });
+          appendChipCounts(tr, item);
+          appendFinalValues(tr, item);
+          tbody.appendChild(tr);
+        });
+      });
+      table.appendChild(tbody);
+      tableWrap.appendChild(table);
+      return tableWrap;
+    }
+
+    function buildGroupRanksText(group) {
+      return (group.players || []).map(function(entry) {
+        return entry.item && entry.item.player && entry.item.player.rank !== null
+          ? String(entry.item.player.rank)
+          : '-';
+      }).join(', ');
+    }
+
+    function buildGroupChipUsageLines(group) {
+      return FINAL_STACK_DENOMS.map(function(denom, idx) {
+        var used = groupChipUsage[group.key] ? (groupChipUsage[group.key][idx] || 0) : 0;
+        if (!used) { return ''; }
+        return denom.label + ' x ' + String(used);
+      }).filter(Boolean);
+    }
+
+    function buildGroupView(group) {
+      var totalStack = 0;
+      var totalDiff = 0;
+      (group.players || []).forEach(function(entry) {
+        totalStack += entry.item.combo.value || 0;
+        totalDiff += entry.item.diff || 0;
+      });
+
+      var hero = document.createElement('section');
+      hero.className = 'stack-view-card';
+      var kicker = document.createElement('p');
+      kicker.className = 'stack-view-kicker';
+      kicker.textContent = group.type === 'final' ? 'Table finale' : 'Table consolation';
+      var title = document.createElement('h3');
+      title.className = 'stack-view-title';
+      title.textContent = group.label;
+      var detail = document.createElement('p');
+      detail.className = 'stack-view-detail';
+      detail.textContent = group.type === 'final'
+        ? "Les dix meilleurs joueurs de la saison arrivent ici. L'ordre suit le classement, sauf si tu choisis de mélanger les places visuellement."
+        : "Cette table reçoit un joueur sur deux à partir du 11e rang, pour garder une répartition équitable entre les deux consolations.";
+      hero.appendChild(kicker);
+      hero.appendChild(title);
+      hero.appendChild(detail);
+
+      var badges = document.createElement('div');
+      badges.className = 'stack-view-badges';
+      [
+        String((group.players || []).length) + ' joueurs',
+        'Rangs ' + buildGroupRanksText(group),
+        'Stack total ' + formatDisplayAmount(totalStack, 0),
+        'Écart total ' + formatSignedAmount(Math.round(totalDiff))
+      ].forEach(function(text) {
+        var badge = document.createElement('span');
+        badge.className = 'stack-view-badge';
+        badge.textContent = text;
+        badges.appendChild(badge);
+      });
+      hero.appendChild(badges);
+      host.appendChild(hero);
+
+      var layout = document.createElement('div');
+      layout.className = 'stack-view-layout split';
+      var tableWrap = document.createElement('div');
+      tableWrap.className = 'stack-calc-table-wrap';
+      var table = document.createElement('table');
+      table.className = 'total-table stack-calc-table stack-view-table';
+      var thead = document.createElement('thead');
+      var headRow = document.createElement('tr');
+      buildSharedHeaders(true).forEach(function(label, idx) {
+        var th = document.createElement('th');
+        th.textContent = label;
+        if (idx >= 3 && idx < (3 + visibleChipColumns.length)) {
+          th.className = visibleChipColumns[idx - 3].className;
+        }
+        headRow.appendChild(th);
+      });
+      thead.appendChild(headRow);
+      table.appendChild(thead);
+
+      var tbody = document.createElement('tbody');
+      (group.players || []).forEach(function(entry, seatIdx) {
+        var item = entry.item;
+        var tr = document.createElement('tr');
+        [
+          String(seatIdx + 1),
+          item.player.rank === null ? '-' : String(item.player.rank),
+          item.player.name
+        ].forEach(function(value, idx) {
+          var td = document.createElement('td');
+          td.textContent = value;
+          td.className = idx === 2 ? 'total-player' : 'num';
+          tr.appendChild(td);
+        });
+        appendChipCounts(tr, item);
+        appendFinalValues(tr, item);
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      tableWrap.appendChild(table);
+      layout.appendChild(tableWrap);
+
+      var side = document.createElement('aside');
+      side.className = 'stack-view-sidecard';
+      var sideTitle = document.createElement('h3');
+      sideTitle.textContent = 'Répartition de cette table';
+      var sideCopy = document.createElement('p');
+      sideCopy.textContent = group.type === 'final'
+        ? 'Cette table concentre la finale. Le calculateur garde la logique des 20 jetons par joueur et affiche les sièges dans l’ordre actuel.'
+        : ('Cette consolation regroupe les rangs ' + buildGroupRanksText(group) + ' avec une alternance automatique entre les deux tables.');
+      side.appendChild(sideTitle);
+      side.appendChild(sideCopy);
+      var chipLines = buildGroupChipUsageLines(group);
+      if (chipLines.length) {
+        var list = document.createElement('ul');
+        chipLines.forEach(function(text) {
+          var li = document.createElement('li');
+          li.textContent = text;
+          list.appendChild(li);
+        });
+        side.appendChild(list);
+      }
+      layout.appendChild(side);
+      host.appendChild(layout);
+    }
+
+    function buildStockWrap() {
+      var stockTable = document.createElement('table');
+      stockTable.className = 'total-table stack-calc-stock-table';
+      var stockHead = document.createElement('thead');
+      var stockHeadRow = document.createElement('tr');
+      var stockGroupColumns = stackGroups.map(function(group) {
+        return { key: group.key, label: group.stockLabel || group.label };
+      });
+      ['Jeton'].concat(stockGroupColumns.map(function(group) { return group.label; })).concat(['Total utilisés', 'Restants']).forEach(function(label) {
+        var th = document.createElement('th');
+        th.textContent = label;
+        stockHeadRow.appendChild(th);
+      });
+      stockHead.appendChild(stockHeadRow);
+      stockTable.appendChild(stockHead);
+
+      var stockBody = document.createElement('tbody');
+      visibleStockRows.forEach(function(row) {
+        var tr = document.createElement('tr');
+        var chipClass = getFinalStackChipClass(row.value);
+        var rowValues = [row.label]
+          .concat(stockGroupColumns.map(function(group) {
+            var denomIdx = FINAL_STACK_DENOMS.findIndex(function(denom) { return denom.value === row.value; });
+            return String((groupChipUsage[group.key] && denomIdx >= 0) ? (groupChipUsage[group.key][denomIdx] || 0) : 0);
+          }))
+          .concat([String(row.used), String(row.remaining)]);
+        rowValues.forEach(function(value, idx) {
+          var td = document.createElement('td');
+          td.textContent = value;
+          if (idx === 0 && chipClass) { td.className = chipClass; }
+          tr.appendChild(td);
+        });
+        stockBody.appendChild(tr);
+      });
+      stockTable.appendChild(stockBody);
+      var stockWrap = document.createElement('div');
+      stockWrap.className = 'stack-calc-table-wrap';
+      stockWrap.appendChild(stockTable);
+      return stockWrap;
+    }
+
+    var advancedViewEnabled = isAdvancedFinalTableViewEnabled();
+    var availableViews = getFinalStackAvailableViews(stackGroups);
+    if (tabsHost) {
+      tabsHost.hidden = !advancedViewEnabled;
+    }
+    if (!finalStackCurrentView || !availableViews.some(function(view) { return view.key === finalStackCurrentView; })) {
+      finalStackCurrentView = getFinalStackDefaultView(stackGroups);
+    }
+
+    if (tabsHost && advancedViewEnabled) {
+      tabsHost.hidden = false;
+      availableViews.forEach(function(view) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'stack-view-tab' + (view.key === finalStackCurrentView ? ' active' : '');
+        btn.textContent = view.label;
+        btn.addEventListener('click', function() {
+          finalStackCurrentView = view.key;
+          try {
+            if (window.localStorage) {
+              window.localStorage.setItem(FINAL_STACK_VIEW_KEY, finalStackCurrentView);
+            }
+          }
+          catch (err) {}
+          renderFinalStackCalculator();
+        });
+        tabsHost.appendChild(btn);
+      });
+    }
+
+    if (!advancedViewEnabled || finalStackCurrentView === 'overview') {
+      if (advancedViewEnabled) {
+        var overviewHero = document.createElement('section');
+        overviewHero.className = 'stack-view-card';
+        var overviewKicker = document.createElement('p');
+        overviewKicker.className = 'stack-view-kicker';
+        overviewKicker.textContent = 'Vue complète';
+        var overviewTitle = document.createElement('h3');
+        overviewTitle.className = 'stack-view-title';
+        overviewTitle.textContent = 'Répartition générale des trois tables';
+        var overviewDetail = document.createElement('p');
+        overviewDetail.className = 'stack-view-detail';
+        overviewDetail.textContent = 'Cette vue rassemble la table finale et les deux consolations dans un seul tableau. Utilise ensuite les sous-onglets pour inspecter une table précise.';
+        overviewHero.appendChild(overviewKicker);
+        overviewHero.appendChild(overviewTitle);
+        overviewHero.appendChild(overviewDetail);
+        var overviewBadges = document.createElement('div');
+        overviewBadges.className = 'stack-view-badges';
+        [
+          String(stackGroups.length) + ' tables',
+          String(plan.playersCount) + ' joueurs',
+          'Stack total ' + formatDisplayAmount(plan.totalFinal, 0)
+        ].forEach(function(text) {
+          var badge = document.createElement('span');
+          badge.className = 'stack-view-badge';
+          badge.textContent = text;
+          overviewBadges.appendChild(badge);
+        });
+        overviewHero.appendChild(overviewBadges);
+        host.appendChild(overviewHero);
+      }
+      host.appendChild(buildOverviewTable());
+    }
+    else {
+      var activeGroup = stackGroups.filter(function(group) { return group.key === finalStackCurrentView; })[0] || null;
+      if (activeGroup) {
+        buildGroupView(activeGroup);
+      }
+      else {
+        host.appendChild(buildOverviewTable());
+      }
+    }
+
+    host.appendChild(buildStockWrap());
+    var stockNote = document.createElement('p');
+    stockNote.className = 'stack-view-stock-note';
+    stockNote.textContent = 'Le stock de jetons reste global, même quand tu consultes une seule table.';
+    host.appendChild(stockNote);
   }
 
   function setupFinalStackCalculator() {
@@ -3026,6 +3762,8 @@ body { margin: 10px; }
     var input = document.getElementById('final-stack-multiplier');
     var run = document.getElementById('final-stack-run');
     var status = document.getElementById('final-stack-status');
+    var presetHost = document.getElementById('final-stack-presets');
+    var presetMeta = document.getElementById('final-stack-preset-meta');
     var minInputs = Array.prototype.slice.call(document.querySelectorAll('.final-stack-min-input'));
     var maxInputs = Array.prototype.slice.call(document.querySelectorAll('.final-stack-max-input'));
     if (!panel || !input || !run || !status || panel.getAttribute('data-ready') === '1') { return; }
@@ -3075,14 +3813,86 @@ body { margin: 10px; }
       return sanitizeFinalStackMaxCounts(raw);
     }
 
+    function syncPresetUi() {
+      if (!presetHost || !presetMeta) { return; }
+      if (!areFinalStackPresetsEnabled()) {
+        presetHost.hidden = true;
+        presetMeta.hidden = true;
+        return;
+      }
+
+      var activePreset = findFinalStackPreset(getMinCountsFromInputs(), getMaxCountsFromInputs());
+      finalStackCurrentPreset = activePreset ? activePreset.id : 'personnalise';
+      Array.prototype.slice.call(presetHost.querySelectorAll('.stack-calc-preset')).forEach(function(button) {
+        button.classList.toggle('active', button.getAttribute('data-preset-id') === finalStackCurrentPreset);
+      });
+      presetMeta.hidden = false;
+      presetMeta.textContent = activePreset
+        ? ('Préréglage actif: ' + activePreset.label + '. ' + activePreset.detail)
+        : 'Préréglage actif: Personnalisé. Les contraintes ont été ajustées manuellement.';
+      try {
+        if (window.localStorage) {
+          window.localStorage.setItem(FINAL_STACK_PRESET_KEY, finalStackCurrentPreset);
+        }
+      }
+      catch (err) {}
+    }
+
+    function applyPresetToInputs(presetId) {
+      var preset = getFinalStackPresetById(presetId);
+      if (!preset) { return; }
+      applyMinCountsToInputs(preset.minCounts);
+      applyMaxCountsToInputs(preset.maxCounts);
+      rememberMinCounts();
+      rememberMaxCounts();
+      syncPresetUi();
+      setCalcStatus('Preset appliqué: ' + preset.label + '. Clique sur Calculer pour actualiser.', false);
+    }
+
+    function setupPresetButtons() {
+      if (!presetHost || !presetMeta) { return; }
+      if (!areFinalStackPresetsEnabled()) {
+        presetHost.hidden = true;
+        presetMeta.hidden = true;
+        return;
+      }
+
+      presetHost.hidden = false;
+      presetMeta.hidden = false;
+      presetHost.innerHTML = '';
+      getFinalStackPresetDefinitions().forEach(function(preset) {
+        var button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'stack-calc-preset';
+        button.setAttribute('data-preset-id', preset.id);
+        var title = document.createElement('span');
+        title.className = 'stack-calc-preset-title';
+        title.textContent = preset.label;
+        var detail = document.createElement('span');
+        detail.className = 'stack-calc-preset-detail';
+        detail.textContent = preset.detail;
+        button.appendChild(title);
+        button.appendChild(detail);
+        button.addEventListener('click', function() {
+          applyPresetToInputs(preset.id);
+        });
+        presetHost.appendChild(button);
+      });
+      syncPresetUi();
+    }
+
     try {
       var savedMultiplier = window.localStorage ? window.localStorage.getItem(FINAL_STACK_MULTIPLIER_KEY) : '';
       if (savedMultiplier) {
         input.value = savedMultiplier;
       }
+      var savedPresetId = window.localStorage ? window.localStorage.getItem(FINAL_STACK_PRESET_KEY) : '';
       var savedMinCounts = window.localStorage ? window.localStorage.getItem(FINAL_STACK_MIN_COUNTS_KEY) : '';
       if (savedMinCounts) {
         applyMinCountsToInputs(JSON.parse(savedMinCounts));
+      }
+      else if (savedPresetId && getFinalStackPresetById(savedPresetId)) {
+        applyMinCountsToInputs(getFinalStackPresetById(savedPresetId).minCounts);
       }
       else {
         applyMinCountsToInputs(FINAL_STACK_DEFAULT_MIN_COUNTS);
@@ -3091,8 +3901,15 @@ body { margin: 10px; }
       if (savedMaxCounts) {
         applyMaxCountsToInputs(JSON.parse(savedMaxCounts));
       }
+      else if (savedPresetId && getFinalStackPresetById(savedPresetId)) {
+        applyMaxCountsToInputs(getFinalStackPresetById(savedPresetId).maxCounts);
+      }
       else {
         applyMaxCountsToInputs(FINAL_STACK_DEFAULT_MAX_COUNTS);
+      }
+      var savedView = window.localStorage ? window.localStorage.getItem(FINAL_STACK_VIEW_KEY) : '';
+      if (savedView) {
+        finalStackCurrentView = savedView;
       }
     }
     catch (err) {
@@ -3129,6 +3946,7 @@ body { margin: 10px; }
 
     function markPending() {
       rememberMultiplier();
+      syncPresetUi();
       setCalcStatus('À recalculer', false);
     }
 
@@ -3138,6 +3956,7 @@ body { margin: 10px; }
       rememberMultiplier();
       rememberMinCounts();
       rememberMaxCounts();
+      syncPresetUi();
       setCalcStatus('Calcul en cours...', false);
       run.disabled = true;
 
@@ -3194,6 +4013,7 @@ body { margin: 10px; }
       });
     });
 
+    setupPresetButtons();
     panel.setAttribute('data-ready', '1');
     triggerFinalStackRender();
   }
@@ -3424,6 +4244,8 @@ body { margin: 10px; }
   applyReplacementColorsAll();
   applyWeeklyPodiumStyles();
   updateCompactWeekLabel();
+  renderSeasonSelector();
+  updateFinalStackLabels();
   renderTabQrInPanels();
   setupPlayerSearch();
   setupPlayerCard();
@@ -3448,6 +4270,7 @@ body { margin: 10px; }
 </script>
 </body>
 </html>
+
 
 
 
