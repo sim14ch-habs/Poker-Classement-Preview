@@ -609,7 +609,7 @@ function Export-PublicHtml {
     $progressionJson = $progressionData | ConvertTo-Json -Depth 12 -Compress
     if ($null -eq $SiteConfig) {
         $SiteConfig = [ordered]@{
-            enableFinalStackCalculator = $false
+            enableFinalStackCalculator = $true
             relaxDesktopHorizontalScroll = $false
             seasonStage = 'regular'
         }
@@ -1035,13 +1035,12 @@ try {
 
     $htmlOutputFile = Join-Path $OutputDir "classement_public.html"
     $siteConfig = [ordered]@{
-        enableFinalStackCalculator = $false
+        enableFinalStackCalculator = $true
         relaxDesktopHorizontalScroll = $false
         seasonStage = if ($weekNumber -ge 14) { 'finale' } else { 'regular' }
     }
     $publishFingerprint = ((@([string]$PublishRepoDir, [string]$PublicUrl) | Where-Object { -not [string]::IsNullOrWhiteSpace($_) }) -join ' ')
     if ($publishFingerprint -match '(?i)preview') {
-        $siteConfig.enableFinalStackCalculator = $true
         $siteConfig.relaxDesktopHorizontalScroll = $true
     }
 
